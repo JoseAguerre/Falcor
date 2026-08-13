@@ -1,0 +1,140 @@
+# TV room test scene.
+# Based on media/test_scenes/grey_and_white_room/grey_and_white_room.pyscene, with:
+#  - the environment map removed (the room is lit ONLY by the TV quad light below)
+#  - the "Mirror" material neutralized (no longer reflective, since a real TV quad
+#    replaces its role) - see the NOTE below about its exact position
+#  - a 16:9 TV added in front of the couch, using the QuadLight + 2D-CDF importance
+#    sampler (Source/Falcor/Scene/Lights/QuadLight.*, Source/Falcor/Rendering/Lights/QuadLightSampler.*)
+#
+# NOTE on TV placement: there is no SceneBuilder/Scene Python API to query an imported
+# FBX node's transform by name (only getMaterial(name) is exposed, not node/instance
+# transforms), so the mirror's exact world position couldn't be queried programmatically.
+# Instead, TV_POSITION/TV_TARGET/TV_UP below are the camera position/target/up you flew
+# to and read off in Mogwai's UI, standing roughly where the TV should be, looking into
+# the room. TV_TARGET defines the direction the screen faces (its outward normal).
+
+TV_SIZE = float2(1.6, 0.9)  # 16:9
+TV_POSITION = float3(1.642, 1.192, -0.552)
+TV_TARGET = float3(1.583, 1.351, -1.538)
+TV_UP = float3(0.0, 1.0, 0.0)
+TV_DEPTH_OFFSET = 0.35  # push back (opposite the screen normal) so it sits flush against the wall
+TV_HORIZONTAL_OFFSET = 0.2  # shift along the wall (screen-local +X/"right"); positive = left (empirically, per last render)
+TV_TEXTURE = 'C:/packman-repo/chk/falcor_media/7acdf8b0/test_images/monalisa.jpg'
+TV_INTENSITY = 6.0
+
+# QuadLight/TriangleMesh.createQuad() both use local +Y as the quad's normal (plane in
+# local XZ), not the camera-style "look down -Z" convention that Transform's own
+# rotationEulerDeg/lookAt() produce. So instead of guessing Euler angles, build an
+# orthonormal (right, normal, up) basis from TV_POSITION/TV_TARGET/TV_UP by hand, then
+# hand Falcor's own Transform(position=, target=, up=) constructor a swapped target/up
+# pair chosen so ITS local Y (which lookAt always derives from the "up" argument) lands
+# exactly on our desired quad normal - see the derivation in the previous conversation
+# turn for the vector algebra. float3 supports +/-, so this is done with the engine's
+# own vector type, not a hand-rolled one.
+def _sub(a, b):
+    return float3(a.x - b.x, a.y - b.y, a.z - b.z)
+
+def _add(a, b):
+    return float3(a.x + b.x, a.y + b.y, a.z + b.z)
+
+def _scale(a, s):
+    return float3(a.x * s, a.y * s, a.z * s)
+
+def _cross(a, b):
+    return float3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x)
+
+def _normalize(a):
+    l = (a.x * a.x + a.y * a.y + a.z * a.z) ** 0.5
+    return float3(a.x / l, a.y / l, a.z / l)
+
+# The raw camera target had a slight upward tilt (you were looking a bit up when you flew
+# there), which is exactly the "small rotation" that showed up as the TV leaning back like
+# a tilted lectern instead of hanging flush on the wall. A wall-mounted TV's normal should
+# be purely horizontal, so flatten out the Y component before building the basis from it.
+_rawNormal = _sub(TV_TARGET, TV_POSITION)
+_normal = _normalize(float3(_rawNormal.x, 0.0, _rawNormal.z))
+_right = _normalize(_cross(_normal, TV_UP))             # desired quad local +X (screen horizontal)
+_screenUp = _cross(_right, _normal)                      # desired quad local +Z (screen vertical)
+
+_tvPosition = _sub(TV_POSITION, _scale(_normal, TV_DEPTH_OFFSET))
+_tvPosition = _add(_tvPosition, _scale(_right, TV_HORIZONTAL_OFFSET))
+tvTransform = Transform(position=_tvPosition, target=_sub(_tvPosition, _screenUp), up=_normal)
+
+# Load scene
+sceneBuilder.importScene('C:/packman-repo/chk/falcor_media/7acdf8b0/test_scenes/grey_and_white_room/grey_and_white_room.fbx')
+
+# The FBX ships an animated camera, and Animatable.animated defaults to True for every
+# animatable object (Source/Falcor/Scene/Animation/Animatable.h). A playing/looping camera
+# animation means the camera transform differs slightly every frame, which continuously
+# sets IScene::UpdateFlags::CameraMoved and resets AccumulatePass - so it never converges.
+# Freeze it here so accumulation actually accumulates.
+for camera in sceneBuilder.cameras:
+    camera.animated = False
+
+# No environment map - the TV is the only light source in the scene.
+
+# Disable analytic lights (same as the original scene).
+for light in sceneBuilder.lights:
+    light.active = False
+
+# Setup transmissive materials (not supported in the FBX file) - unchanged from the original scene.
+glass = sceneBuilder.getMaterial('grey_and_white_room:Glass')
+glass.roughness = 0
+glass.metallic = 0
+glass.indexOfRefraction = 1.55
+glass.specularTransmission = 1
+glass.doubleSided = True
+glass.nestedPriority = 1
+
+# Neutralize the mirror - replaced by the TV quad light below, so it should no longer
+# read as a specular/reflective surface.
+mirror = sceneBuilder.getMaterial('grey_and_white_room:Mirror')
+mirror.baseColor = float4(0.3, 0.3, 0.3, 1.0)
+mirror.roughness = 1.0
+mirror.metallic = 0.0
+
+# Remaining material tweaks, unchanged from the original scene.
+m = sceneBuilder.getMaterial('grey_and_white_room:MattePaint')
+m.roughness = 0.5
+
+m = sceneBuilder.getMaterial('grey_and_white_room:Leaves.doublesided')
+m.roughness = 0.5
+
+m = sceneBuilder.getMaterial('grey_and_white_room:Painting')
+m.roughness = 0.2
+
+m = sceneBuilder.getMaterial('grey_and_white_room:Sofa')
+m.roughness = 0.5
+
+m = sceneBuilder.getMaterial('grey_and_white_room:Paneling')
+m.roughness = 0.5
+
+m = sceneBuilder.getMaterial('grey_and_white_room:Walls')
+m.baseColor = float4(0.3, 0.3, 0.3, 1.0)
+m.roughness = 0.5
+
+m = sceneBuilder.getMaterial('grey_and_white_room:PlantPot')
+m.roughness = 0.2
+
+# TV: a non-emissive placeholder material (kept out of the standard emissive-triangle
+# light pipeline on purpose) assigned to a real 16:9 quad mesh, plus a QuadLight object
+# sharing the exact same transform/size that does the actual lighting via its own
+# importance sampler.
+tvMat = StandardMaterial('TV')  # emissiveFactor left at 0 - non-emissive on purpose
+tvMatID = sceneBuilder.addMaterial(tvMat)
+
+tvMesh = TriangleMesh.createQuad(TV_SIZE)
+sceneBuilder.addMeshInstance(
+    sceneBuilder.addNode('TV', tvTransform),
+    sceneBuilder.addTriangleMesh(tvMesh, tvMat)  # same tvMat instance -> addMaterial dedupes to tvMatID
+)
+
+tvLight = QuadLight.createFromFile(TV_TEXTURE)
+tvLight.materialID = tvMatID
+tvLight.transform = tvTransform.matrix
+tvLight.size = TV_SIZE
+tvLight.intensity = TV_INTENSITY
+sceneBuilder.quadLight = tvLight
+
+# Only the TV lights the scene.
+sceneBuilder.renderSettings = SceneRenderSettings(useEnvLight=False, useAnalyticLights=False, useEmissiveLights=False, useQuadLight=True)

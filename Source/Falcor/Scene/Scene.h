@@ -37,6 +37,7 @@
 #include "Lights/LightCollection.h"
 #include "Lights/LightProfile.h"
 #include "Lights/EnvMap.h"
+#include "Lights/QuadLight.h"
 #include "Camera/Camera.h"
 #include "Camera/CameraController.h"
 #include "Material/MaterialSystem.h"
@@ -254,6 +255,7 @@ namespace Falcor
             std::vector<ref<GridVolume>> gridVolumes;               ///< List of grid volumes.
             std::vector<ref<Grid>> grids;                           ///< List of grids.
             ref<EnvMap> pEnvMap;                                    ///< Environment map.
+            ref<QuadLight> pQuadLight;                              ///< Quad light.
             std::vector<Node> sceneGraph;                           ///< Scene graph nodes.
             std::vector<ref<Animation>> animations;                 ///< List of animations.
             Metadata metadata;                                      ///< Scene meadata.
@@ -462,6 +464,10 @@ namespace Falcor
         /** Returns true if environment map is available and should be used as a distant light.
         */
         bool useEnvLight() const override;
+
+        /** Returns true if the quad light is available and should be used for lighting.
+        */
+        bool useQuadLight() const override;
 
         /** Returns true if there are active analytic lights and they should be used for lighting.
         */
@@ -877,6 +883,10 @@ namespace Falcor
         */
         const ref<EnvMap>& getEnvMap() const override { return mpEnvMap; }
 
+        /** Get the quad light or nullptr if it doesn't exist.
+        */
+        const ref<QuadLight>& getQuadLight() const override { return mpQuadLight; }
+
         /** Set how the scene's TLASes are updated when raytracing.
             TLASes are REBUILT by default.
         */
@@ -974,6 +984,11 @@ namespace Falcor
             \return True if environmant map was successfully loaded.
         */
         bool loadEnvMap(const std::filesystem::path& path);
+
+        /** Set the quad light.
+            \param[in] pQuadLight Quad light. Can be nullptr.
+        */
+        void setQuadLight(ref<QuadLight> pQuadLight);
 
         /** Handle mouse events.
         */
@@ -1199,6 +1214,7 @@ namespace Falcor
         IScene::UpdateFlags updateLights(bool forceUpdate);
         IScene::UpdateFlags updateGridVolumes(bool forceUpdate);
         IScene::UpdateFlags updateEnvMap(bool forceUpdate);
+        IScene::UpdateFlags updateQuadLight(bool forceUpdate);
         IScene::UpdateFlags updateMaterials(bool forceUpdate);
         IScene::UpdateFlags updateGeometry(RenderContext* pRenderContext, bool forceUpdate);
         IScene::UpdateFlags updateProceduralPrimitives(bool forceUpdate);
@@ -1306,6 +1322,8 @@ namespace Falcor
         ref<LightCollection> mpLightCollection;                     ///< Class for managing emissive geometry. This is created lazily upon first use.
         ref<EnvMap> mpEnvMap;                                       ///< Environment map or nullptr if not loaded.
         bool mEnvMapChanged = false;                                ///< Flag indicating that the environment map has changed since last frame.
+        ref<QuadLight> mpQuadLight;                                 ///< Quad light or nullptr if not set.
+        bool mQuadLightChanged = false;                             ///< Flag indicating that the quad light object has been replaced since last frame.
 
         // Scene metadata (CPU only)
         std::vector<AABB> mMeshBBs;                                 ///< Bounding boxes for meshes (not instances) in object space.

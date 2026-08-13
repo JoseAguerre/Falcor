@@ -34,6 +34,7 @@ __exported import Scene.Lights.LightData;
 __exported import Scene.Lights.LightCollection;
 __exported import Scene.Lights.LightProfile;
 __exported import Scene.Lights.EnvMap;
+__exported import Scene.Lights.QuadLight;
 __exported import Scene.Material.MaterialSystem;
 __exported import Scene.Volume.GridVolume;
 __exported import Scene.SDFs.SDFGrid;
@@ -108,6 +109,7 @@ struct Scene
     StructuredBuffer<LightData> lights;
     LightCollection lightCollection;
     EnvMap envMap;
+    QuadLight quadLight;
     Camera camera;
 
     // Grid volumes

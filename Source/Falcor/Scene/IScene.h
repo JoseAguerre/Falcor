@@ -38,6 +38,7 @@ namespace Falcor
 
 struct AABB;
 class EnvMap;
+class QuadLight;
 class ILightCollection;
 class Camera;
 class RenderContext;
@@ -83,6 +84,7 @@ public:
         TypeConformancesChanged = 0x4000000,   ///< Type conformances changed. All programs that access the scene must be updated!
         ShaderCodeChanged = 0x8000000,         ///< Shader code changed. All programs that access the scene must be updated!
         EmissiveMaterialsChanged = 0x10000000, ///< Emissive materials changed.
+        QuadLightChanged = 0x20000000,         ///< Quad light changed.
 
         /// Flags indicating that programs that access the scene need to be recompiled.
         /// This is needed if defines, type conformances, and/or the shader code has changed.
@@ -110,6 +112,7 @@ public:
         bool useAnalyticLights = true;  ///< Enable lighting from analytic lights.
         bool useEmissiveLights = true;  ///< Enable lighting from emissive lights.
         bool useGridVolumes = true;     ///< Enable rendering of grid volumes.
+        bool useQuadLight = true;       ///< Enable lighting from the quad light.
 
         // DEMO21
         float diffuseAlbedoMultiplier = 1.f;    ///< Fixed multiplier applied to material diffuse albedo.
@@ -119,7 +122,8 @@ public:
             return (useEnvLight == other.useEnvLight) &&
                 (useAnalyticLights == other.useAnalyticLights) &&
                 (useEmissiveLights == other.useEmissiveLights) &&
-                (useGridVolumes == other.useGridVolumes);
+                (useGridVolumes == other.useGridVolumes) &&
+                (useQuadLight == other.useQuadLight);
         }
 
         bool operator!=(const RenderSettings& other) const { return !(*this == other); }
@@ -170,6 +174,11 @@ public:
     virtual bool useAnalyticLights() const = 0;
 
     virtual const ref<EnvMap>& getEnvMap() const = 0;
+
+    /// True when the quad light is both enabled and present in the scene.
+    virtual bool useQuadLight() const = 0;
+
+    virtual const ref<QuadLight>& getQuadLight() const = 0;
     /// TODO: Remove the `renderContext` when not needed
     /// TODO: Ideally this wouldn't be non-const and build-on-demand (as Scene1 does)
     virtual ref<ILightCollection> getILightCollection(RenderContext* renderContext) = 0;

@@ -216,6 +216,10 @@ target_sources(Falcor PRIVATE
     Rendering/Lights/LightBVHSamplerSharedDefinitions.slang
     Rendering/Lights/LightBVHTypes.slang
     Rendering/Lights/LightHelpers.slang
+    Rendering/Lights/QuadLightSampler.cpp
+    Rendering/Lights/QuadLightSampler.h
+    Rendering/Lights/QuadLightSampler.slang
+    Rendering/Lights/QuadLightSamplerSetup.cs.slang
 
     Rendering/Materials/AnisotropicGGX.slang
     Rendering/Materials/BCSDFConfig.slangh
@@ -408,6 +412,10 @@ target_sources(Falcor PRIVATE
     Scene/Lights/LightProfile.h
     Scene/Lights/LightProfile.slang
     Scene/Lights/MeshLightData.slang
+    Scene/Lights/QuadLight.cpp
+    Scene/Lights/QuadLight.h
+    Scene/Lights/QuadLight.slang
+    Scene/Lights/QuadLightData.slang
     Scene/Lights/UpdateTriangleVertices.cs.slang
 
     Scene/Material/AlphaTest.slang

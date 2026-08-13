@@ -932,6 +932,7 @@ void PathTracer::resetLighting()
 
     mpEmissiveSampler = nullptr;
     mpEnvMapSampler = nullptr;
+    mpQuadLightSampler = nullptr;
     mRecompile = true;
 }
 
@@ -984,6 +985,32 @@ bool PathTracer::prepareLighting(RenderContext* pRenderContext)
         if (mpEnvMapSampler)
         {
             mpEnvMapSampler = nullptr;
+            lightingChanged = true;
+            mRecompile = true;
+        }
+    }
+
+    if (is_set(mUpdateFlags, IScene::UpdateFlags::QuadLightChanged))
+    {
+        mpQuadLightSampler = nullptr;
+        lightingChanged = true;
+        mRecompile = true;
+    }
+
+    if (mpScene->useQuadLight())
+    {
+        if (!mpQuadLightSampler)
+        {
+            mpQuadLightSampler = std::make_unique<QuadLightSampler>(mpDevice, mpScene->getQuadLight());
+            lightingChanged = true;
+            mRecompile = true;
+        }
+    }
+    else
+    {
+        if (mpQuadLightSampler)
+        {
+            mpQuadLightSampler = nullptr;
             lightingChanged = true;
             mRecompile = true;
         }
@@ -1093,6 +1120,7 @@ void PathTracer::bindShaderData(const ShaderVar& var, const RenderData& renderDa
     if (mVarsChanged)
     {
         if (useLightSampling && mpEnvMapSampler) mpEnvMapSampler->bindShaderData(var["envMapSampler"]);
+        if (useLightSampling && mpQuadLightSampler) mpQuadLightSampler->bindShaderData(var["quadLightSampler"]);
 
         var["sampleOffset"] = mpSampleOffset; // Can be nullptr
         var["sampleColor"] = mpSampleColor;
@@ -1432,6 +1460,7 @@ DefineList PathTracer::StaticParams::getDefines(const PathTracer& owner) const
     // Scene-specific configuration.
     // Set defaults
     defines.add("USE_ENV_LIGHT", "0");
+    defines.add("USE_QUAD_LIGHT", "0");
     defines.add("USE_ANALYTIC_LIGHTS", "0");
     defines.add("USE_EMISSIVE_LIGHTS", "0");
     defines.add("USE_CURVES", "0");
@@ -1442,6 +1471,7 @@ DefineList PathTracer::StaticParams::getDefines(const PathTracer& owner) const
     {
         defines.add(scene->getSceneDefines());
         defines.add("USE_ENV_LIGHT", scene->useEnvLight() ? "1" : "0");
+        defines.add("USE_QUAD_LIGHT", scene->useQuadLight() ? "1" : "0");
         defines.add("USE_ANALYTIC_LIGHTS", scene->useAnalyticLights() ? "1" : "0");
         defines.add("USE_EMISSIVE_LIGHTS", scene->useEmissiveLights() ? "1" : "0");
         defines.add("USE_CURVES", (scene->hasGeometryType(Scene::GeometryType::Curve)) ? "1" : "0");

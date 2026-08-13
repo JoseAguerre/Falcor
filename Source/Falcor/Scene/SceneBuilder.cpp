@@ -2937,6 +2937,7 @@ namespace Falcor
         FALCOR_SCRIPT_BINDING_DEPENDENCY(Light)
         FALCOR_SCRIPT_BINDING_DEPENDENCY(Transform)
         FALCOR_SCRIPT_BINDING_DEPENDENCY(EnvMap)
+        FALCOR_SCRIPT_BINDING_DEPENDENCY(QuadLight)
         FALCOR_SCRIPT_BINDING_DEPENDENCY(Animation)
         FALCOR_SCRIPT_BINDING_DEPENDENCY(AABB)
         FALCOR_SCRIPT_BINDING_DEPENDENCY(GridVolume)
@@ -2976,6 +2977,7 @@ namespace Falcor
         sceneBuilder.def_property_readonly("animations", &SceneBuilder::getAnimations);
         sceneBuilder.def_property("renderSettings", pybind11::overload_cast<>(&SceneBuilder::getRenderSettings, pybind11::const_), &SceneBuilder::setRenderSettings);
         sceneBuilder.def_property("envMap", &SceneBuilder::getEnvMap, &SceneBuilder::setEnvMap);
+        sceneBuilder.def_property("quadLight", &SceneBuilder::getQuadLight, &SceneBuilder::setQuadLight);
         sceneBuilder.def_property("selectedCamera", &SceneBuilder::getSelectedCamera, &SceneBuilder::setSelectedCamera);
         sceneBuilder.def_property("cameraSpeed", &SceneBuilder::getCameraSpeed, &SceneBuilder::setCameraSpeed);
         sceneBuilder.def("importScene", &SceneBuilder::import, "path"_a, "dict"_a = pybind11::dict());

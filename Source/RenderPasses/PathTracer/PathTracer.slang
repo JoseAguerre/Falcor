@@ -26,6 +26,7 @@
  # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 import Rendering.Lights.EnvMapSampler;
+import Rendering.Lights.QuadLightSampler;
 import Rendering.Lights.EmissiveLightSampler;
 import Rendering.Lights.EmissiveLightSamplerHelpers;
 import Rendering.Lights.LightHelpers;
@@ -70,6 +71,7 @@ struct PathTracer
 
     // Samplers
     EnvMapSampler envMapSampler;                    ///< Environment map sampler. Only valid when kUseEnvLight == true.
+    QuadLightSampler quadLightSampler;              ///< Quad light sampler. Only valid when kUseQuadLight == true.
     EmissiveLightSampler emissiveSampler;           ///< Emissive light sampler. Only valid when kUseEmissiveLights == true.
 
     // Inputs
@@ -92,6 +94,7 @@ struct PathTracer
     // Render settings that depend on the scene.
     // TODO: Move into scene defines.
     static const bool kUseEnvLight = USE_ENV_LIGHT;
+    static const bool kUseQuadLight = USE_QUAD_LIGHT;
     static const bool kUseEmissiveLights = USE_EMISSIVE_LIGHTS;
     static const bool kUseAnalyticLights = USE_ANALYTIC_LIGHTS;
     static const bool kUseCurves = USE_CURVES;
@@ -106,7 +109,8 @@ struct PathTracer
     {
         EnvMap,
         Emissive,
-        Analytic
+        Analytic,
+        Quad
     };
 
     /** Describes a light sample.
@@ -603,6 +607,33 @@ struct PathTracer
         return any(ls.Li > 0.f);
     }
 
+    /** Generates a light sample on the quad light.
+        \param[in] vertex Path vertex.
+        \param[in,out] sg Sample generator.
+        \param[out] ls Struct describing valid samples.
+        \return True if the sample is valid and has nonzero contribution, false otherwise.
+    */
+    bool generateQuadLightSample(const PathVertex vertex, inout SampleGenerator sg, out LightSample ls)
+    {
+        ls = {}; // Default initialization to avoid divergence at returns.
+        if (!kUseQuadLight) return false;
+
+        QuadLightSample qls;
+        if (!quadLightSampler.sample(sampleNext2D(sg), vertex.pos, qls)) return false;
+
+        // Setup returned sample. quadLightSampler.sample() already returns pdf w.r.t. solid angle.
+        ls.Li = qls.pdf > 0.f ? qls.Le / qls.pdf : float3(0);
+        ls.pdf = qls.pdf;
+        // Offset shading and light position to avoid self-intersection.
+        float3 lightPos = computeRayOrigin(qls.posW, qls.normalW);
+        ls.origin = vertex.getRayOrigin(lightPos - vertex.pos);
+        float3 toLight = lightPos - ls.origin;
+        ls.distance = length(toLight);
+        ls.dir = normalize(toLight);
+
+        return any(ls.Li > 0.f);
+    }
+
     /** Generates a light sample on the analytic lights.
         \param[in] vertex Path vertex.
         \param[in,out] sg Sample generator.
@@ -640,27 +671,30 @@ struct PathTracer
     /** Return the probabilities for selecting different light types.
         \param[out] p Probabilities.
     */
-    void getLightTypeSelectionProbabilities(out float p[3])
+    void getLightTypeSelectionProbabilities(out float p[4])
     {
         // Set relative probabilities of the different sampling techniques.
         // TODO: These should use estimated irradiance from each light type. Using equal probabilities for now.
         p[0] = kUseEnvLight ? 1.f : 0.f;
         p[1] = kUseEmissiveLights ? 1.f : 0.f;
         p[2] = kUseAnalyticLights ? 1.f : 0.f;
+        p[3] = kUseQuadLight ? 1.f : 0.f;
 
         // Normalize probabilities. Early out if zero.
-        float sum = p[0] + p[1] + p[2];
+        float sum = p[0] + p[1] + p[2] + p[3];
         if (sum == 0.f) return;
 
         float invSum = 1.f / sum;
         p[0] *= invSum;
         p[1] *= invSum;
         p[2] *= invSum;
+        p[3] *= invSum;
     }
 
-    float getEnvMapSelectionProbability()   { float p[3]; getLightTypeSelectionProbabilities(p); return p[0]; }
-    float getEmissiveSelectionProbability() { float p[3]; getLightTypeSelectionProbabilities(p); return p[1]; }
-    float getAnalyicSelectionProbability()  { float p[3]; getLightTypeSelectionProbabilities(p); return p[2]; }
+    float getEnvMapSelectionProbability()   { float p[4]; getLightTypeSelectionProbabilities(p); return p[0]; }
+    float getEmissiveSelectionProbability() { float p[4]; getLightTypeSelectionProbabilities(p); return p[1]; }
+    float getAnalyicSelectionProbability()  { float p[4]; getLightTypeSelectionProbabilities(p); return p[2]; }
+    float getQuadLightSelectionProbability() { float p[4]; getLightTypeSelectionProbabilities(p); return p[3]; }
 
     /** Select a light type for sampling.
         \param[out] lightType Selected light type.
@@ -670,13 +704,13 @@ struct PathTracer
     */
     bool selectLightType(out uint lightType, out float pdf, inout SampleGenerator sg)
     {
-        float p[3];
+        float p[4];
         getLightTypeSelectionProbabilities(p);
 
         float u = sampleNext1D(sg);
 
         [unroll]
-        for (lightType = 0; lightType < 3; ++lightType)
+        for (lightType = 0; lightType < 4; ++lightType)
         {
             if (u < p[lightType])
             {
@@ -721,6 +755,10 @@ struct PathTracer
         if (kUseAnalyticLights && lightType == (uint)LightType::Analytic)
         {
             valid = generateAnalyticLightSample(vertex, sg, ls);
+        }
+        if (kUseQuadLight && lightType == (uint)LightType::Quad)
+        {
+            valid = generateQuadLightSample(vertex, sg, ls);
         }
         if (!valid) return false;
 
@@ -852,6 +890,32 @@ struct PathTracer
         if (!handleNestedDielectrics(sd, path)) return;
 
         logPathVertex();
+
+        // Detect a direct hit on the dedicated quad light. It is deliberately given a
+        // non-emissive placeholder material (see QuadLight.h) so it is excluded from the
+        // standard emissive-triangle/LightCollection pipeline and its own dedicated
+        // QuadLightSampler is used for NEE instead. Treated as a pure emitter here (no BSDF
+        // response, matching how analytic/env lights are handled) - add its contribution
+        // (MIS-weighted against QuadLightSampler if this hit came from a BSDF-sampled bounce
+        // that was also eligible for NEE) and terminate the path.
+        if (kUseQuadLight && isTriangleHit && sd.materialID == gScene.quadLight.data.materialID)
+        {
+            // One-sided by default (see QuadLightData::doubleSided): the back face is dark,
+            // matching a real screen/panel rather than a two-sided emitter.
+            if (gScene.quadLight.isDoubleSided() || sd.frontFacing)
+            {
+                float misWeight = 1.f;
+                if (kUseNEE && kUseMIS && !isPrimaryHit && path.isLightSampled() && path.isLightSamplable())
+                {
+                    float lightPdf = getQuadLightSelectionProbability() * quadLightSampler.evalPdf(path.origin, sd.posW);
+                    misWeight = evalMIS(1, path.pdf, 1, lightPdf);
+                }
+
+                addToPathContribution(path, misWeight * gScene.quadLight.eval(gScene.quadLight.worldToUv(sd.posW)));
+            }
+            path.terminate();
+            return;
+        }
 
         // Create texture sampler.
         let lod = createTextureSampler(path, isPrimaryHit);

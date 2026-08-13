@@ -585,6 +585,17 @@ namespace Falcor
         */
         void setEnvMap(ref<EnvMap> pEnvMap) { mSceneData.pEnvMap = pEnvMap; }
 
+        // Quad light
+
+        /** Get the quad light.
+        */
+        const ref<QuadLight>& getQuadLight() const { return mSceneData.pQuadLight; }
+
+        /** Set the quad light.
+            \param[in] pQuadLight Quad light. Can be nullptr.
+        */
+        void setQuadLight(ref<QuadLight> pQuadLight) { mSceneData.pQuadLight = pQuadLight; }
+
         // Cameras
 
         /** Get the list of cameras.

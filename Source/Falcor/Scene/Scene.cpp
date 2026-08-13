@@ -96,6 +96,7 @@ namespace Falcor
         const std::string kAnimated = "animated";
         const std::string kRenderSettings = "renderSettings";
         const std::string kEnvMap = "envMap";
+        const std::string kQuadLight = "quadLight";
         const std::string kMaterials = "materials";
         const std::string kGridVolumes = "gridVolumes";
         const std::string kGetLight = "getLight";
@@ -176,6 +177,7 @@ namespace Falcor
         mGridVolumes = std::move(sceneData.gridVolumes);
         mGrids = std::move(sceneData.grids);
         mpEnvMap = sceneData.pEnvMap;
+        mpQuadLight = sceneData.pQuadLight;
         mSceneGraph = std::move(sceneData.sceneGraph);
         mMetadata = std::move(sceneData.metadata);
 
@@ -1271,6 +1273,7 @@ namespace Falcor
         updateLights(true);
         updateGridVolumes(true);
         updateEnvMap(true);
+        updateQuadLight(true);
         uploadGeometry();
         bindParameterBlock(); // Bind final data after initialization is complete.
 
@@ -1653,6 +1656,8 @@ namespace Falcor
             mpLightCollection->bindShaderData(var["lightCollection"]);
         if (mpEnvMap)
             mpEnvMap->bindShaderData(var[kEnvMap]);
+        if (mpQuadLight)
+            mpQuadLight->bindShaderData(var[kQuadLight]);
     }
 
     IScene::UpdateFlags Scene::updateGridVolumes(bool forceUpdate)
@@ -1742,6 +1747,27 @@ namespace Falcor
         {
             flags |= IScene::UpdateFlags::EnvMapChanged;
             mEnvMapChanged = false;
+        }
+
+        return flags;
+    }
+
+    IScene::UpdateFlags Scene::updateQuadLight(bool forceUpdate)
+    {
+        IScene::UpdateFlags flags = IScene::UpdateFlags::None;
+        if (mpQuadLight)
+        {
+            auto quadLightChanges = mpQuadLight->beginFrame();
+            if (quadLightChanges != QuadLight::Changes::None || mQuadLightChanged || forceUpdate)
+            {
+                mpQuadLight->bindShaderData(mpSceneBlock->getRootVar()[kQuadLight]);
+            }
+        }
+
+        if (mQuadLightChanged)
+        {
+            flags |= IScene::UpdateFlags::QuadLightChanged;
+            mQuadLightChanged = false;
         }
 
         return flags;
@@ -1891,6 +1917,7 @@ namespace Falcor
         mUpdates |= updateLights(false);
         mUpdates |= updateGridVolumes(false);
         mUpdates |= updateEnvMap(false);
+        mUpdates |= updateQuadLight(false);
         mUpdates |= updateGeometry(pRenderContext, false);
         mUpdates |= updateSDFGrids(pRenderContext);
         pRenderContext->submit();
@@ -2100,6 +2127,14 @@ namespace Falcor
             if (mpEnvMap) mpEnvMap->renderUI(envMapGroup);
         }
 
+        if (mpQuadLight)
+        {
+            if (auto quadLightGroup = widget.group("QuadLight"))
+            {
+                mpQuadLight->renderUI(quadLightGroup);
+            }
+        }
+
         if (auto lightsGroup = widget.group("Lights"))
         {
             uint32_t lightID = 0;
@@ -2293,6 +2328,11 @@ namespace Falcor
     bool Scene::useEnvLight() const
     {
         return mRenderSettings.useEnvLight && mpEnvMap != nullptr && mpEnvMap->getIntensity() > 0.f;
+    }
+
+    bool Scene::useQuadLight() const
+    {
+        return mRenderSettings.useQuadLight && mpQuadLight != nullptr;
     }
 
     bool Scene::useAnalyticLights() const
@@ -3883,6 +3923,13 @@ namespace Falcor
         mEnvMapChanged = true;
     }
 
+    void Scene::setQuadLight(ref<QuadLight> pQuadLight)
+    {
+        if (mpQuadLight == pQuadLight) return;
+        mpQuadLight = pQuadLight;
+        mQuadLightChanged = true;
+    }
+
     bool Scene::loadEnvMap(const std::filesystem::path& path)
     {
         auto pEnvMap = EnvMap::createFromFile(mpDevice, path);
@@ -4285,6 +4332,7 @@ namespace Falcor
         FALCOR_SCRIPT_BINDING_DEPENDENCY(AABB)
         FALCOR_SCRIPT_BINDING_DEPENDENCY(Camera)
         FALCOR_SCRIPT_BINDING_DEPENDENCY(EnvMap)
+        FALCOR_SCRIPT_BINDING_DEPENDENCY(QuadLight)
         FALCOR_SCRIPT_BINDING_DEPENDENCY(SDFGrid)
 
         // RenderSettings
@@ -4293,24 +4341,27 @@ namespace Falcor
         renderSettings.def_readwrite("useAnalyticLights", &Scene::RenderSettings::useAnalyticLights);
         renderSettings.def_readwrite("useEmissiveLights", &Scene::RenderSettings::useEmissiveLights);
         renderSettings.def_readwrite("useGridVolumes", &Scene::RenderSettings::useGridVolumes);
+        renderSettings.def_readwrite("useQuadLight", &Scene::RenderSettings::useQuadLight);
         renderSettings.def_readwrite("diffuseAlbedoMultiplier", &Scene::RenderSettings::diffuseAlbedoMultiplier);
-        renderSettings.def(pybind11::init<>([](bool useEnvLight, bool useAnalyticLights, bool useEmissiveLights, bool useGridVolumes, float diffuseAlbedoMultiplier) {
+        renderSettings.def(pybind11::init<>([](bool useEnvLight, bool useAnalyticLights, bool useEmissiveLights, bool useGridVolumes, float diffuseAlbedoMultiplier, bool useQuadLight) {
             Scene::RenderSettings settings;
             settings.useEnvLight = useEnvLight;
             settings.useAnalyticLights = useAnalyticLights;
             settings.useEmissiveLights = useEmissiveLights;
             settings.useGridVolumes = useGridVolumes;
             settings.diffuseAlbedoMultiplier = diffuseAlbedoMultiplier;
+            settings.useQuadLight = useQuadLight;
             return settings;
-        }), "useEnvLight"_a = true, "useAnalyticLights"_a = true, "useEmissiveLights"_a = true, "useGridVolumes"_a = true, "diffuseAlbedoMultiplier"_a = 1.f);
+        }), "useEnvLight"_a = true, "useAnalyticLights"_a = true, "useEmissiveLights"_a = true, "useGridVolumes"_a = true, "diffuseAlbedoMultiplier"_a = 1.f, "useQuadLight"_a = true);
         renderSettings.def("__repr__", [](const Scene::RenderSettings& self) {
             return fmt::format(
-                "SceneRenderSettings(useEnvLight={}, useAnalyticLights={}, useEmissiveLights={}, useGridVolumes={}, diffuseAlbedoMultiplier={})",
+                "SceneRenderSettings(useEnvLight={}, useAnalyticLights={}, useEmissiveLights={}, useGridVolumes={}, diffuseAlbedoMultiplier={}, useQuadLight={})",
                 self.useEnvLight ? "True" : "False",
                 self.useAnalyticLights ? "True" : "False",
                 self.useEmissiveLights ? "True" : "False",
                 self.useGridVolumes ? "True" : "False",
-                self.diffuseAlbedoMultiplier
+                self.diffuseAlbedoMultiplier,
+                self.useQuadLight ? "True" : "False"
             );
         });
 
@@ -4321,6 +4372,7 @@ namespace Falcor
         scene.def_property_readonly(kBounds.c_str(), &Scene::getSceneBounds, pybind11::return_value_policy::copy);
         scene.def_property(kCamera.c_str(), &Scene::getCamera, &Scene::setCamera);
         scene.def_property(kEnvMap.c_str(), &Scene::getEnvMap, &Scene::setEnvMap);
+        scene.def_property(kQuadLight.c_str(), &Scene::getQuadLight, &Scene::setQuadLight);
         scene.def_property_readonly(kAnimations.c_str(), &Scene::getAnimations);
         scene.def_property_readonly(kCameras.c_str(), &Scene::getCameras);
         scene.def_property_readonly(kLights.c_str(), &Scene::getLights);
