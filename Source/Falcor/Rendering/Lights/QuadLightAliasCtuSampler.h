@@ -25,37 +25,40 @@
  # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
+#pragma once
 #include "QuadLightSampler.h"
-#include "QuadLightCdfSampler.h"
-#include "QuadLightRandomSampler.h"
-#include "QuadLightMipSampler.h"
-#include "QuadLightAliasSampler.h"
-#include "QuadLightAliasCtuSampler.h"
-#include "Core/Error.h"
+#include "Utils/Sampling/AliasTable.h"
+#include "Core/API/Buffer.h"
+#include <memory>
 
 namespace Falcor
 {
-    DefineList QuadLightSampler::getDefines() const
-    {
-        return {{"_QUAD_LIGHT_SAMPLER_TYPE", std::to_string((uint32_t)mType)}};
-    }
+    /** QuadLight sampler using the alias method over a luminance-adaptive quadtree of leaf
+        blocks (up to 64x64, recursively quartered down to a minimum of 8x8 whenever a
+        block's luminance coefficient of variation exceeds a fixed threshold). Approximates
+        the VP9/AV1-style CTU partitioning idea from the reference CPU prototype
+        (helper/sample.cpp's build_leaf_alias_table/iterate_blocks), rebuilt here with a
+        custom CPU quadtree since no bitstream partition data is available.
 
-    std::unique_ptr<QuadLightSampler> createQuadLightSampler(QuadLightSamplerType type, ref<Device> pDevice, ref<QuadLight> pQuadLight)
+        Leaves are picked via Falcor's generic AliasTable, weighted by (avg luminance *
+        leaf area) - i.e. total flux, the same unbiased weighting the per-pixel/CDF
+        techniques use. Sampling is then uniform within the chosen leaf's rect, so the
+        resulting density is piecewise-constant per leaf: exact and unbiased (sample() and
+        evalPdf() agree on the same model), but higher-variance within a leaf than the
+        per-pixel techniques - an intentional trade for O(1) sampling/eval cost independent
+        of texture resolution.
+    */
+    class FALCOR_API QuadLightAliasCtuSampler : public QuadLightSampler
     {
-        switch (type)
-        {
-        case QuadLightSamplerType::Random:
-            return std::make_unique<QuadLightRandomSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::Cdf2D:
-            return std::make_unique<QuadLightCdfSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::HierarchicalMip:
-            return std::make_unique<QuadLightMipSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::AliasPerPixel:
-            return std::make_unique<QuadLightAliasSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::AliasCtu:
-            return std::make_unique<QuadLightAliasCtuSampler>(pDevice, pQuadLight);
-        default:
-            FALCOR_THROW("Unknown or not-yet-implemented QuadLightSamplerType");
-        }
-    }
+    public:
+        QuadLightAliasCtuSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight);
+
+        void bindShaderData(const ShaderVar& var) const override;
+
+    private:
+        uint2 mGridDim;
+        ref<Buffer> mpLeafRects;       ///< Per-leaf normalized (u0,v0,u1,v1) rects, indexed identically to the alias table.
+        ref<Buffer> mpLeafIndexMap;    ///< WxH map from texel -> leaf index, for O(1) evalPdf() lookups.
+        std::unique_ptr<AliasTable> mpAliasTable;
+    };
 }

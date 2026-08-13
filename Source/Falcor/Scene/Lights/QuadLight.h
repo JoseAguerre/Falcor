@@ -31,6 +31,7 @@
 #include "Core/Object.h"
 #include "Core/API/Texture.h"
 #include "Core/API/Sampler.h"
+#include "Rendering/Lights/QuadLightSamplerType.slangh"
 #include "Scene/SceneIDs.h"
 #include "Utils/Math/Vector.h"
 #include "Utils/Math/Matrix.h"
@@ -124,9 +125,29 @@ namespace Falcor
         */
         bool getDoubleSided() const { return mData.doubleSided != 0; }
 
+        /** Set which importance-sampling technique QuadLightSampler should use. Selectable
+            live in the UI (see renderUI()); switching techniques triggers a PathTracer
+            recompile (see Scene::updateQuadLight()/PathTracer::prepareLighting()).
+        */
+        void setSamplerType(QuadLightSamplerType type) { mSamplerType = type; }
+
+        /** Get the currently selected importance-sampling technique.
+        */
+        QuadLightSamplerType getSamplerType() const { return mSamplerType; }
+
         /** Get the file path of the light's texture.
         */
         const std::filesystem::path& getPath() const { return mpTexture->getSourcePath(); }
+
+        /** Load a new emission texture from file, replacing the current one in place.
+            All other properties (transform, size, intensity, tint, doubleSided, sampler
+            type) are left untouched. Triggers a QuadLightSampler rebuild (see
+            Scene::updateQuadLight()), since the sampler's precomputed structures are built
+            from the texture's content.
+            \param[in] path The texture file path (absolute or relative to working directory).
+            \return True if the texture was loaded successfully.
+        */
+        bool loadTextureFromFile(const std::filesystem::path& path);
 
         const ref<Texture>& getTexture() const { return mpTexture; }
         const ref<Sampler>& getSampler() const { return mpSampler; }
@@ -145,6 +166,8 @@ namespace Falcor
             None            = 0x0,
             Transform       = 0x1,
             Intensity       = 0x2,
+            SamplerType     = 0x4, ///< The importance-sampling technique was changed via setSamplerType()/the UI dropdown.
+            Texture         = 0x8, ///< The emission texture was replaced via loadTextureFromFile()/the UI "Load Image" button.
         };
 
         /** Begin frame. Should be called once at the start of each frame.
@@ -168,6 +191,11 @@ namespace Falcor
 
         QuadLightData            mData;
         QuadLightData            mPrevData;
+
+        QuadLightSamplerType    mSamplerType = QuadLightSamplerType::Cdf2D;     ///< Host-only; not part of the GPU-visible QuadLightData blob (selected via shader define, not read as data).
+        QuadLightSamplerType    mPrevSamplerType = QuadLightSamplerType::Cdf2D;
+
+        bool                     mTextureChanged = false;   ///< Set by loadTextureFromFile(), consumed (and cleared) by beginFrame().
 
         Changes                 mChanges = Changes::None;
 

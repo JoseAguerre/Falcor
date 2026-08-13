@@ -1001,7 +1001,7 @@ bool PathTracer::prepareLighting(RenderContext* pRenderContext)
     {
         if (!mpQuadLightSampler)
         {
-            mpQuadLightSampler = std::make_unique<QuadLightSampler>(mpDevice, mpScene->getQuadLight());
+            mpQuadLightSampler = createQuadLightSampler(mpScene->getQuadLight()->getSamplerType(), mpDevice, mpScene->getQuadLight());
             lightingChanged = true;
             mRecompile = true;
         }
@@ -1014,6 +1014,12 @@ bool PathTracer::prepareLighting(RenderContext* pRenderContext)
             lightingChanged = true;
             mRecompile = true;
         }
+    }
+
+    if (mpQuadLightSampler)
+    {
+        auto defines = mpQuadLightSampler->getDefines();
+        if (mpTracePass && mpTracePass->pProgram->addDefines(defines)) mRecompile = true;
     }
 
     // Request the light collection if emissive lights are enabled.
@@ -1451,6 +1457,7 @@ DefineList PathTracer::StaticParams::getDefines(const PathTracer& owner) const
     defines.add(owner.mpSampleGenerator->getDefines());
 
     if (owner.mpEmissiveSampler) defines.add(owner.mpEmissiveSampler->getDefines());
+    if (owner.mpQuadLightSampler) defines.add(owner.mpQuadLightSampler->getDefines());
     if (owner.mpRTXDI) defines.add(owner.mpRTXDI->getDefines());
 
     defines.add("INTERIOR_LIST_SLOT_COUNT", std::to_string(maxNestedMaterials));

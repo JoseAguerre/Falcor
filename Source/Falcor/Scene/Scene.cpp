@@ -1764,6 +1764,16 @@ namespace Falcor
             }
         }
 
+        if (mpQuadLight && is_set(mpQuadLight->getChanges(), QuadLight::Changes::SamplerType | QuadLight::Changes::Texture))
+        {
+            // A technique switch or a texture reload (see QuadLight::loadTextureFromFile())
+            // needs PathTracer to tear down and rebuild its QuadLightSampler, same as an
+            // object swap - the sampler's precomputed structures are built from the
+            // texture's content. Plain property tweaks like intensity/tint don't need this
+            // (bindShaderData above already pushed the new value, no recompile required).
+            flags |= IScene::UpdateFlags::QuadLightChanged;
+        }
+
         if (mQuadLightChanged)
         {
             flags |= IScene::UpdateFlags::QuadLightChanged;

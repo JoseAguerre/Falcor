@@ -25,37 +25,20 @@
  # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
+#pragma once
 #include "QuadLightSampler.h"
-#include "QuadLightCdfSampler.h"
-#include "QuadLightRandomSampler.h"
-#include "QuadLightMipSampler.h"
-#include "QuadLightAliasSampler.h"
-#include "QuadLightAliasCtuSampler.h"
-#include "Core/Error.h"
 
 namespace Falcor
 {
-    DefineList QuadLightSampler::getDefines() const
+    /** QuadLight sampler that draws uniformly over the quad's UV space, ignoring the
+        texture's content entirely. No precomputed structure - a noise baseline to compare
+        the other (importance-sampling) techniques against.
+    */
+    class FALCOR_API QuadLightRandomSampler : public QuadLightSampler
     {
-        return {{"_QUAD_LIGHT_SAMPLER_TYPE", std::to_string((uint32_t)mType)}};
-    }
+    public:
+        QuadLightRandomSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight);
 
-    std::unique_ptr<QuadLightSampler> createQuadLightSampler(QuadLightSamplerType type, ref<Device> pDevice, ref<QuadLight> pQuadLight)
-    {
-        switch (type)
-        {
-        case QuadLightSamplerType::Random:
-            return std::make_unique<QuadLightRandomSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::Cdf2D:
-            return std::make_unique<QuadLightCdfSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::HierarchicalMip:
-            return std::make_unique<QuadLightMipSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::AliasPerPixel:
-            return std::make_unique<QuadLightAliasSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::AliasCtu:
-            return std::make_unique<QuadLightAliasCtuSampler>(pDevice, pQuadLight);
-        default:
-            FALCOR_THROW("Unknown or not-yet-implemented QuadLightSamplerType");
-        }
-    }
+        void bindShaderData(const ShaderVar& var) const override;
+    };
 }

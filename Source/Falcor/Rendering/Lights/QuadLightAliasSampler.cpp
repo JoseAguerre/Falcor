@@ -25,37 +25,45 @@
  # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include "QuadLightSampler.h"
-#include "QuadLightCdfSampler.h"
-#include "QuadLightRandomSampler.h"
-#include "QuadLightMipSampler.h"
 #include "QuadLightAliasSampler.h"
-#include "QuadLightAliasCtuSampler.h"
+#include "QuadLightLuminance.h"
 #include "Core/Error.h"
+#include "Core/API/Device.h"
+#include "Utils/Logger.h"
+#include "Utils/Timing/CpuTimer.h"
+
+#include <random>
 
 namespace Falcor
 {
-    DefineList QuadLightSampler::getDefines() const
+    QuadLightAliasSampler::QuadLightAliasSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight)
+        : QuadLightSampler(QuadLightSamplerType::AliasPerPixel, pDevice, pQuadLight)
     {
-        return {{"_QUAD_LIGHT_SAMPLER_TYPE", std::to_string((uint32_t)mType)}};
+        auto start = CpuTimer::getCurrentTimePoint();
+
+        uint32_t w = 0, h = 0;
+        std::vector<float> luminance = computeQuadLightLuminance(*pQuadLight, w, h);
+        if (luminance.empty())
+        {
+            w = h = 1;
+            luminance = {1.f};
+        }
+        mGridDim = uint2(w, h);
+
+        // Deterministic seed: construction happens once per technique switch (or scene
+        // load), no need for cross-run entropy, and it keeps rebuilds reproducible.
+        std::mt19937 rng(1234u);
+        mpAliasTable = std::make_unique<AliasTable>(pDevice, std::move(luminance), rng);
+
+        auto end = CpuTimer::getCurrentTimePoint();
+        logInfo("QuadLightAliasSampler: build time {:.3f} ms", CpuTimer::calcDuration(start, end));
     }
 
-    std::unique_ptr<QuadLightSampler> createQuadLightSampler(QuadLightSamplerType type, ref<Device> pDevice, ref<QuadLight> pQuadLight)
+    void QuadLightAliasSampler::bindShaderData(const ShaderVar& var) const
     {
-        switch (type)
-        {
-        case QuadLightSamplerType::Random:
-            return std::make_unique<QuadLightRandomSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::Cdf2D:
-            return std::make_unique<QuadLightCdfSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::HierarchicalMip:
-            return std::make_unique<QuadLightMipSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::AliasPerPixel:
-            return std::make_unique<QuadLightAliasSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::AliasCtu:
-            return std::make_unique<QuadLightAliasCtuSampler>(pDevice, pQuadLight);
-        default:
-            FALCOR_THROW("Unknown or not-yet-implemented QuadLightSamplerType");
-        }
+        FALCOR_ASSERT(var.isValid());
+
+        var["gridDim"] = mGridDim;
+        mpAliasTable->bindShaderData(var["table"]);
     }
 }

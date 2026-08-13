@@ -25,37 +25,32 @@
  # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
+#pragma once
 #include "QuadLightSampler.h"
-#include "QuadLightCdfSampler.h"
-#include "QuadLightRandomSampler.h"
-#include "QuadLightMipSampler.h"
-#include "QuadLightAliasSampler.h"
-#include "QuadLightAliasCtuSampler.h"
-#include "Core/Error.h"
+#include "Core/API/Texture.h"
+#include "Core/API/Buffer.h"
 
 namespace Falcor
 {
-    DefineList QuadLightSampler::getDefines() const
-    {
-        return {{"_QUAD_LIGHT_SAMPLER_TYPE", std::to_string((uint32_t)mType)}};
-    }
+    /** QuadLight importance sampler using a 2D piecewise-constant distribution (marginal
+        CDF over rows + per-row conditional CDF), inverted via binary search in the shader.
+        The default technique - identical math to the original single-technique QuadLightSampler.
 
-    std::unique_ptr<QuadLightSampler> createQuadLightSampler(QuadLightSamplerType type, ref<Device> pDevice, ref<QuadLight> pQuadLight)
+        Everything is built on the CPU (see QuadLightLuminance.h) at the source image's
+        native resolution and uploaded once; the shader only does the (log N) binary-search
+        sampling.
+    */
+    class FALCOR_API QuadLightCdfSampler : public QuadLightSampler
     {
-        switch (type)
-        {
-        case QuadLightSamplerType::Random:
-            return std::make_unique<QuadLightRandomSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::Cdf2D:
-            return std::make_unique<QuadLightCdfSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::HierarchicalMip:
-            return std::make_unique<QuadLightMipSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::AliasPerPixel:
-            return std::make_unique<QuadLightAliasSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::AliasCtu:
-            return std::make_unique<QuadLightAliasCtuSampler>(pDevice, pQuadLight);
-        default:
-            FALCOR_THROW("Unknown or not-yet-implemented QuadLightSamplerType");
-        }
-    }
+    public:
+        QuadLightCdfSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight);
+
+        void bindShaderData(const ShaderVar& var) const override;
+
+    private:
+        uint2       mGridDim;
+        ref<Texture> mpLuminance;      ///< WxH raw luminance grid.
+        ref<Buffer>  mpConditionalCDF; ///< H*(W+1) raw prefix sums.
+        ref<Buffer>  mpMarginalCDF;    ///< H+1 raw prefix sum.
+    };
 }

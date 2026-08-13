@@ -25,37 +25,23 @@
  # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include "QuadLightSampler.h"
-#include "QuadLightCdfSampler.h"
 #include "QuadLightRandomSampler.h"
-#include "QuadLightMipSampler.h"
-#include "QuadLightAliasSampler.h"
-#include "QuadLightAliasCtuSampler.h"
-#include "Core/Error.h"
+#include "Utils/Logger.h"
+#include "Utils/Timing/CpuTimer.h"
 
 namespace Falcor
 {
-    DefineList QuadLightSampler::getDefines() const
+    QuadLightRandomSampler::QuadLightRandomSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight)
+        : QuadLightSampler(QuadLightSamplerType::Random, pDevice, pQuadLight)
     {
-        return {{"_QUAD_LIGHT_SAMPLER_TYPE", std::to_string((uint32_t)mType)}};
+        auto start = CpuTimer::getCurrentTimePoint();
+        // No precomputed structure needed for this technique.
+        auto end = CpuTimer::getCurrentTimePoint();
+        logInfo("QuadLightRandomSampler: build time {:.3f} ms", CpuTimer::calcDuration(start, end));
     }
 
-    std::unique_ptr<QuadLightSampler> createQuadLightSampler(QuadLightSamplerType type, ref<Device> pDevice, ref<QuadLight> pQuadLight)
+    void QuadLightRandomSampler::bindShaderData(const ShaderVar& var) const
     {
-        switch (type)
-        {
-        case QuadLightSamplerType::Random:
-            return std::make_unique<QuadLightRandomSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::Cdf2D:
-            return std::make_unique<QuadLightCdfSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::HierarchicalMip:
-            return std::make_unique<QuadLightMipSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::AliasPerPixel:
-            return std::make_unique<QuadLightAliasSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::AliasCtu:
-            return std::make_unique<QuadLightAliasCtuSampler>(pDevice, pQuadLight);
-        default:
-            FALCOR_THROW("Unknown or not-yet-implemented QuadLightSamplerType");
-        }
+        // No precomputed structure - sampling reads only gScene.quadLight itself.
     }
 }

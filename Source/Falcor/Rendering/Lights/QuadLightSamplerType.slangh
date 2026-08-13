@@ -1,0 +1,75 @@
+/***************************************************************************
+ # Copyright (c) 2015-24, NVIDIA CORPORATION. All rights reserved.
+ #
+ # Redistribution and use in source and binary forms, with or without
+ # modification, are permitted provided that the following conditions
+ # are met:
+ #  * Redistributions of source code must retain the above copyright
+ #    notice, this list of conditions and the following disclaimer.
+ #  * Redistributions in binary form must reproduce the above copyright
+ #    notice, this list of conditions and the following disclaimer in the
+ #    documentation and/or other materials provided with the distribution.
+ #  * Neither the name of NVIDIA CORPORATION nor the names of its
+ #    contributors may be used to endorse or promote products derived
+ #    from this software without specific prior written permission.
+ #
+ # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS "AS IS" AND ANY
+ # EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ # IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ # PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ # CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ # EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ # PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ # PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+ # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ **************************************************************************/
+#pragma once
+#include "Utils/HostDeviceShared.slangh"
+
+BEGIN_NAMESPACE_FALCOR
+
+/** This enum is shared between CPU/GPU.
+    It enumerates the different quad light importance-sampling techniques available.
+*/
+enum class QuadLightSamplerType : uint32_t
+{
+    Random          = 0,
+    Cdf2D           = 1,
+    HierarchicalMip = 2,
+    AliasPerPixel   = 3,
+    AliasCtu        = 4,
+
+    Null            = 0xff,
+};
+
+FALCOR_ENUM_INFO(QuadLightSamplerType, {
+    { QuadLightSamplerType::Random, "Random" },
+    { QuadLightSamplerType::Cdf2D, "Cdf2D" },
+    { QuadLightSamplerType::HierarchicalMip, "HierarchicalMip" },
+    { QuadLightSamplerType::AliasPerPixel, "AliasPerPixel" },
+    { QuadLightSamplerType::AliasCtu, "AliasCtu" },
+    { QuadLightSamplerType::Null, "Null" },
+});
+FALCOR_ENUM_REGISTER(QuadLightSamplerType);
+
+// For shader specialization in QuadLightSampler.slang we can't use the enums.
+// TODO: Find a way to remove this workaround (see EmissiveLightSamplerType.slangh, same issue).
+#define QUAD_LIGHT_SAMPLER_RANDOM            0
+#define QUAD_LIGHT_SAMPLER_CDF_2D             1
+#define QUAD_LIGHT_SAMPLER_HIERARCHICAL_MIP   2
+#define QUAD_LIGHT_SAMPLER_ALIAS_PER_PIXEL    3
+#define QUAD_LIGHT_SAMPLER_ALIAS_CTU          4
+#define QUAD_LIGHT_SAMPLER_NULL               0xff
+
+#ifdef HOST_CODE
+static_assert((uint32_t)QuadLightSamplerType::Random == QUAD_LIGHT_SAMPLER_RANDOM);
+static_assert((uint32_t)QuadLightSamplerType::Cdf2D == QUAD_LIGHT_SAMPLER_CDF_2D);
+static_assert((uint32_t)QuadLightSamplerType::HierarchicalMip == QUAD_LIGHT_SAMPLER_HIERARCHICAL_MIP);
+static_assert((uint32_t)QuadLightSamplerType::AliasPerPixel == QUAD_LIGHT_SAMPLER_ALIAS_PER_PIXEL);
+static_assert((uint32_t)QuadLightSamplerType::AliasCtu == QUAD_LIGHT_SAMPLER_ALIAS_CTU);
+static_assert((uint32_t)QuadLightSamplerType::Null == QUAD_LIGHT_SAMPLER_NULL);
+#endif
+
+END_NAMESPACE_FALCOR

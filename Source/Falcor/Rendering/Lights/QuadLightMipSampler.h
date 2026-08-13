@@ -25,37 +25,34 @@
  # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
+#pragma once
 #include "QuadLightSampler.h"
-#include "QuadLightCdfSampler.h"
-#include "QuadLightRandomSampler.h"
-#include "QuadLightMipSampler.h"
-#include "QuadLightAliasSampler.h"
-#include "QuadLightAliasCtuSampler.h"
-#include "Core/Error.h"
+#include "Core/API/Texture.h"
+#include "Core/API/Sampler.h"
 
 namespace Falcor
 {
-    DefineList QuadLightSampler::getDefines() const
-    {
-        return {{"_QUAD_LIGHT_SAMPLER_TYPE", std::to_string((uint32_t)mType)}};
-    }
+    /** QuadLight sampler using a hierarchical importance mip pyramid, ported from
+        EnvMapSampler's approach (see EnvMapSampler.slang) but simplified: since the light
+        is planar, no octahedral reparameterization is needed - the pyramid is built
+        directly over the quad's own uv space.
 
-    std::unique_ptr<QuadLightSampler> createQuadLightSampler(QuadLightSamplerType type, ref<Device> pDevice, ref<QuadLight> pQuadLight)
+        The base level is the source luminance resampled (bilinearly, on the CPU) to a
+        power-of-two square so the mip descent's implicit assumption - each mip is exactly
+        half the resolution of the level below - holds exactly. The rest of the pyramid is
+        built via Falcor's hardware mip generation (a box-filter average, not a sum - this
+        doesn't affect the descent, which only ever compares sibling texels at a given
+        level; see QuadLightMipSampler.slang).
+    */
+    class FALCOR_API QuadLightMipSampler : public QuadLightSampler
     {
-        switch (type)
-        {
-        case QuadLightSamplerType::Random:
-            return std::make_unique<QuadLightRandomSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::Cdf2D:
-            return std::make_unique<QuadLightCdfSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::HierarchicalMip:
-            return std::make_unique<QuadLightMipSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::AliasPerPixel:
-            return std::make_unique<QuadLightAliasSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::AliasCtu:
-            return std::make_unique<QuadLightAliasCtuSampler>(pDevice, pQuadLight);
-        default:
-            FALCOR_THROW("Unknown or not-yet-implemented QuadLightSamplerType");
-        }
-    }
+    public:
+        QuadLightMipSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight);
+
+        void bindShaderData(const ShaderVar& var) const override;
+
+    private:
+        ref<Texture> mpImportanceMap;      ///< Hierarchical importance map (luminance), entire mip chain.
+        ref<Sampler> mpImportanceSampler;  ///< Point sampling with clamp to edge.
+    };
 }

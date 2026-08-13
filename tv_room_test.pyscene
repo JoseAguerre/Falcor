@@ -73,9 +73,10 @@ for camera in sceneBuilder.cameras:
 
 # No environment map - the TV is the only light source in the scene.
 
-# Disable analytic lights (same as the original scene).
-for light in sceneBuilder.lights:
-    light.active = False
+# Remove the FBX's analytic lights entirely - the TV is meant to be the only light
+# source, and leaving the (inactive) originals around just cluttered the Lights UI list.
+for light in list(sceneBuilder.lights):
+    sceneBuilder.removeLight(light)
 
 # Setup transmissive materials (not supported in the FBX file) - unchanged from the original scene.
 glass = sceneBuilder.getMaterial('grey_and_white_room:Glass')

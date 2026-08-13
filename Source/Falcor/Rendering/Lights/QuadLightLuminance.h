@@ -25,37 +25,29 @@
  # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include "QuadLightSampler.h"
-#include "QuadLightCdfSampler.h"
-#include "QuadLightRandomSampler.h"
-#include "QuadLightMipSampler.h"
-#include "QuadLightAliasSampler.h"
-#include "QuadLightAliasCtuSampler.h"
-#include "Core/Error.h"
+#pragma once
+#include "Core/Macros.h"
+#include <cstdint>
+#include <vector>
 
 namespace Falcor
 {
-    DefineList QuadLightSampler::getDefines() const
-    {
-        return {{"_QUAD_LIGHT_SAMPLER_TYPE", std::to_string((uint32_t)mType)}};
-    }
+    class QuadLight;
 
-    std::unique_ptr<QuadLightSampler> createQuadLightSampler(QuadLightSamplerType type, ref<Device> pDevice, ref<QuadLight> pQuadLight)
-    {
-        switch (type)
-        {
-        case QuadLightSamplerType::Random:
-            return std::make_unique<QuadLightRandomSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::Cdf2D:
-            return std::make_unique<QuadLightCdfSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::HierarchicalMip:
-            return std::make_unique<QuadLightMipSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::AliasPerPixel:
-            return std::make_unique<QuadLightAliasSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::AliasCtu:
-            return std::make_unique<QuadLightAliasCtuSampler>(pDevice, pQuadLight);
-        default:
-            FALCOR_THROW("Unknown or not-yet-implemented QuadLightSamplerType");
-        }
-    }
+    /** Compute a row-major per-texel luminance array for a QuadLight's source image,
+        entirely on the CPU (via Bitmap, reading the same file QuadLight's GPU texture
+        was loaded from). Shared by every QuadLightSampler technique that needs raw
+        luminance weights (all except QuadLightRandomSampler).
+
+        Uses Rec.709 weights (0.2126, 0.7152, 0.0722), matching Utils/Color/ColorHelpers.slang's
+        shader-side luminance() exactly, and reads the raw decoded bytes with no gamma
+        correction - consistent with QuadLight::createFromFile loading with loadAsSrgb=false,
+        so the GPU shader also samples these bytes as linear.
+
+        \param[in] light The quad light whose source image should be read.
+        \param[out] outWidth Image width in texels.
+        \param[out] outHeight Image height in texels.
+        \return Row-major luminance array of size outWidth*outHeight. Empty on failure.
+    */
+    FALCOR_API std::vector<float> computeQuadLightLuminance(const QuadLight& light, uint32_t& outWidth, uint32_t& outHeight);
 }

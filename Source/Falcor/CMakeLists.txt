@@ -216,10 +216,28 @@ target_sources(Falcor PRIVATE
     Rendering/Lights/LightBVHSamplerSharedDefinitions.slang
     Rendering/Lights/LightBVHTypes.slang
     Rendering/Lights/LightHelpers.slang
+    Rendering/Lights/QuadLightCdfSampler.cpp
+    Rendering/Lights/QuadLightCdfSampler.h
+    Rendering/Lights/QuadLightCdfSampler.slang
+    Rendering/Lights/QuadLightAliasCtuSampler.cpp
+    Rendering/Lights/QuadLightAliasCtuSampler.h
+    Rendering/Lights/QuadLightAliasCtuSampler.slang
+    Rendering/Lights/QuadLightAliasSampler.cpp
+    Rendering/Lights/QuadLightAliasSampler.h
+    Rendering/Lights/QuadLightAliasSampler.slang
+    Rendering/Lights/QuadLightLuminance.cpp
+    Rendering/Lights/QuadLightLuminance.h
+    Rendering/Lights/QuadLightMipSampler.cpp
+    Rendering/Lights/QuadLightMipSampler.h
+    Rendering/Lights/QuadLightMipSampler.slang
+    Rendering/Lights/QuadLightRandomSampler.cpp
+    Rendering/Lights/QuadLightRandomSampler.h
+    Rendering/Lights/QuadLightRandomSampler.slang
     Rendering/Lights/QuadLightSampler.cpp
     Rendering/Lights/QuadLightSampler.h
     Rendering/Lights/QuadLightSampler.slang
-    Rendering/Lights/QuadLightSamplerSetup.cs.slang
+    Rendering/Lights/QuadLightSamplerInterface.slang
+    Rendering/Lights/QuadLightSamplerType.slangh
 
     Rendering/Materials/AnisotropicGGX.slang
     Rendering/Materials/BCSDFConfig.slangh

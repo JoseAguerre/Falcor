@@ -25,37 +25,42 @@
  # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include "QuadLightSampler.h"
-#include "QuadLightCdfSampler.h"
-#include "QuadLightRandomSampler.h"
-#include "QuadLightMipSampler.h"
-#include "QuadLightAliasSampler.h"
-#include "QuadLightAliasCtuSampler.h"
-#include "Core/Error.h"
 
-namespace Falcor
+/** QuadLight sampler that draws uv uniformly at random, ignoring the texture's content.
+    No precomputed structure - a noise baseline the importance-sampling techniques can be
+    compared against.
+*/
+import Scene.Scene;
+__exported import Rendering.Lights.QuadLightSamplerInterface;
+
+struct QuadLightRandomSampler : IQuadLightSampler
 {
-    DefineList QuadLightSampler::getDefines() const
+    bool sample(const float2 rnd, const float3 shadingPosW, out QuadLightSample result)
     {
-        return {{"_QUAD_LIGHT_SAMPLER_TYPE", std::to_string((uint32_t)mType)}};
+        result = {};
+
+        if (!gScene.quadLight.isActive()) return false;
+
+        float2 uv = rnd;
+        float pdfArea = 1.f / gScene.quadLight.getArea();
+
+        result.posW = gScene.quadLight.uvToWorld(uv);
+        result.normalW = gScene.quadLight.getNormalW();
+        result.pdf = quadLightPdfAreaToSolidAngle(pdfArea, shadingPosW, result.posW, result.normalW, gScene.quadLight.isDoubleSided());
+        result.Le = gScene.quadLight.eval(uv);
+
+        return result.pdf > 0.f && any(result.Le > 0.f);
     }
 
-    std::unique_ptr<QuadLightSampler> createQuadLightSampler(QuadLightSamplerType type, ref<Device> pDevice, ref<QuadLight> pQuadLight)
+    float evalPdf(float3 shadingPosW, float3 hitPosW)
     {
-        switch (type)
-        {
-        case QuadLightSamplerType::Random:
-            return std::make_unique<QuadLightRandomSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::Cdf2D:
-            return std::make_unique<QuadLightCdfSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::HierarchicalMip:
-            return std::make_unique<QuadLightMipSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::AliasPerPixel:
-            return std::make_unique<QuadLightAliasSampler>(pDevice, pQuadLight);
-        case QuadLightSamplerType::AliasCtu:
-            return std::make_unique<QuadLightAliasCtuSampler>(pDevice, pQuadLight);
-        default:
-            FALCOR_THROW("Unknown or not-yet-implemented QuadLightSamplerType");
-        }
+        if (!gScene.quadLight.isActive()) return 0.f;
+
+        float2 uv = gScene.quadLight.worldToUv(hitPosW);
+        if (any(uv < 0.f) || any(uv >= 1.f)) return 0.f;
+
+        float pdfArea = 1.f / gScene.quadLight.getArea();
+        float3 normalW = gScene.quadLight.getNormalW();
+        return quadLightPdfAreaToSolidAngle(pdfArea, shadingPosW, hitPosW, normalW, gScene.quadLight.isDoubleSided());
     }
-}
+};

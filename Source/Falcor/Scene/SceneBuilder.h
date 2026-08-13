@@ -570,6 +570,14 @@ namespace Falcor
         */
         LightID addLight(const ref<Light>& pLight);
 
+        /** Remove a previously added light source, e.g. one brought in via importScene()
+            that isn't wanted. No-op if the light isn't found. Note this changes the
+            LightID of any lights added after it (LightIDs are just vector indices), so
+            prefer removing lights before adding new ones by ID-sensitive reference.
+            \param pLight The light object to remove.
+        */
+        void removeLight(const ref<Light>& pLight);
+
         /** DEMO21: Load global light profile.
         */
         void loadLightProfile(const std::string& filename, bool normalize = true);

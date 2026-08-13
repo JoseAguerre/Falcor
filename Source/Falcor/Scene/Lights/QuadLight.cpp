@@ -27,7 +27,9 @@
  **************************************************************************/
 #include "QuadLight.h"
 #include "Core/API/Device.h"
+#include "Core/Platform/OS.h"
 #include "Core/Program/ShaderVar.h"
+#include "Utils/Image/Bitmap.h"
 #include "Utils/Scripting/ScriptBindings.h"
 #include "GlobalState.h"
 
@@ -52,6 +54,33 @@ namespace Falcor
         widgets.var("Color tint", mData.tint, 0.f, 1.f);
         widgets.text("QuadLight: " + mpTexture->getSourcePath().string());
         widgets.text(fmt::format("Resolution: {}x{}", mpTexture->getWidth(), mpTexture->getHeight()));
+
+        if (widgets.button("Load Image"))
+        {
+            std::filesystem::path path;
+            // Unlike EnvMap (typically HDR-only), QuadLight textures are commonly LDR
+            // (png/jpg) - pass Unknown so the dialog lists both LDR and HDR extensions.
+            if (openFileDialog(Bitmap::getFileDialogFilters(ResourceFormat::Unknown), path))
+            {
+                if (!loadTextureFromFile(path))
+                {
+                    msgBox("Error", fmt::format("Failed to load quad light texture from '{}'.", path), MsgBoxType::Ok, MsgBoxIcon::Warning);
+                }
+            }
+        }
+
+        widgets.dropdown("Sampler", mSamplerType);
+        widgets.tooltip("Selects which importance-sampling technique to use for this quad light.", true);
+    }
+
+    bool QuadLight::loadTextureFromFile(const std::filesystem::path& path)
+    {
+        auto pTexture = Texture::createFromFile(mpDevice, path, true, false);
+        if (!pTexture) return false;
+
+        mpTexture = pTexture;
+        mTextureChanged = true;
+        return true;
     }
 
     void QuadLight::setTransform(const float4x4& matrix)
@@ -94,8 +123,12 @@ namespace Falcor
         if (mData.transform != mPrevData.transform) mChanges |= Changes::Transform;
         if (mData.intensity != mPrevData.intensity) mChanges |= Changes::Intensity;
         if (any(mData.tint != mPrevData.tint)) mChanges |= Changes::Intensity;
+        if (mSamplerType != mPrevSamplerType) mChanges |= Changes::SamplerType;
+        if (mTextureChanged) mChanges |= Changes::Texture;
 
         mPrevData = mData;
+        mPrevSamplerType = mSamplerType;
+        mTextureChanged = false;
 
         return getChanges();
     }
@@ -151,5 +184,6 @@ namespace Falcor
             [](QuadLight& light, uint32_t id) { light.setMaterialID(MaterialID{id}); }
         );
         quadLight.def_property("doubleSided", &QuadLight::getDoubleSided, &QuadLight::setDoubleSided);
+        quadLight.def_property("samplerType", &QuadLight::getSamplerType, &QuadLight::setSamplerType);
     }
 }

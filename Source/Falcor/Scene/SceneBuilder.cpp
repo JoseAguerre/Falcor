@@ -39,6 +39,7 @@
 #include "Utils/ObjectIDPython.h"
 #include "Utils/NumericRange.h"
 #include <mikktspace.h>
+#include <algorithm>
 #include <filesystem>
 #include <cmath>
 #include <execution>
@@ -997,6 +998,13 @@ namespace Falcor
         mSceneData.lights.push_back(pLight);
         FALCOR_ASSERT(mSceneData.lights.size() <= std::numeric_limits<uint32_t>::max());
         return LightID(mSceneData.lights.size() - 1);
+    }
+
+    void SceneBuilder::removeLight(const ref<Light>& pLight)
+    {
+        auto& lights = mSceneData.lights;
+        auto it = std::find(lights.begin(), lights.end(), pLight);
+        if (it != lights.end()) lights.erase(it);
     }
 
     void SceneBuilder::loadLightProfile(const std::string& filename, bool normalize)
@@ -2993,6 +3001,7 @@ namespace Falcor
         sceneBuilder.def("getGridVolume", &SceneBuilder::getGridVolume, "name"_a);
         sceneBuilder.def("getVolume", &SceneBuilder::getGridVolume, "name"_a); // PYTHONDEPRECATED
         sceneBuilder.def("addLight", &SceneBuilder::addLight, "light"_a);
+        sceneBuilder.def("removeLight", &SceneBuilder::removeLight, "light"_a);
         sceneBuilder.def("getLight", &SceneBuilder::getLight, "name"_a);
         sceneBuilder.def("loadLightProfile", &SceneBuilder::loadLightProfile, "filename"_a, "normalize"_a = true);
         sceneBuilder.def("addCamera", &SceneBuilder::addCamera, "camera"_a);

@@ -26,53 +26,58 @@
  # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 #pragma once
+#include "QuadLightSamplerType.slangh"
 #include "Core/Macros.h"
-#include "Core/API/Texture.h"
-#include "Core/API/Buffer.h"
-#include "Core/Pass/ComputePass.h"
+#include "Core/Program/DefineList.h"
 #include "Scene/Lights/QuadLight.h"
+#include <memory>
 
 namespace Falcor
 {
     class RenderContext;
+    struct ShaderVar;
 
-    /** Quad light sampler. Builds a 2D piecewise-constant importance-sampling structure
-        (marginal/conditional CDF) from the quad light's texture, and provides sampling
-        and pdf evaluation for next-event estimation.
+    /** Base class for QuadLight importance-sampling technique implementations.
+
+        All techniques follow the same interface (see QuadLightSamplerInterface.slang for
+        the shader-side counterpart) to make them interchangeable at runtime. Mirrors
+        EmissiveLightSampler's role for the emissive-triangle sampler family.
 
         Owned by PathTracer, not by Scene - mirrors EnvMapSampler's relationship to EnvMap.
     */
     class FALCOR_API QuadLightSampler
     {
     public:
-        /** Create a new object.
-            \param[in] pDevice GPU device.
-            \param[in] pQuadLight The quad light.
-        */
-        QuadLightSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight);
         virtual ~QuadLightSampler() = default;
 
-        /** Bind the quad light sampler to a given shader variable.
-            \param[in] var Shader variable.
+        /** Bind the light sampler data to a given shader var.
         */
-        void bindShaderData(const ShaderVar& var) const;
+        virtual void bindShaderData(const ShaderVar& var) const = 0;
+
+        /** Return the shader defines needed to select this technique in QuadLightSampler.slang.
+        */
+        virtual DefineList getDefines() const;
+
+        /** Returns the type of quad light sampler.
+        */
+        QuadLightSamplerType getType() const { return mType; }
 
         const ref<QuadLight>& getQuadLight() const { return mpQuadLight; }
 
     protected:
-        void buildImportanceMap(RenderContext* pRenderContext, uint32_t gridWidth, uint32_t gridHeight);
+        QuadLightSampler(QuadLightSamplerType type, ref<Device> pDevice, ref<QuadLight> pQuadLight)
+            : mType(type), mpDevice(pDevice), mpQuadLight(pQuadLight)
+        {}
 
-        ref<Device>       mpDevice;
-
-        ref<QuadLight>    mpQuadLight;
-
-        ref<ComputePass>  mpRowsPass;
-        ref<ComputePass>  mpMarginalPass;
-
-        uint2             mGridDim;
-
-        ref<Texture>      mpLuminance;      ///< MxN raw luminance grid.
-        ref<Buffer>       mpConditionalCDF; ///< N*(M+1) raw prefix sums.
-        ref<Buffer>       mpMarginalCDF;    ///< N+1 raw prefix sum.
+        const QuadLightSamplerType mType;
+        ref<Device>                mpDevice;
+        ref<QuadLight>             mpQuadLight;
     };
+
+    /** Construct the concrete QuadLightSampler for the given technique.
+        \param[in] type Which technique to construct.
+        \param[in] pDevice GPU device.
+        \param[in] pQuadLight The quad light to sample.
+    */
+    FALCOR_API std::unique_ptr<QuadLightSampler> createQuadLightSampler(QuadLightSamplerType type, ref<Device> pDevice, ref<QuadLight> pQuadLight);
 }
