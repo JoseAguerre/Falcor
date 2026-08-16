@@ -33,6 +33,8 @@
 #include "Utils/Scripting/ScriptBindings.h"
 #include "GlobalState.h"
 
+#include <algorithm>
+
 namespace Falcor
 {
     ref<QuadLight> QuadLight::create(ref<Device> pDevice, const ref<Texture>& pTexture)
@@ -71,6 +73,17 @@ namespace Falcor
 
         widgets.dropdown("Sampler", mSamplerType);
         widgets.tooltip("Selects which importance-sampling technique to use for this quad light.", true);
+
+        widgets.var("Light samples/vertex", mData.lightSamplesPerVertex, 1u, 64u, 1u);
+        widgets.tooltip(
+            "Number of independent shadow-ray samples of this quad light to draw and average "
+            "per path vertex. Reduces noise from this light specifically without re-tracing "
+            "the whole path (unlike raising the pass's Samples Per Pixel), at the cost of one "
+            "extra shadow ray per additional sample. Only applies on samples where the quad "
+            "light is the stochastically-selected light type - other light types always draw "
+            "exactly one sample.",
+            true
+        );
     }
 
     bool QuadLight::loadTextureFromFile(const std::filesystem::path& path)
@@ -99,6 +112,11 @@ namespace Falcor
         mData.tint = tint;
     }
 
+    void QuadLight::setLightSamplesPerVertex(uint32_t count)
+    {
+        mData.lightSamplesPerVertex = std::clamp(count, 1u, 64u);
+    }
+
     float QuadLight::getArea() const
     {
         return mData.size.x * mData.size.y;
@@ -123,6 +141,7 @@ namespace Falcor
         if (mData.transform != mPrevData.transform) mChanges |= Changes::Transform;
         if (mData.intensity != mPrevData.intensity) mChanges |= Changes::Intensity;
         if (any(mData.tint != mPrevData.tint)) mChanges |= Changes::Intensity;
+        if (mData.lightSamplesPerVertex != mPrevData.lightSamplesPerVertex) mChanges |= Changes::Intensity;
         if (mSamplerType != mPrevSamplerType) mChanges |= Changes::SamplerType;
         if (mTextureChanged) mChanges |= Changes::Texture;
 
@@ -185,5 +204,6 @@ namespace Falcor
         );
         quadLight.def_property("doubleSided", &QuadLight::getDoubleSided, &QuadLight::setDoubleSided);
         quadLight.def_property("samplerType", &QuadLight::getSamplerType, &QuadLight::setSamplerType);
+        quadLight.def_property("lightSamplesPerVertex", &QuadLight::getLightSamplesPerVertex, &QuadLight::setLightSamplesPerVertex);
     }
 }

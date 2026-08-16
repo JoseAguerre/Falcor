@@ -99,4 +99,12 @@ struct QuadLight
     {
         return data.doubleSided != 0;
     }
+
+    /** Number of independent NEE samples of this light to draw and average per path
+        vertex (only applies when this light is the selected type - see PathTracer.slang).
+    */
+    uint getLightSamplesPerVertex()
+    {
+        return data.lightSamplesPerVertex;
+    }
 };

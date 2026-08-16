@@ -726,9 +726,14 @@ struct PathTracer
         return false;
     }
 
-    /** Samples a light source in the scene.
-        This function first stochastically selects a type of light source to sample,
-        and then calls that the sampling function for the chosen light type.
+    /** Draws one sample from a given, already-selected light type.
+        Split out from the (now removed) generateLightSample() so a caller that has picked
+        a light type via selectLightType() can call this repeatedly to draw multiple
+        independent samples of the *same* type - used by the quad light's optional
+        multiple-samples-per-vertex feature (see QuadLight::getLightSamplesPerVertex()).
+        Every other light type is still only ever called once per vertex by the caller.
+        \param[in] lightType The light type to sample (as selected by selectLightType()).
+        \param[in] selectionPdf The probability with which selectLightType() chose this type.
         \param[in] vertex Path vertex.
         \param[in] sampleUpperHemisphere True if the upper hemisphere should be sampled.
         \param[in] sampleLowerHemisphere True if the lower hemisphere should be sampled.
@@ -736,13 +741,9 @@ struct PathTracer
         \param[out] ls Struct describing valid samples.
         \return True if the sample is valid and has nonzero contribution, false otherwise.
     */
-    bool generateLightSample(const PathVertex vertex, const bool sampleUpperHemisphere, const bool sampleLowerHemisphere, inout SampleGenerator sg, out LightSample ls)
+    bool generateLightSampleForType(uint lightType, float selectionPdf, const PathVertex vertex, const bool sampleUpperHemisphere, const bool sampleLowerHemisphere, inout SampleGenerator sg, out LightSample ls)
     {
         ls = {};
-
-        uint lightType;
-        float selectionPdf;
-        if (!selectLightType(lightType, selectionPdf, sg)) return false;
 
         bool valid = false;
         if (kUseEnvLight && lightType == (uint)LightType::EnvMap) valid = generateEnvMapSample(vertex, sg, ls);
@@ -908,7 +909,13 @@ struct PathTracer
                 if (kUseNEE && kUseMIS && !isPrimaryHit && path.isLightSampled() && path.isLightSamplable())
                 {
                     float lightPdf = getQuadLightSelectionProbability() * quadLightSampler.evalPdf(path.origin, sd.posW);
-                    misWeight = evalMIS(1, path.pdf, 1, lightPdf);
+                    // The quad light is a single global object with one sample-count setting
+                    // (not something that varies per-vertex), so we can read it directly here
+                    // rather than threading it through PathState - this must match the N used
+                    // on the NEE side (see the light-sampling loop in handleHit()) for Veach's
+                    // multi-sample MIS combination to be variance-optimal, not just unbiased.
+                    float quadSamples = float(clamp(gScene.quadLight.getLightSamplesPerVertex(), 1u, kMaxLightSamplesPerVertex));
+                    misWeight = evalMIS(1, path.pdf, quadSamples, lightPdf);
                 }
 
                 addToPathContribution(path, misWeight * gScene.quadLight.eval(gScene.quadLight.worldToUv(sd.posW)));
@@ -1017,18 +1024,40 @@ struct PathTracer
         // Check if sample from RTXDI should be applied instead of NEE.
         const bool applyRTXDI = kUseRTXDI && isPrimaryHit && hasNonDeltaLobes;
 
-        // TODO: Support multiple shadow rays.
         path.setLightSampled(false, false);
         if (applyNEE || applyRTXDI)
         {
-            LightSample ls = {};
-            bool validSample = false;
-
             if (applyRTXDI)
             {
                 // Query final sample from RTXDI.
-                validSample = gRTXDI.getFinalSample(path.getPixel(), ls.dir, ls.distance, ls.Li);
+                LightSample ls = {};
+                bool validSample = gRTXDI.getFinalSample(path.getPixel(), ls.dir, ls.distance, ls.Li);
                 ls.origin = path.origin;
+
+                if (validSample)
+                {
+                    // RTXDI produces an already-resampled "final" sample - no extra MIS weight against the BSDF pdf here.
+                    float3 weight = mi.eval(sd, ls.dir, path.sg);
+                    float3 Lr = weight * ls.Li;
+                    if (any(Lr > 0.f))
+                    {
+                        Ray ray = ls.getVisibilityRay();
+
+                        if (isCurvePolyTubeHit)
+                        {
+                            // For curves tessellated into poly-tubes, we make sure that the origin is on the same side as light
+                            // so there is no self-shadowing (transmission lobe of hair BSDF takes care of that).
+                            if (dot(sd.frame.N, ray.dir) < 0.f)
+                            {
+                                ray.origin = ray.origin - sd.frame.N * sd.curveRadius * 2.1f;
+                            }
+                        }
+
+                        logTraceRay(PixelStatsRayType::Visibility);
+                        bool visible = vq.traceVisibilityRay(ray);
+                        if (visible) addToPathContribution(path, Lr);
+                    }
+                }
             }
             else
             {
@@ -1041,40 +1070,61 @@ struct PathTracer
                 bool sampleLowerHemisphere = canNeeSampleSphere || ((lobeTypes & (uint)LobeType::NonDeltaTransmission) != 0);
                 if (!kUseLightsInDielectricVolumes && path.isInsideDielectricVolume()) sampleUpperHemisphere = false;
 
-                // Sample a light.
-                validSample = generateLightSample(vertex, sampleUpperHemisphere, sampleLowerHemisphere, path.sg, ls);
                 path.setLightSampled(sampleUpperHemisphere, sampleLowerHemisphere);
-            }
 
-            if (validSample)
-            {
-                // Apply MIS weight.
-                if (kUseMIS && !applyRTXDI && ls.lightType != (uint)LightType::Analytic)
+                // Select a light type once. The quad light can optionally draw and average
+                // multiple independent samples of itself once it's the type selected here
+                // (see QuadLight::getLightSamplesPerVertex()) - every other light type
+                // always draws exactly one sample, same as before.
+                uint lightType;
+                float selectionPdf;
+                if (selectLightType(lightType, selectionPdf, path.sg))
                 {
-                    float scatterPdf = mi.evalPdf(sd, ls.dir, kUseBSDFSampling);
-                    ls.Li *= evalMIS(1, ls.pdf, 1, scatterPdf);
-                }
-
-                float3 weight = mi.eval(sd, ls.dir, path.sg);
-                float3 Lr = weight * ls.Li;
-                if (any(Lr > 0.f))
-                {
-                    Ray ray = ls.getVisibilityRay();
-
-
-                    if (isCurvePolyTubeHit)
+                    uint numSamples = 1;
+                    if (kUseQuadLight && lightType == (uint)LightType::Quad)
                     {
-                        // For curves tessellated into poly-tubes, we make sure that the origin is on the same side as light
-                        // so there is no self-shadowing (transmission lobe of hair BSDF takes care of that).
-                        if (dot(sd.frame.N, ray.dir) < 0.f)
+                        numSamples = clamp(gScene.quadLight.getLightSamplesPerVertex(), 1u, kMaxLightSamplesPerVertex);
+                    }
+                    float sampleWeight = 1.f / float(numSamples);
+
+                    for (uint i = 0; i < numSamples; i++)
+                    {
+                        LightSample ls;
+                        if (!generateLightSampleForType(lightType, selectionPdf, vertex, sampleUpperHemisphere, sampleLowerHemisphere, path.sg, ls))
+                            continue;
+
+                        // Apply MIS weight. Use the actual sample count (numSamples) rather
+                        // than a hardcoded 1, so this matches Veach's multi-sample balance/
+                        // power heuristic - must stay consistent with the direct-hit MIS
+                        // weight computed in handleHit() when a BSDF-sampled ray lands
+                        // directly on the quad light.
+                        if (kUseMIS && ls.lightType != (uint)LightType::Analytic)
                         {
-                            ray.origin = ray.origin - sd.frame.N * sd.curveRadius * 2.1f;
+                            float scatterPdf = mi.evalPdf(sd, ls.dir, kUseBSDFSampling);
+                            ls.Li *= evalMIS(float(numSamples), ls.pdf, 1, scatterPdf);
+                        }
+
+                        float3 weight = mi.eval(sd, ls.dir, path.sg);
+                        float3 Lr = weight * ls.Li * sampleWeight;
+                        if (any(Lr > 0.f))
+                        {
+                            Ray ray = ls.getVisibilityRay();
+
+                            if (isCurvePolyTubeHit)
+                            {
+                                // For curves tessellated into poly-tubes, we make sure that the origin is on the same side as light
+                                // so there is no self-shadowing (transmission lobe of hair BSDF takes care of that).
+                                if (dot(sd.frame.N, ray.dir) < 0.f)
+                                {
+                                    ray.origin = ray.origin - sd.frame.N * sd.curveRadius * 2.1f;
+                                }
+                            }
+
+                            logTraceRay(PixelStatsRayType::Visibility);
+                            bool visible = vq.traceVisibilityRay(ray);
+                            if (visible) addToPathContribution(path, Lr);
                         }
                     }
-
-                    logTraceRay(PixelStatsRayType::Visibility);
-                    bool visible = vq.traceVisibilityRay(ray);
-                    if (visible) addToPathContribution(path, Lr);
                 }
             }
         }

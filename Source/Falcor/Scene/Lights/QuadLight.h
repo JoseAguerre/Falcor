@@ -107,6 +107,22 @@ namespace Falcor
         */
         float3 getTint() const { return mData.tint; }
 
+        /** Set how many independent NEE (next-event-estimation) samples of this quad light
+            to draw and average per path vertex. Only applies on samples where this light is
+            the stochastically-selected light type (see PathTracer.slang's
+            selectLightType()) - every other light type still draws exactly one sample
+            regardless of this value. Higher values reduce noise from this light
+            specifically without re-tracing the whole path (unlike raising the pass's
+            Samples Per Pixel), at the cost of one extra shadow ray per additional sample.
+            Clamped to [1, 64]. A plain runtime value (not a specialization constant), so
+            changing it doesn't trigger a shader recompile.
+        */
+        void setLightSamplesPerVertex(uint32_t count);
+
+        /** Get the number of NEE samples drawn per path vertex for this light.
+        */
+        uint32_t getLightSamplesPerVertex() const { return mData.lightSamplesPerVertex; }
+
         /** Set the materialID of the placeholder material assigned to the quad's mesh instance.
             Used at hit time to identify direct hits on this light's geometry.
         */
