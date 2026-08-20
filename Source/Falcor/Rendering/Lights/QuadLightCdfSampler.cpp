@@ -37,7 +37,7 @@ namespace Falcor
     QuadLightCdfSampler::QuadLightCdfSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight)
         : QuadLightSampler(QuadLightSamplerType::Cdf2D, pDevice, pQuadLight)
     {
-        auto start = CpuTimer::getCurrentTimePoint();
+        auto luminanceStart = CpuTimer::getCurrentTimePoint();
 
         uint32_t w = 0, h = 0;
         std::vector<float> luminance = computeQuadLightLuminance(*pQuadLight, w, h);
@@ -48,6 +48,14 @@ namespace Falcor
             luminance = {1.f};
         }
         mGridDim = uint2(w, h);
+
+        auto luminanceEnd = CpuTimer::getCurrentTimePoint();
+        logInfo(
+            "QuadLightCdfSampler: source image load/decode time {:.3f} ms ({}x{})",
+            CpuTimer::calcDuration(luminanceStart, luminanceEnd), w, h
+        );
+
+        auto start = CpuTimer::getCurrentTimePoint();
 
         // Build the marginal/conditional CDFs on the CPU (raw prefix sums, left unnormalized -
         // the shader scales its random sample by the relevant total instead of pre-dividing).

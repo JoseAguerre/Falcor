@@ -76,7 +76,7 @@ namespace Falcor
     QuadLightMipSampler::QuadLightMipSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight)
         : QuadLightSampler(QuadLightSamplerType::HierarchicalMip, pDevice, pQuadLight)
     {
-        auto start = CpuTimer::getCurrentTimePoint();
+        auto luminanceStart = CpuTimer::getCurrentTimePoint();
 
         uint32_t w = 0, h = 0;
         std::vector<float> luminance = computeQuadLightLuminance(*pQuadLight, w, h);
@@ -85,6 +85,14 @@ namespace Falcor
             w = h = 1;
             luminance = {1.f};
         }
+
+        auto luminanceEnd = CpuTimer::getCurrentTimePoint();
+        logInfo(
+            "QuadLightMipSampler: source image load/decode time {:.3f} ms ({}x{})",
+            CpuTimer::calcDuration(luminanceStart, luminanceEnd), w, h
+        );
+
+        auto start = CpuTimer::getCurrentTimePoint();
 
         // The mip descent assumes an exact quadtree (each mip exactly half the resolution
         // of the level below in both dimensions), so resample onto a power-of-two square.

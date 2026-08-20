@@ -49,9 +49,11 @@ sceneBuilder.addMeshInstance(
     sceneBuilder.addTriangleMesh(bunnyMesh, bunnyMat)
 )
 
-# Environment map: StillLife.exr, lit purely by Falcor's existing EnvMapSampler
-# (hierarchical mip importance sampling) - no QuadLight involved at all.
-envMap = EnvMap.createFromFile('C:/packman-repo/chk/falcor_media/7acdf8b0/test_images/StillLife.exr')
+# Environment map: frame_00048.exr (temporarily swapped in to isolate whether the crash
+# seen loading this file into a QuadLight is in Texture::createFromFile's shared GPU
+# texture-load/mip-generation path - EnvMap.createFromFile() calls that exact same
+# function with the same arguments - or is specific to QuadLight's own loading code).
+envMap = EnvMap.createFromFile('C:/Users/Elojo/Downloads/vp9macroblock/vp9macroblock-viewer/encoded/frames/frame_00048.exr')
 envMap.intensity = 1.0
 sceneBuilder.envMap = envMap
 

@@ -39,7 +39,7 @@ namespace Falcor
     QuadLightAliasSampler::QuadLightAliasSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight)
         : QuadLightSampler(QuadLightSamplerType::AliasPerPixel, pDevice, pQuadLight)
     {
-        auto start = CpuTimer::getCurrentTimePoint();
+        auto luminanceStart = CpuTimer::getCurrentTimePoint();
 
         uint32_t w = 0, h = 0;
         std::vector<float> luminance = computeQuadLightLuminance(*pQuadLight, w, h);
@@ -49,6 +49,14 @@ namespace Falcor
             luminance = {1.f};
         }
         mGridDim = uint2(w, h);
+
+        auto luminanceEnd = CpuTimer::getCurrentTimePoint();
+        logInfo(
+            "QuadLightAliasSampler: source image load/decode time {:.3f} ms ({}x{})",
+            CpuTimer::calcDuration(luminanceStart, luminanceEnd), w, h
+        );
+
+        auto start = CpuTimer::getCurrentTimePoint();
 
         // Deterministic seed: construction happens once per technique switch (or scene
         // load), no need for cross-run entropy, and it keeps rebuilds reproducible.
