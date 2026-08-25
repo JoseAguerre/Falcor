@@ -29,6 +29,7 @@
 #include "QuadLightSampler.h"
 #include "Core/API/Texture.h"
 #include "Core/API/Sampler.h"
+#include <vector>
 
 namespace Falcor
 {
@@ -47,11 +48,20 @@ namespace Falcor
     class FALCOR_API QuadLightMipSampler : public QuadLightSampler
     {
     public:
+        /** Decodes pQuadLight's source image itself (via computeQuadLightLuminance()) before building. */
         QuadLightMipSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight);
+
+        /** Builds directly from an already-computed luminance array, skipping the decode -
+            for callers (e.g. video playback prefetch) that already have one on hand from
+            building the GPU texture, so the same source image isn't decoded twice.
+        */
+        QuadLightMipSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight, uint32_t width, uint32_t height, const std::vector<float>& luminance);
 
         void bindShaderData(const ShaderVar& var) const override;
 
     private:
+        void build(uint32_t width, uint32_t height, const std::vector<float>& luminance);
+
         ref<Texture> mpImportanceMap;      ///< Hierarchical importance map (luminance), entire mip chain.
         ref<Sampler> mpImportanceSampler;  ///< Point sampling with clamp to edge.
     };

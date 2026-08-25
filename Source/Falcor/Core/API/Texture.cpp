@@ -393,21 +393,7 @@ ref<Texture> Texture::createFromFile(
         Bitmap::UniqueConstPtr pBitmap = Bitmap::createFromFile(path, kTopDown, importFlags);
         if (pBitmap)
         {
-            ResourceFormat texFormat = pBitmap->getFormat();
-            if (loadAsSrgb)
-            {
-                texFormat = linearToSrgbFormat(texFormat);
-            }
-
-            pTex = pDevice->createTexture2D(
-                pBitmap->getWidth(),
-                pBitmap->getHeight(),
-                texFormat,
-                1,
-                generateMipLevels ? Texture::kMaxPossible : 1,
-                pBitmap->getData(),
-                bindFlags
-            );
+            pTex = createFromBitmap(pDevice, *pBitmap, generateMipLevels, loadAsSrgb, bindFlags);
         }
     }
 
@@ -429,6 +415,31 @@ ref<Texture> Texture::createFromFile(
     }
 
     return pTex;
+}
+
+ref<Texture> Texture::createFromBitmap(
+    ref<Device> pDevice,
+    const Bitmap& bitmap,
+    bool generateMipLevels,
+    bool loadAsSrgb,
+    ResourceBindFlags bindFlags
+)
+{
+    ResourceFormat texFormat = bitmap.getFormat();
+    if (loadAsSrgb)
+    {
+        texFormat = linearToSrgbFormat(texFormat);
+    }
+
+    return pDevice->createTexture2D(
+        bitmap.getWidth(),
+        bitmap.getHeight(),
+        texFormat,
+        1,
+        generateMipLevels ? Texture::kMaxPossible : 1,
+        bitmap.getData(),
+        bindFlags
+    );
 }
 
 gfx::IResource* Texture::getGfxResource() const

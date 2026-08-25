@@ -72,6 +72,19 @@ public:
     using UniquePtr = std::unique_ptr<Bitmap>;
     using UniqueConstPtr = std::unique_ptr<const Bitmap>;
 
+    /** Per-phase timing breakdown for one createFromFile() call, in milliseconds. Left
+        untouched (all zero) unless a non-null pointer is passed in - measuring costs a few
+        cheap timer reads either way, but no caller pays for formatting/logging it unless
+        they ask.
+    */
+    struct DecodeTimings
+    {
+        double formatDetectAndOpenMs = 0; ///< File-existence/format-detection calls plus opening the memory-mapped file.
+        double freeImageDecodeMs = 0;     ///< FreeImage_LoadFromMemory - the actual codec work (e.g. OpenEXR/Radiance-HDR decompression).
+        double conversionMs = 0;          ///< Any post-decode pixel-format conversion (e.g. RGBF->RGBAF, palette->RGBA, half-float).
+        double rawBitsCopyMs = 0;         ///< Final allocation + FreeImage_ConvertToRawBits copy into the returned Bitmap's own buffer.
+    };
+
     /**
      * Create from memory.
      * @param[in] width Width in pixels.
@@ -88,9 +101,12 @@ public:
      * @param[in] isTopDown Control the memory layout of the image. If true, the top-left pixel is the first pixel in the buffer, otherwise
      * the bottom-left pixel is first.
      * @param[in] importFlags Flags to control how the file is imported. See ImportFlags above.
+     * @param[out] pTimings Optional - if non-null, filled in with a per-phase timing breakdown of this call.
      * @return If loading was successful, a new object. Otherwise, nullptr.
      */
-    static UniqueConstPtr createFromFile(const std::filesystem::path& path, bool isTopDown, ImportFlags importFlags = ImportFlags::None);
+    static UniqueConstPtr createFromFile(
+        const std::filesystem::path& path, bool isTopDown, ImportFlags importFlags = ImportFlags::None, DecodeTimings* pTimings = nullptr
+    );
 
     /**
      * Store a memory buffer to a file.

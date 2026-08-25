@@ -1,0 +1,63 @@
+# StillLife.exr quad light test scene.
+# Same geometry as quadlight_test.pyscene, but lit by a single large QuadLight placed on
+# the -X side of the room (a "window" facing into the scene) instead of overhead - shows
+# quad light shading/shadowing from a side-lighting angle rather than a top-down one.
+# Was previously an EnvMap version of this scene (used to isolate a firefly-artifact
+# investigation, since resolved - see Bitmap.cpp's convertToRGBA16Float() fix); replaced
+# with a QuadLight per request.
+
+# Floor
+floorMat = StandardMaterial('Floor')
+floorMat.baseColor = float4(0.6, 0.6, 0.6, 1.0)
+floorMat.roughness = 0.6
+floorMesh = TriangleMesh.createQuad(float2(6.0, 6.0))
+sceneBuilder.addMeshInstance(
+    sceneBuilder.addNode('Floor', Transform(translation=float3(0, 0, 0))),
+    sceneBuilder.addTriangleMesh(floorMesh, floorMat)
+)
+
+# Quad light: a big vertical "window" on the -X side of the room, facing +X (into the
+# scene) instead of straight down. A non-emissive placeholder material is assigned to a
+# real quad mesh (kept out of the standard emissive-triangle light pipeline on purpose),
+# plus a QuadLight object sharing the exact same transform/size that does the actual
+# lighting via its own importance sampler - same pattern as quadlight_test.pyscene.
+quadLightMat = StandardMaterial('QuadLightMat')  # emissiveFactor left at 0 - non-emissive on purpose
+quadLightMatID = sceneBuilder.addMaterial(quadLightMat)
+
+# createQuad's default normal is +Y (local X = texture "right", local Z = texture "up" -
+# per QuadLight.slang's worldToUv(), NOT the placeholder mesh's own vertex UVs, which
+# QuadLight ignores entirely). A single-axis rotation can't turn this into a vertical
+# window facing sideways while *also* keeping the texture's "up" pointing at world up - that
+# needs a genuine 3-axis permutation (local X/Y/Z -> world Z/X/Y respectively). Verified by
+# hand against Falcor's actual quatFromEulerAngles composition (extrinsic X-then-Y-then-Z):
+# rotationEulerDeg=(0,-90,-90) sends local X->world Z, local Y (normal)->world +X (facing
+# into the room from this -X-side placement), local Z (texture "up")->world +Y (actual
+# up) - all three checked independently, not just the normal. size.x (local X) ends up
+# along world Z (the window's width along the room's depth); size.y (local Z) ends up as
+# the window's vertical height. To mount this on the opposite (+X) wall facing back in
+# (-X) instead, negate the X translation AND use rotationEulerDeg=(0,90,90) - flipping only
+# one of the three components reintroduces either the wrong facing or the upside-down bug.
+quadSize = float2(4.5, 3.5)  # width-along-Z, height
+quadTransform = Transform(translation=float3(-3.4, 1.9, 0.3), rotationEulerDeg=float3(0, -90, -90))
+sceneBuilder.addMeshInstance(
+    sceneBuilder.addNode('QuadLight', quadTransform),
+    sceneBuilder.addTriangleMesh(TriangleMesh.createQuad(quadSize), quadLightMat)  # same quadLightMat instance -> addMaterial dedupes to quadLightMatID
+)
+
+quadLight = QuadLight.createFromFile('white.jpg')
+quadLight.materialID = quadLightMatID
+quadLight.transform = quadTransform.matrix
+quadLight.size = quadSize
+quadLight.intensity = 1.5  # starting point for a much larger emitting area than quadlight_test.pyscene's - adjust live via the UI's Intensity slider.
+sceneBuilder.quadLight = quadLight
+
+# Camera - same framing as quadlight_test.pyscene.
+camera = Camera()
+camera.position = float3(0, 1.6, 4.0)
+camera.target = float3(0, 1.0, 0)
+camera.up = float3(0, 1, 0)
+camera.focalLength = 21.0
+sceneBuilder.addCamera(camera)
+
+# Disable analytic/env lighting so the room is lit purely by the quad light.
+sceneBuilder.renderSettings = SceneRenderSettings(useEnvLight=False, useAnalyticLights=False, useEmissiveLights=False, useQuadLight=True)

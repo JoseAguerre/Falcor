@@ -28,21 +28,40 @@
 #pragma once
 #include "Core/Macros.h"
 #include <cstdint>
+#include <filesystem>
 #include <vector>
 
 namespace Falcor
 {
     class QuadLight;
+    class Bitmap;
 
-    /** Compute a row-major per-texel luminance array for a QuadLight's source image,
-        entirely on the CPU (via Bitmap, reading the same file QuadLight's GPU texture
-        was loaded from). Shared by every QuadLightSampler technique that needs raw
-        luminance weights (all except QuadLightRandomSampler).
+    /** Compute a row-major per-texel luminance array from an already-decoded Bitmap.
+        Shared by every QuadLightSampler technique that needs raw luminance weights (all
+        except QuadLightRandomSampler), and by computeQuadLightLuminance() below.
 
         Uses Rec.709 weights (0.2126, 0.7152, 0.0722), matching Utils/Color/ColorHelpers.slang's
         shader-side luminance() exactly, and reads the raw decoded bytes with no gamma
         correction - consistent with QuadLight::createFromFile loading with loadAsSrgb=false,
         so the GPU shader also samples these bytes as linear.
+
+        \param[in] bitmap The decoded source image.
+        \param[out] outWidth Image width in texels.
+        \param[out] outHeight Image height in texels.
+        \param[in] pathForLogging Optional source path, used only to identify the image in
+            warning messages (unsupported format / non-finite texels). May be empty.
+        \return Row-major luminance array of size outWidth*outHeight.
+    */
+    FALCOR_API std::vector<float> computeLuminanceFromBitmap(
+        const Bitmap& bitmap, uint32_t& outWidth, uint32_t& outHeight, const std::filesystem::path& pathForLogging = {}
+    );
+
+    /** Compute a row-major per-texel luminance array for a QuadLight's source image,
+        entirely on the CPU (via Bitmap, reading the same file QuadLight's GPU texture
+        was loaded from). Decodes the file itself, then delegates to
+        computeLuminanceFromBitmap() - callers that already have a decoded Bitmap on hand
+        (e.g. because they just built the GPU texture from one) should call that directly
+        instead, to avoid decoding the same file twice.
 
         \param[in] light The quad light whose source image should be read.
         \param[out] outWidth Image width in texels.

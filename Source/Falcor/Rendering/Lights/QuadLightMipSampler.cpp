@@ -76,15 +76,41 @@ namespace Falcor
     QuadLightMipSampler::QuadLightMipSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight)
         : QuadLightSampler(QuadLightSamplerType::HierarchicalMip, pDevice, pQuadLight)
     {
-        auto start = CpuTimer::getCurrentTimePoint();
+        auto luminanceStart = CpuTimer::getCurrentTimePoint();
 
         uint32_t w = 0, h = 0;
         std::vector<float> luminance = computeQuadLightLuminance(*pQuadLight, w, h);
-        if (luminance.empty())
+
+        auto luminanceEnd = CpuTimer::getCurrentTimePoint();
+        logInfo(
+            "QuadLightMipSampler: source image load/decode time {:.3f} ms ({}x{})",
+            CpuTimer::calcDuration(luminanceStart, luminanceEnd), w, h
+        );
+
+        build(w, h, luminance);
+    }
+
+    QuadLightMipSampler::QuadLightMipSampler(
+        ref<Device> pDevice, ref<QuadLight> pQuadLight, uint32_t width, uint32_t height, const std::vector<float>& luminance
+    )
+        : QuadLightSampler(QuadLightSamplerType::HierarchicalMip, pDevice, pQuadLight)
+    {
+        build(width, height, luminance);
+    }
+
+    void QuadLightMipSampler::build(uint32_t w, uint32_t h, const std::vector<float>& luminanceIn)
+    {
+        std::vector<float> fallback;
+        const std::vector<float>* pLuminance = &luminanceIn;
+        if (luminanceIn.empty() || w == 0 || h == 0)
         {
             w = h = 1;
-            luminance = {1.f};
+            fallback = {1.f};
+            pLuminance = &fallback;
         }
+        std::vector<float> luminance = *pLuminance; // local, mutable copy - resampleToSquare()/std::move() below may consume it
+
+        auto start = CpuTimer::getCurrentTimePoint();
 
         // The mip descent assumes an exact quadtree (each mip exactly half the resolution
         // of the level below in both dimensions), so resample onto a power-of-two square.

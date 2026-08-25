@@ -419,6 +419,11 @@ void PathTracer::setScene(RenderContext* pRenderContext, const ref<Scene>& pScen
     mUpdateFlagsConnection = {};
     mUpdateFlags = IScene::UpdateFlags::None;
 
+    // Must release the quad light sampler before mpScene is reassigned below: it holds a raw
+    // (non-owning) pointer back to the outgoing scene's QuadLight (see QuadLightSampler.h),
+    // which becomes dangling the instant the outgoing mpScene's ref<QuadLight> is dropped.
+    mpQuadLightSampler = nullptr;
+
     mpScene = pScene;
     mParams.frameCount = 0;
     mParams.frameDim = {};
@@ -992,18 +997,34 @@ bool PathTracer::prepareLighting(RenderContext* pRenderContext)
 
     if (is_set(mUpdateFlags, IScene::UpdateFlags::QuadLightChanged))
     {
+        // Note: no mRecompile = true here (see below for why) - during video playback this
+        // fires on every single frame advance (see QuadLight::updateVideoPlayback()).
         mpQuadLightSampler = nullptr;
         lightingChanged = true;
-        mRecompile = true;
     }
 
     if (mpScene->useQuadLight())
     {
         if (!mpQuadLightSampler)
         {
-            mpQuadLightSampler = createQuadLightSampler(mpScene->getQuadLight()->getSamplerType(), mpDevice, mpScene->getQuadLight());
+            mpQuadLightSampler = mpScene->getQuadLight()->takePrebuiltSampler();
+            if (!mpQuadLightSampler)
+                mpQuadLightSampler = createQuadLightSampler(mpScene->getQuadLight()->getSamplerType(), mpDevice, mpScene->getQuadLight());
             lightingChanged = true;
-            mRecompile = true;
+
+            // The sampler object identity changed (new CDF/luminance/alias-table GPU buffers),
+            // even though its shader defines usually haven't (getDefines() only depends on the
+            // technique, not per-frame content) - mVarsChanged is what actually drives
+            // re-binding those buffers into the shader's parameter block this frame (see
+            // preparePathTracer()/bindShaderData() below), so it must be set directly here
+            // rather than only as a side effect of mRecompile/updatePrograms(). Without this,
+            // the shader keeps reading whichever buffers were bound on the very first frame -
+            // increasingly wrong sampling as the ring recycles old samplers, and eventually a
+            // GPU use-after-free crash once an old sampler's buffers are actually freed while
+            // still bound. mRecompile itself stays driven solely by the addDefines() check
+            // below, so an ordinary video-frame advance (same technique, same defines) no
+            // longer pays for a full shader-vars recompile every single frame.
+            mVarsChanged = true;
         }
     }
     else

@@ -33,6 +33,7 @@
 #include "Utils/Math/Float16.h"
 #include "Utils/Logger.h"
 #include "Utils/StringUtils.h"
+#include "Utils/Timing/CpuTimer.h"
 
 #include <ImfIO.h>
 #include <ImfInputFile.h>
@@ -265,18 +266,39 @@ static FIBITMAP* convertToRGBA16Float(FIBITMAP* pDib)
     const BYTE* src_bits = (BYTE*)FreeImage_GetBits(pDib);
     BYTE* dst_bits = (BYTE*)FreeImage_GetBits(pNew);
 
+    // FIT_RGBF (no alpha) and FIT_RGBAF (with alpha) are genuinely different-sized
+    // structs (12 vs 16 bytes - FIRGBF has no trailing alpha field, not just an unused
+    // one), so indexing via a single FIRGBAF* regardless of which one 'type' actually is
+    // reads with the wrong per-pixel stride for FIT_RGBF sources: increasingly
+    // out-of-bounds as x grows within each row (worst on the last row, where it can run
+    // past the end of the whole allocated bitmap). This branches on 'type' so each case
+    // uses its own correctly-sized struct/stride.
     for (uint32_t y = 0; y < height; y++)
     {
-        const FIRGBAF* src_pixel = (FIRGBAF*)src_bits;
         FIRGBA16* dst_pixel = (tagFIRGBA16*)dst_bits;
 
-        for (uint32_t x = 0; x < width; x++)
+        if (type == FIT_RGBAF)
         {
-            // Convert pixels to float16_t directly, while adding a "dummy" alpha of 1.0 if source format doesn't have alpha.
-            dst_pixel[x].red = float16_t(src_pixel[x].red).toBits();
-            dst_pixel[x].green = float16_t(src_pixel[x].green).toBits();
-            dst_pixel[x].blue = float16_t(src_pixel[x].blue).toBits();
-            dst_pixel[x].alpha = float16_t(type == FIT_RGBAF ? src_pixel[x].alpha : 1.0f).toBits();
+            const FIRGBAF* src_pixel = (FIRGBAF*)src_bits;
+            for (uint32_t x = 0; x < width; x++)
+            {
+                dst_pixel[x].red = float16_t(src_pixel[x].red).toBits();
+                dst_pixel[x].green = float16_t(src_pixel[x].green).toBits();
+                dst_pixel[x].blue = float16_t(src_pixel[x].blue).toBits();
+                dst_pixel[x].alpha = float16_t(src_pixel[x].alpha).toBits();
+            }
+        }
+        else // FIT_RGBF
+        {
+            const FIRGBF* src_pixel = (FIRGBF*)src_bits;
+            for (uint32_t x = 0; x < width; x++)
+            {
+                dst_pixel[x].red = float16_t(src_pixel[x].red).toBits();
+                dst_pixel[x].green = float16_t(src_pixel[x].green).toBits();
+                dst_pixel[x].blue = float16_t(src_pixel[x].blue).toBits();
+                // No alpha channel in the source - use a "dummy" opaque alpha of 1.0.
+                dst_pixel[x].alpha = float16_t(1.0f).toBits();
+            }
         }
         src_bits += src_pitch;
         dst_bits += dst_pitch;
@@ -288,8 +310,10 @@ Bitmap::UniqueConstPtr Bitmap::create(uint32_t width, uint32_t height, ResourceF
     return Bitmap::UniqueConstPtr(new Bitmap(width, height, format, pData));
 }
 
-Bitmap::UniqueConstPtr Bitmap::createFromFile(const std::filesystem::path& path, bool isTopDown, ImportFlags importFlags)
+Bitmap::UniqueConstPtr Bitmap::createFromFile(const std::filesystem::path& path, bool isTopDown, ImportFlags importFlags, DecodeTimings* pTimings)
 {
+    const auto timeOpenStart = CpuTimer::getCurrentTimePoint();
+
     if (!std::filesystem::exists(path))
     {
         logWarning("Error when loading image file. File '{}' does not exist.", path);
@@ -326,6 +350,9 @@ Bitmap::UniqueConstPtr Bitmap::createFromFile(const std::filesystem::path& path,
         return nullptr;
     }
 
+    const auto timeDecodeStart = CpuTimer::getCurrentTimePoint();
+    if (pTimings) pTimings->formatDetectAndOpenMs = CpuTimer::calcDuration(timeOpenStart, timeDecodeStart);
+
     if (fifFormat == FIF_EXR)
     {
         if (isFloat16Exr(file))
@@ -342,6 +369,9 @@ Bitmap::UniqueConstPtr Bitmap::createFromFile(const std::filesystem::path& path,
         genWarning("Can't read image file", path);
         return nullptr;
     }
+
+    const auto timeConversionStart = CpuTimer::getCurrentTimePoint();
+    if (pTimings) pTimings->freeImageDecodeMs = CpuTimer::calcDuration(timeDecodeStart, timeConversionStart);
 
     // Create the bitmap
     const uint32_t height = FreeImage_GetHeight(pDib);
@@ -440,11 +470,17 @@ Bitmap::UniqueConstPtr Bitmap::createFromFile(const std::filesystem::path& path,
     if (fifFormat == FIF_PFM)
         isTopDown = !isTopDown;
 
+    const auto timeRawBitsStart = CpuTimer::getCurrentTimePoint();
+    if (pTimings) pTimings->conversionMs = CpuTimer::calcDuration(timeConversionStart, timeRawBitsStart);
+
     UniqueConstPtr pBmp = UniqueConstPtr(new Bitmap(width, height, format));
     FreeImage_ConvertToRawBits(
         pBmp->getData(), pDib, pBmp->getRowPitch(), bpp, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, isTopDown
     );
     FreeImage_Unload(pDib);
+
+    if (pTimings) pTimings->rawBitsCopyMs = CpuTimer::calcDuration(timeRawBitsStart, CpuTimer::getCurrentTimePoint());
+
     return pBmp;
 }
 

@@ -58,6 +58,7 @@ struct QuadLightData
     float2      size = {1.f, 1.f};      ///< Size of the quad in local space (world size depends on transform scale).
 
     uint        doubleSided = 0;        ///< If false (default), the light only emits from the side its normal (local +Y) points toward; the back side is dark.
+    uint        lightSamplesPerVertex = 1; ///< Number of independent NEE samples of this light to draw and average per path vertex (only when this light is the selected type - see PathTracer.slang). Plain runtime value, not a specialization constant, so changing it doesn't trigger a shader recompile.
 };
 
 END_NAMESPACE_FALCOR

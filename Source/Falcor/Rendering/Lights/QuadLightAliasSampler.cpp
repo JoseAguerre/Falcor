@@ -39,21 +39,46 @@ namespace Falcor
     QuadLightAliasSampler::QuadLightAliasSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight)
         : QuadLightSampler(QuadLightSamplerType::AliasPerPixel, pDevice, pQuadLight)
     {
-        auto start = CpuTimer::getCurrentTimePoint();
+        auto luminanceStart = CpuTimer::getCurrentTimePoint();
 
         uint32_t w = 0, h = 0;
         std::vector<float> luminance = computeQuadLightLuminance(*pQuadLight, w, h);
-        if (luminance.empty())
+
+        auto luminanceEnd = CpuTimer::getCurrentTimePoint();
+        logInfo(
+            "QuadLightAliasSampler: source image load/decode time {:.3f} ms ({}x{})",
+            CpuTimer::calcDuration(luminanceStart, luminanceEnd), w, h
+        );
+
+        build(w, h, luminance);
+    }
+
+    QuadLightAliasSampler::QuadLightAliasSampler(
+        ref<Device> pDevice, ref<QuadLight> pQuadLight, uint32_t width, uint32_t height, const std::vector<float>& luminance
+    )
+        : QuadLightSampler(QuadLightSamplerType::AliasPerPixel, pDevice, pQuadLight)
+    {
+        build(width, height, luminance);
+    }
+
+    void QuadLightAliasSampler::build(uint32_t w, uint32_t h, const std::vector<float>& luminanceIn)
+    {
+        std::vector<float> fallback;
+        const std::vector<float>* pLuminance = &luminanceIn;
+        if (luminanceIn.empty() || w == 0 || h == 0)
         {
             w = h = 1;
-            luminance = {1.f};
+            fallback = {1.f};
+            pLuminance = &fallback;
         }
         mGridDim = uint2(w, h);
+
+        auto start = CpuTimer::getCurrentTimePoint();
 
         // Deterministic seed: construction happens once per technique switch (or scene
         // load), no need for cross-run entropy, and it keeps rebuilds reproducible.
         std::mt19937 rng(1234u);
-        mpAliasTable = std::make_unique<AliasTable>(pDevice, std::move(luminance), rng);
+        mpAliasTable = std::make_unique<AliasTable>(mpDevice, *pLuminance, rng); // AliasTable takes weights by value - copies from *pLuminance
 
         auto end = CpuTimer::getCurrentTimePoint();
         logInfo("QuadLightAliasSampler: build time {:.3f} ms", CpuTimer::calcDuration(start, end));

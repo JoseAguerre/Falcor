@@ -42,6 +42,8 @@
 namespace Falcor
 {
     struct ShaderVar;
+    class QuadLightSampler;
+    class QuadLightVideoPlayer;
 
     /** Textured rectangular area light.
         A unit quad in local space (see QuadLightData), placed in world space by a transform,
@@ -54,7 +56,11 @@ namespace Falcor
     {
         FALCOR_OBJECT(QuadLight)
     public:
-        virtual ~QuadLight() = default;
+        // Declared out-of-line (defined in QuadLight.cpp, after QuadLightSampler/
+        // QuadLightVideoPlayer are fully defined there) - an inline-defaulted destructor
+        // here would fail to compile once mpVideoPlayer/mpPendingSampler (unique_ptr to
+        // these forward-declared, incomplete-here types) are added below.
+        virtual ~QuadLight();
 
         /** Create a new quad light.
             \param[in] pDevice GPU device.
@@ -107,6 +113,22 @@ namespace Falcor
         */
         float3 getTint() const { return mData.tint; }
 
+        /** Set how many independent NEE (next-event-estimation) samples of this quad light
+            to draw and average per path vertex. Only applies on samples where this light is
+            the stochastically-selected light type (see PathTracer.slang's
+            selectLightType()) - every other light type still draws exactly one sample
+            regardless of this value. Higher values reduce noise from this light
+            specifically without re-tracing the whole path (unlike raising the pass's
+            Samples Per Pixel), at the cost of one extra shadow ray per additional sample.
+            Clamped to [1, 64]. A plain runtime value (not a specialization constant), so
+            changing it doesn't trigger a shader recompile.
+        */
+        void setLightSamplesPerVertex(uint32_t count);
+
+        /** Get the number of NEE samples drawn per path vertex for this light.
+        */
+        uint32_t getLightSamplesPerVertex() const { return mData.lightSamplesPerVertex; }
+
         /** Set the materialID of the placeholder material assigned to the quad's mesh instance.
             Used at hit time to identify direct hits on this light's geometry.
         */
@@ -148,6 +170,32 @@ namespace Falcor
             \return True if the texture was loaded successfully.
         */
         bool loadTextureFromFile(const std::filesystem::path& path);
+
+        /** True if loadTextureFromFile()/createFromFile() was pointed at a playlist file
+            (.exrplaylist/.hdrplaylist, video mode) rather than a single static image.
+        */
+        bool isVideo() const { return mpVideoPlayer != nullptr; }
+
+        /** Ticks video playback (advances to the next frame once its listed duration has
+            elapsed, looping at the end of the playlist). No-op in static-image mode.
+            Called once per frame from Scene::update(), before updateQuadLight() - mirrors
+            GridVolume::updatePlayback()'s role.
+            \param[in] currentTime Current scene-clock time in seconds (Scene::update()'s own parameter).
+        */
+        void updateVideoPlayback(double currentTime);
+
+        /** Returns a prebuilt QuadLightSampler for the currently-displayed video frame if
+            one is ready (consuming it - a second call returns null until the next
+            advance), else null. Called from PathTracer::prepareLighting() before it falls
+            back to synchronously building one itself. Always null in static-image mode.
+        */
+        std::unique_ptr<QuadLightSampler> takePrebuiltSampler();
+
+        /** Current playlist position (0-based), only meaningful when isVideo() is true. */
+        uint32_t getVideoFrameIndex() const;
+
+        /** Total number of frames in the playlist, only meaningful when isVideo() is true. */
+        uint32_t getVideoFrameCount() const;
 
         const ref<Texture>& getTexture() const { return mpTexture; }
         const ref<Sampler>& getSampler() const { return mpSampler; }
@@ -196,6 +244,9 @@ namespace Falcor
         QuadLightSamplerType    mPrevSamplerType = QuadLightSamplerType::Cdf2D;
 
         bool                     mTextureChanged = false;   ///< Set by loadTextureFromFile(), consumed (and cleared) by beginFrame().
+
+        std::unique_ptr<QuadLightVideoPlayer> mpVideoPlayer;   ///< Non-null only in video mode (see isVideo()).
+        std::unique_ptr<QuadLightSampler>     mpPendingSampler; ///< Set by updateVideoPlayback() on a frame advance; consumed by takePrebuiltSampler().
 
         Changes                 mChanges = Changes::None;
 

@@ -1923,6 +1923,8 @@ namespace Falcor
             pGridVolume->updatePlayback(currentTime);
         }
 
+        if (mpQuadLight) mpQuadLight->updateVideoPlayback(currentTime);
+
         mUpdates |= updateSelectedCamera(false);
         mUpdates |= updateLights(false);
         mUpdates |= updateGridVolumes(false);

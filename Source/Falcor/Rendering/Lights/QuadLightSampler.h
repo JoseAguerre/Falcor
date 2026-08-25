@@ -31,6 +31,7 @@
 #include "Core/Program/DefineList.h"
 #include "Scene/Lights/QuadLight.h"
 #include <memory>
+#include <vector>
 
 namespace Falcor
 {
@@ -62,22 +63,49 @@ namespace Falcor
         */
         QuadLightSamplerType getType() const { return mType; }
 
-        const ref<QuadLight>& getQuadLight() const { return mpQuadLight; }
+        /** Returns a new strong reference to the owning quad light. Stored internally as a
+            raw, non-owning pointer rather than a ref<QuadLight> - a QuadLightSampler can be
+            kept alive by structures that are themselves (transitively) owned by that same
+            QuadLight (e.g. QuadLightVideoPlayer's prefetch ring, see QuadLightVideo.cpp),
+            and a stored strong ref back would create an ownership cycle, leaking the
+            QuadLight (and any thread it owns) forever. Safe because a QuadLightSampler's
+            lifetime is always bounded by its owning QuadLight's lifetime, whether owned
+            directly by PathTracer (which drops its sampler before the scene's QuadLight ref
+            - see PathTracer::setScene()) or transitively via the QuadLight itself.
+        */
+        ref<QuadLight> getQuadLight() const { return ref<QuadLight>(mpQuadLight); }
 
     protected:
         QuadLightSampler(QuadLightSamplerType type, ref<Device> pDevice, ref<QuadLight> pQuadLight)
-            : mType(type), mpDevice(pDevice), mpQuadLight(pQuadLight)
+            : mType(type), mpDevice(pDevice), mpQuadLight(pQuadLight.get())
         {}
 
         const QuadLightSamplerType mType;
         ref<Device>                mpDevice;
-        ref<QuadLight>             mpQuadLight;
+        QuadLight*                 mpQuadLight; ///< Non-owning - see getQuadLight()'s comment.
     };
 
     /** Construct the concrete QuadLightSampler for the given technique.
+        Decodes pQuadLight's source image itself (via computeQuadLightLuminance()).
         \param[in] type Which technique to construct.
         \param[in] pDevice GPU device.
         \param[in] pQuadLight The quad light to sample.
     */
     FALCOR_API std::unique_ptr<QuadLightSampler> createQuadLightSampler(QuadLightSamplerType type, ref<Device> pDevice, ref<QuadLight> pQuadLight);
+
+    /** Construct the concrete QuadLightSampler for the given technique, from an
+        already-computed luminance array - skips the decode, for callers (e.g. video
+        playback prefetch) that already have one on hand from building the GPU texture, so
+        the same source image isn't decoded twice. QuadLightSamplerType::Random ignores
+        width/height/luminance entirely (it never uses luminance data).
+        \param[in] type Which technique to construct.
+        \param[in] pDevice GPU device.
+        \param[in] pQuadLight The quad light to sample.
+        \param[in] width Luminance array width in texels.
+        \param[in] height Luminance array height in texels.
+        \param[in] luminance Row-major luminance array of size width*height.
+    */
+    FALCOR_API std::unique_ptr<QuadLightSampler> createQuadLightSamplerFromLuminance(
+        QuadLightSamplerType type, ref<Device> pDevice, ref<QuadLight> pQuadLight, uint32_t width, uint32_t height, const std::vector<float>& luminance
+    );
 }

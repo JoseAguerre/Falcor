@@ -434,6 +434,8 @@ target_sources(Falcor PRIVATE
     Scene/Lights/QuadLight.h
     Scene/Lights/QuadLight.slang
     Scene/Lights/QuadLightData.slang
+    Scene/Lights/QuadLightVideo.cpp
+    Scene/Lights/QuadLightVideo.h
     Scene/Lights/UpdateTriangleVertices.cs.slang
 
     Scene/Material/AlphaTest.slang

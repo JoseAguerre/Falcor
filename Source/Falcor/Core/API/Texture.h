@@ -195,6 +195,26 @@ public:
         Bitmap::ImportFlags importFlags = Bitmap::ImportFlags::None
     );
 
+    /**
+     * Create a new texture object from an already-decoded Bitmap.
+     * This is the non-DDS half of createFromFile()'s body, split out so callers that need
+     * the decoded pixel data for something else too (e.g. computing CPU-side luminance)
+     * can decode the source file once and reuse the same Bitmap for both, instead of
+     * decoding it a second time.
+     * @param[in] bitmap The decoded source image.
+     * @param[in] generateMipLevels Whether the mip-chain should be generated.
+     * @param[in] loadAsSrgb Load the texture using sRGB format. Only valid for 3 or 4 component textures.
+     * @param[in] bindFlags The bind flags to create the texture with.
+     * @return A new texture, or nullptr if texture creation failed.
+     */
+    static ref<Texture> createFromBitmap(
+        ref<Device> pDevice,
+        const Bitmap& bitmap,
+        bool generateMipLevels,
+        bool loadAsSrgb,
+        ResourceBindFlags bindFlags = ResourceBindFlags::ShaderResource
+    );
+
     gfx::ITextureResource* getGfxTextureResource() const { return mGfxTextureResource; }
 
     virtual gfx::IResource* getGfxResource() const override;

@@ -67,7 +67,7 @@ static const uint2 kScreenTileBits = { 4, 4 };      ///< Bits needed to describe
 static const uint kMaxSamplesPerPixel = 16;         ///< Maximum supported sample count. We can use tiling to support large sample counts if needed.
 static const uint kMaxFrameDimension = 4096;        ///< Maximum supported frame dimension in pixels along x or y. We can increase the bit allocation if needed.
 static const uint kMaxBounces = 254;                ///< Maximum supported number of bounces per bounce category (value 255 is reserved for internal use). The resulting path length may be longer than this.
-static const uint kMaxLightSamplesPerVertex = 8;    ///< Maximum number of shadow rays per path vertex for next-event estimation.
+static const uint kMaxLightSamplesPerVertex = 64;   ///< Maximum number of shadow rays per path vertex for next-event estimation.
 
 // Import static specialization constants.
 #ifndef HOST_CODE
