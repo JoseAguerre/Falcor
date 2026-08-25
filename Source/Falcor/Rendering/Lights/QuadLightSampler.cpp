@@ -58,4 +58,25 @@ namespace Falcor
             FALCOR_THROW("Unknown or not-yet-implemented QuadLightSamplerType");
         }
     }
+
+    std::unique_ptr<QuadLightSampler> createQuadLightSamplerFromLuminance(
+        QuadLightSamplerType type, ref<Device> pDevice, ref<QuadLight> pQuadLight, uint32_t width, uint32_t height, const std::vector<float>& luminance
+    )
+    {
+        switch (type)
+        {
+        case QuadLightSamplerType::Random:
+            return std::make_unique<QuadLightRandomSampler>(pDevice, pQuadLight);
+        case QuadLightSamplerType::Cdf2D:
+            return std::make_unique<QuadLightCdfSampler>(pDevice, pQuadLight, width, height, luminance);
+        case QuadLightSamplerType::HierarchicalMip:
+            return std::make_unique<QuadLightMipSampler>(pDevice, pQuadLight, width, height, luminance);
+        case QuadLightSamplerType::AliasPerPixel:
+            return std::make_unique<QuadLightAliasSampler>(pDevice, pQuadLight, width, height, luminance);
+        case QuadLightSamplerType::AliasCtu:
+            return std::make_unique<QuadLightAliasCtuSampler>(pDevice, pQuadLight, width, height, luminance);
+        default:
+            FALCOR_THROW("Unknown or not-yet-implemented QuadLightSamplerType");
+        }
+    }
 }

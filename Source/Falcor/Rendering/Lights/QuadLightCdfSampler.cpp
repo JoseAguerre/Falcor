@@ -41,19 +41,37 @@ namespace Falcor
 
         uint32_t w = 0, h = 0;
         std::vector<float> luminance = computeQuadLightLuminance(*pQuadLight, w, h);
-        if (luminance.empty())
-        {
-            // Fall back to a single uniform texel so the sampler is still well-defined.
-            w = h = 1;
-            luminance = {1.f};
-        }
-        mGridDim = uint2(w, h);
 
         auto luminanceEnd = CpuTimer::getCurrentTimePoint();
         logInfo(
             "QuadLightCdfSampler: source image load/decode time {:.3f} ms ({}x{})",
             CpuTimer::calcDuration(luminanceStart, luminanceEnd), w, h
         );
+
+        build(w, h, luminance);
+    }
+
+    QuadLightCdfSampler::QuadLightCdfSampler(
+        ref<Device> pDevice, ref<QuadLight> pQuadLight, uint32_t width, uint32_t height, const std::vector<float>& luminance
+    )
+        : QuadLightSampler(QuadLightSamplerType::Cdf2D, pDevice, pQuadLight)
+    {
+        build(width, height, luminance);
+    }
+
+    void QuadLightCdfSampler::build(uint32_t w, uint32_t h, const std::vector<float>& luminanceIn)
+    {
+        // Fall back to a single uniform texel so the sampler is still well-defined.
+        std::vector<float> fallback;
+        const std::vector<float>* pLuminance = &luminanceIn;
+        if (luminanceIn.empty() || w == 0 || h == 0)
+        {
+            w = h = 1;
+            fallback = {1.f};
+            pLuminance = &fallback;
+        }
+        const std::vector<float>& luminance = *pLuminance;
+        mGridDim = uint2(w, h);
 
         auto start = CpuTimer::getCurrentTimePoint();
 

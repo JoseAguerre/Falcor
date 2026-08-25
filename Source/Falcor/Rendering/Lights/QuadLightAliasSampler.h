@@ -29,6 +29,7 @@
 #include "QuadLightSampler.h"
 #include "Utils/Sampling/AliasTable.h"
 #include <memory>
+#include <vector>
 
 namespace Falcor
 {
@@ -39,11 +40,20 @@ namespace Falcor
     class FALCOR_API QuadLightAliasSampler : public QuadLightSampler
     {
     public:
+        /** Decodes pQuadLight's source image itself (via computeQuadLightLuminance()) before building. */
         QuadLightAliasSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight);
+
+        /** Builds directly from an already-computed luminance array, skipping the decode -
+            for callers (e.g. video playback prefetch) that already have one on hand from
+            building the GPU texture, so the same source image isn't decoded twice.
+        */
+        QuadLightAliasSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight, uint32_t width, uint32_t height, const std::vector<float>& luminance);
 
         void bindShaderData(const ShaderVar& var) const override;
 
     private:
+        void build(uint32_t width, uint32_t height, const std::vector<float>& luminance);
+
         uint2 mGridDim;
         std::unique_ptr<AliasTable> mpAliasTable;
     };

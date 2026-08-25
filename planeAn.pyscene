@@ -1,0 +1,47 @@
+# Analytic rectangle-light version of planeAn.pyscene's QuadLight setup: a plain white
+# RectLight (Falcor's built-in analytic area light, no texture/importance sampler of its
+# own) in the same position/size/facing as the QuadLight it replaces, for comparison.
+
+# Floor
+floorMat = StandardMaterial('Floor')
+floorMat.baseColor = float4(0.6, 0.6, 0.6, 1.0)
+floorMat.roughness = 0.6
+floorMesh = TriangleMesh.createQuad(float2(6.0, 6.0))
+sceneBuilder.addMeshInstance(
+    sceneBuilder.addNode('Floor', Transform(translation=float3(0, 0, 0))),
+    sceneBuilder.addTriangleMesh(floorMesh, floorMat)
+)
+
+# Analytic rectangle light: same big vertical "window" on the -X side of the room, facing
+# +X into the scene, as the QuadLight version - but a RectLight has no texture and no
+# placeholder mesh (analytic lights aren't scene geometry, so nothing needs to be added via
+# addMeshInstance/addTriangleMesh here, unlike the QuadLight case).
+#
+# RectLight's default local geometry (see LightHelpers.slang's sampleRectAreaLight) is a
+# 2x2 square from (-1,-1,0) to (1,1,0) in the local XY plane, normal along local +Z - a
+# different convention from QuadLight's local XZ-plane/+Y-normal default, so this needs its
+# own rotation, not the QuadLight one reused. rotationEulerDeg=(0,90,0) sends local Z
+# (normal) -> world +X (facing into the room) and leaves local Y untouched -> world Y
+# (vertical) - a plain single-axis rotation is enough here (unlike QuadLight, there's no
+# "texture up" to also align, since a solid color has no orientation to get wrong).
+# `scaling` sets the half-extent along each local axis: local X -> world Z (the window's
+# width along the room's depth), local Y -> world Y (vertical height) - so scaling.x =
+# width/2, scaling.y = height/2 reproduces the QuadLight version's 4.5 x 3.5 size exactly.
+# (AnalyticAreaLight.transformMatrix/.scaling are newly-added Python bindings - previously
+# there was no way to position/size an analytic light from a .pyscene at all.)
+rectLight = RectLight('RectLight')
+rectLight.intensity = float3(1.5, 1.5, 1.5)  # all white; same starting brightness as the QuadLight version's intensity=1.5 on a white texture.
+rectLight.scaling = float3(2.25, 1.75, 1.0)  # half-extents: width/2, height/2 -> a 4.5 x 3.5 rectangle, same size as the QuadLight version
+rectLight.transformMatrix = Transform(translation=float3(-3.4, 1.9, 0.3), rotationEulerDeg=float3(0, 90, 0)).matrix
+sceneBuilder.addLight(rectLight)
+
+# Camera - same framing as quadlight_test.pyscene.
+camera = Camera()
+camera.position = float3(0, 1.6, 4.0)
+camera.target = float3(0, 1.0, 0)
+camera.up = float3(0, 1, 0)
+camera.focalLength = 21.0
+sceneBuilder.addCamera(camera)
+
+# Disable env/quad lighting so the room is lit purely by the analytic rect light.
+sceneBuilder.renderSettings = SceneRenderSettings(useEnvLight=False, useAnalyticLights=True, useEmissiveLights=False, useQuadLight=False)

@@ -131,18 +131,36 @@ namespace Falcor
 
         uint32_t w = 0, h = 0;
         std::vector<float> luminance = computeQuadLightLuminance(*pQuadLight, w, h);
-        if (luminance.empty())
-        {
-            w = h = 1;
-            luminance = {1.f};
-        }
-        mGridDim = uint2(w, h);
 
         auto luminanceEnd = CpuTimer::getCurrentTimePoint();
         logInfo(
             "QuadLightAliasCtuSampler: source image load/decode time {:.3f} ms ({}x{})",
             CpuTimer::calcDuration(luminanceStart, luminanceEnd), w, h
         );
+
+        build(w, h, luminance);
+    }
+
+    QuadLightAliasCtuSampler::QuadLightAliasCtuSampler(
+        ref<Device> pDevice, ref<QuadLight> pQuadLight, uint32_t width, uint32_t height, const std::vector<float>& luminance
+    )
+        : QuadLightSampler(QuadLightSamplerType::AliasCtu, pDevice, pQuadLight)
+    {
+        build(width, height, luminance);
+    }
+
+    void QuadLightAliasCtuSampler::build(uint32_t w, uint32_t h, const std::vector<float>& luminanceIn)
+    {
+        std::vector<float> fallback;
+        const std::vector<float>* pLuminance = &luminanceIn;
+        if (luminanceIn.empty() || w == 0 || h == 0)
+        {
+            w = h = 1;
+            fallback = {1.f};
+            pLuminance = &fallback;
+        }
+        const std::vector<float>& luminance = *pLuminance;
+        mGridDim = uint2(w, h);
 
         auto hierarchyStart = CpuTimer::getCurrentTimePoint();
 
@@ -190,14 +208,14 @@ namespace Falcor
         // load), no need for cross-run entropy, and it keeps rebuilds reproducible.
         auto aliasStart = CpuTimer::getCurrentTimePoint();
         std::mt19937 rng(1234u);
-        mpAliasTable = std::make_unique<AliasTable>(pDevice, std::move(weights), rng);
+        mpAliasTable = std::make_unique<AliasTable>(mpDevice, std::move(weights), rng);
         auto aliasEnd = CpuTimer::getCurrentTimePoint();
         logInfo("QuadLightAliasCtuSampler: alias table build time {:.3f} ms", CpuTimer::calcDuration(aliasStart, aliasEnd));
 
-        mpLeafRects = pDevice->createStructuredBuffer(
+        mpLeafRects = mpDevice->createStructuredBuffer(
             sizeof(float4), (uint32_t)rects.size(), ResourceBindFlags::ShaderResource, MemoryType::DeviceLocal, rects.data(), false
         );
-        mpLeafIndexMap = pDevice->createStructuredBuffer(
+        mpLeafIndexMap = mpDevice->createStructuredBuffer(
             sizeof(uint32_t), (uint32_t)leafIndexMap.size(), ResourceBindFlags::ShaderResource, MemoryType::DeviceLocal, leafIndexMap.data(),
             false
         );

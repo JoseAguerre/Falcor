@@ -45,24 +45,17 @@ namespace Falcor
         inline float unormToFloat(uint16_t v) { return float(v) * (1.f / 65535.f); }
     }
 
-    std::vector<float> computeQuadLightLuminance(const QuadLight& light, uint32_t& outWidth, uint32_t& outHeight)
+    std::vector<float> computeLuminanceFromBitmap(
+        const Bitmap& bitmap, uint32_t& outWidth, uint32_t& outHeight, const std::filesystem::path& pathForLogging
+    )
     {
         outWidth = 0;
         outHeight = 0;
 
-        // isTopDown=true matches Texture::createFromFile's kTopDown (Texture.cpp), so this
-        // decodes the exact same bytes that were uploaded to the GPU texture.
-        auto pBitmap = Bitmap::createFromFile(light.getPath(), true);
-        if (!pBitmap)
-        {
-            logWarning("QuadLight: failed to re-read source image '{}' for CPU luminance computation.", light.getPath());
-            return {};
-        }
-
-        const uint32_t w = pBitmap->getWidth();
-        const uint32_t h = pBitmap->getHeight();
-        const uint32_t rowPitch = pBitmap->getRowPitch();
-        const uint8_t* pData = pBitmap->getData();
+        const uint32_t w = bitmap.getWidth();
+        const uint32_t h = bitmap.getHeight();
+        const uint32_t rowPitch = bitmap.getRowPitch();
+        const uint8_t* pData = bitmap.getData();
 
         std::vector<float> luminance((size_t)w * h, 0.f);
 
@@ -79,7 +72,7 @@ namespace Falcor
             }
         };
 
-        switch (pBitmap->getFormat())
+        switch (bitmap.getFormat())
         {
         case ResourceFormat::RGBA32Float:
             forEachPixel(
@@ -162,7 +155,7 @@ namespace Falcor
         default:
             logWarning(
                 "QuadLight: source image '{}' decoded to an unsupported format ({}) for CPU luminance computation; treating as uniform.",
-                light.getPath(), uint32_t(pBitmap->getFormat())
+                pathForLogging, uint32_t(bitmap.getFormat())
             );
             std::fill(luminance.begin(), luminance.end(), 1.f);
             break;
@@ -188,12 +181,29 @@ namespace Falcor
         {
             logWarning(
                 "QuadLight: source image '{}' contained {} non-finite/negative luminance texel(s); treated as black.",
-                light.getPath(), numInvalid
+                pathForLogging, numInvalid
             );
         }
 
         outWidth = w;
         outHeight = h;
         return luminance;
+    }
+
+    std::vector<float> computeQuadLightLuminance(const QuadLight& light, uint32_t& outWidth, uint32_t& outHeight)
+    {
+        outWidth = 0;
+        outHeight = 0;
+
+        // isTopDown=true matches Texture::createFromFile's kTopDown (Texture.cpp), so this
+        // decodes the exact same bytes that were uploaded to the GPU texture.
+        auto pBitmap = Bitmap::createFromFile(light.getPath(), true);
+        if (!pBitmap)
+        {
+            logWarning("QuadLight: failed to re-read source image '{}' for CPU luminance computation.", light.getPath());
+            return {};
+        }
+
+        return computeLuminanceFromBitmap(*pBitmap, outWidth, outHeight, light.getPath());
     }
 }

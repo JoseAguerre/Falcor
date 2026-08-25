@@ -16,38 +16,6 @@ sceneBuilder.addMeshInstance(
     sceneBuilder.addTriangleMesh(floorMesh, floorMat)
 )
 
-# A sphere on the floor to show shadowing/highlights from the quad light.
-sphereMat = StandardMaterial('Sphere')
-sphereMat.baseColor = float4(0.8, 0.2, 0.2, 1.0)
-sphereMat.roughness = 0.3
-sphereMesh = TriangleMesh.createSphere(0.6)
-sceneBuilder.addMeshInstance(
-    sceneBuilder.addNode('Sphere', Transform(translation=float3(0.8, 0.6, -0.5))),
-    sceneBuilder.addTriangleMesh(sphereMesh, sphereMat)
-)
-
-# A sharp GGX metal sphere to show specular reflections of the quad light's texture.
-metalMat = StandardMaterial('MetalSphere')
-metalMat.baseColor = float4(0.9, 0.9, 0.92, 1.0)
-metalMat.roughness = 0.05
-metalMat.metallic = 1.0
-metalSphereMesh = TriangleMesh.createSphere(0.5)
-sceneBuilder.addMeshInstance(
-    sceneBuilder.addNode('MetalSphere', Transform(translation=float3(-1.3, 0.5, -0.3))),
-    sceneBuilder.addTriangleMesh(metalSphereMesh, metalMat)
-)
-
-# A more complex diffuse object (Stanford bunny) to show shadowing/GI from a non-primitive mesh.
-bunnyMat = StandardMaterial('Bunny')
-bunnyMat.baseColor = float4(0.75, 0.75, 0.75, 1.0)
-bunnyMat.roughness = 0.8
-bunnyScale = 4.0
-bunnyMesh = TriangleMesh.createFromFile('C:/packman-repo/chk/falcor_media/7acdf8b0/test_scenes/meshes/bunny.obj')
-sceneBuilder.addMeshInstance(
-    sceneBuilder.addNode('Bunny', Transform(translation=float3(0.5, -0.033 * bunnyScale, 1.3), scaling=float3(bunnyScale, bunnyScale, bunnyScale))),
-    sceneBuilder.addTriangleMesh(bunnyMesh, bunnyMat)
-)
-
 # Quad light: a big vertical "window" on the -X side of the room, facing +X (into the
 # scene) instead of straight down. A non-emissive placeholder material is assigned to a
 # real quad mesh (kept out of the standard emissive-triangle light pipeline on purpose),
@@ -76,7 +44,7 @@ sceneBuilder.addMeshInstance(
     sceneBuilder.addTriangleMesh(TriangleMesh.createQuad(quadSize), quadLightMat)  # same quadLightMat instance -> addMaterial dedupes to quadLightMatID
 )
 
-quadLight = QuadLight.createFromFile('C:/Users/Elojo/Downloads/vp9macroblock/vp9macroblock-viewer/encoded/frames/frame_00048.exr')
+quadLight = QuadLight.createFromFile('white.jpg')
 quadLight.materialID = quadLightMatID
 quadLight.transform = quadTransform.matrix
 quadLight.size = quadSize

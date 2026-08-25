@@ -33,6 +33,7 @@
 #include "Utils/Math/Float16.h"
 #include "Utils/Logger.h"
 #include "Utils/StringUtils.h"
+#include "Utils/Timing/CpuTimer.h"
 
 #include <ImfIO.h>
 #include <ImfInputFile.h>
@@ -309,8 +310,10 @@ Bitmap::UniqueConstPtr Bitmap::create(uint32_t width, uint32_t height, ResourceF
     return Bitmap::UniqueConstPtr(new Bitmap(width, height, format, pData));
 }
 
-Bitmap::UniqueConstPtr Bitmap::createFromFile(const std::filesystem::path& path, bool isTopDown, ImportFlags importFlags)
+Bitmap::UniqueConstPtr Bitmap::createFromFile(const std::filesystem::path& path, bool isTopDown, ImportFlags importFlags, DecodeTimings* pTimings)
 {
+    const auto timeOpenStart = CpuTimer::getCurrentTimePoint();
+
     if (!std::filesystem::exists(path))
     {
         logWarning("Error when loading image file. File '{}' does not exist.", path);
@@ -347,6 +350,9 @@ Bitmap::UniqueConstPtr Bitmap::createFromFile(const std::filesystem::path& path,
         return nullptr;
     }
 
+    const auto timeDecodeStart = CpuTimer::getCurrentTimePoint();
+    if (pTimings) pTimings->formatDetectAndOpenMs = CpuTimer::calcDuration(timeOpenStart, timeDecodeStart);
+
     if (fifFormat == FIF_EXR)
     {
         if (isFloat16Exr(file))
@@ -363,6 +369,9 @@ Bitmap::UniqueConstPtr Bitmap::createFromFile(const std::filesystem::path& path,
         genWarning("Can't read image file", path);
         return nullptr;
     }
+
+    const auto timeConversionStart = CpuTimer::getCurrentTimePoint();
+    if (pTimings) pTimings->freeImageDecodeMs = CpuTimer::calcDuration(timeDecodeStart, timeConversionStart);
 
     // Create the bitmap
     const uint32_t height = FreeImage_GetHeight(pDib);
@@ -461,11 +470,17 @@ Bitmap::UniqueConstPtr Bitmap::createFromFile(const std::filesystem::path& path,
     if (fifFormat == FIF_PFM)
         isTopDown = !isTopDown;
 
+    const auto timeRawBitsStart = CpuTimer::getCurrentTimePoint();
+    if (pTimings) pTimings->conversionMs = CpuTimer::calcDuration(timeConversionStart, timeRawBitsStart);
+
     UniqueConstPtr pBmp = UniqueConstPtr(new Bitmap(width, height, format));
     FreeImage_ConvertToRawBits(
         pBmp->getData(), pDib, pBmp->getRowPitch(), bpp, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, isTopDown
     );
     FreeImage_Unload(pDib);
+
+    if (pTimings) pTimings->rawBitsCopyMs = CpuTimer::calcDuration(timeRawBitsStart, CpuTimer::getCurrentTimePoint());
+
     return pBmp;
 }
 

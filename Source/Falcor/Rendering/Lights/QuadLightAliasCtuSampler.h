@@ -30,6 +30,7 @@
 #include "Utils/Sampling/AliasTable.h"
 #include "Core/API/Buffer.h"
 #include <memory>
+#include <vector>
 
 namespace Falcor
 {
@@ -51,11 +52,20 @@ namespace Falcor
     class FALCOR_API QuadLightAliasCtuSampler : public QuadLightSampler
     {
     public:
+        /** Decodes pQuadLight's source image itself (via computeQuadLightLuminance()) before building. */
         QuadLightAliasCtuSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight);
+
+        /** Builds directly from an already-computed luminance array, skipping the decode -
+            for callers (e.g. video playback prefetch) that already have one on hand from
+            building the GPU texture, so the same source image isn't decoded twice.
+        */
+        QuadLightAliasCtuSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight, uint32_t width, uint32_t height, const std::vector<float>& luminance);
 
         void bindShaderData(const ShaderVar& var) const override;
 
     private:
+        void build(uint32_t width, uint32_t height, const std::vector<float>& luminance);
+
         uint2 mGridDim;
         ref<Buffer> mpLeafRects;       ///< Per-leaf normalized (u0,v0,u1,v1) rects, indexed identically to the alias table.
         ref<Buffer> mpLeafIndexMap;    ///< WxH map from texel -> leaf index, for O(1) evalPdf() lookups.

@@ -427,6 +427,8 @@ namespace Falcor
         distantLight.def_property("angle", &DistantLight::getAngle, &DistantLight::setAngle);
 
         pybind11::class_<AnalyticAreaLight, Light, ref<AnalyticAreaLight>> analyticLight(m, "AnalyticAreaLight");
+        analyticLight.def_property("transformMatrix", &AnalyticAreaLight::getTransformMatrix, &AnalyticAreaLight::setTransformMatrix);
+        analyticLight.def_property("scaling", &AnalyticAreaLight::getScaling, &AnalyticAreaLight::setScaling);
 
         pybind11::class_<RectLight, AnalyticAreaLight, ref<RectLight>> rectLight(m, "RectLight");
         rectLight.def(pybind11::init(&RectLight::create), "name"_a = "");
