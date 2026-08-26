@@ -33,6 +33,7 @@
 #include "Utils/Image/Bitmap.h"
 #include "Utils/Logger.h"
 #include "Utils/Timing/CpuTimer.h"
+#include "Utils/Timing/PeriodicStatsLogger.h"
 
 #include <algorithm>
 #include <chrono>
@@ -225,19 +226,29 @@ namespace Falcor
 
         const auto decodeStart = CpuTimer::getCurrentTimePoint();
         Bitmap::DecodeTimings decodeTimings;
-        result.pBitmap = Bitmap::createFromFile(entry.path, true, Bitmap::ImportFlags::None, &decodeTimings);
+        // RGBA16Float instead of the default RGBA32Float: halves the per-frame GPU upload (see
+        // finalizeResult() below, where that upload - not decode - is this pipeline's real
+        // bottleneck; measured at ~1 GB/s effective, so bytes moved is what matters). Half-float
+        // has plenty of headroom for HDR light values (11-bit mantissa, max ~65504) and
+        // computeLuminanceFromBitmap() already handles this format explicitly.
+        result.pBitmap = Bitmap::createFromFile(entry.path, true, Bitmap::ImportFlags::ConvertToFloat16, &decodeTimings);
         const auto decodeEnd = CpuTimer::getCurrentTimePoint();
         if (!result.pBitmap)
         {
             logWarning("QuadLightVideoPlayer: failed to decode frame {} ('{}') - this ring slot won't become ready until a later job overwrites it.", job.playlistIndex, entry.path);
             return result;
         }
-        logInfo(
-            "QuadLightVideoPlayer: frame {} ('{}') decode time {:.3f} ms ({}x{}) "
-            "[open+detect {:.3f} ms, FreeImage decode {:.3f} ms, conversion {:.3f} ms, raw-bits copy {:.3f} ms]",
-            job.playlistIndex, entry.path, CpuTimer::calcDuration(decodeStart, decodeEnd), result.pBitmap->getWidth(), result.pBitmap->getHeight(),
-            decodeTimings.formatDetectAndOpenMs, decodeTimings.freeImageDecodeMs, decodeTimings.conversionMs, decodeTimings.rawBitsCopyMs
-        );
+        // Runs once per video frame (background decode thread) - logging each call individually
+        // floods the console during playback, so it's aggregated into a periodic summary
+        // instead (see PeriodicStatsLogger's doc comment). Kept as separate named entries (not
+        // just the total) so the phase breakdown - which has repeatedly mattered for diagnosing
+        // real slowdowns in this pipeline - stays available, just at a much lower log rate.
+        static PeriodicStatsLogger sDecodeStats;
+        sDecodeStats.record("QuadLightVideoPlayer decode total", CpuTimer::calcDuration(decodeStart, decodeEnd));
+        sDecodeStats.record("QuadLightVideoPlayer decode open+detect", decodeTimings.formatDetectAndOpenMs);
+        sDecodeStats.record(fmt::format("QuadLightVideoPlayer decode ({})", decodeTimings.decoder), decodeTimings.decodeMs);
+        sDecodeStats.record("QuadLightVideoPlayer decode conversion", decodeTimings.conversionMs);
+        sDecodeStats.record("QuadLightVideoPlayer decode raw-bits copy", decodeTimings.rawBitsCopyMs);
 
         // QuadLightSamplerType::Random needs no luminance data - skip computing it.
         if (job.type != QuadLightSamplerType::Random)
@@ -281,10 +292,10 @@ namespace Falcor
         slot.ready = true;
 
         const auto buildEnd = CpuTimer::getCurrentTimePoint();
-        logInfo(
-            "QuadLightVideoPlayer: frame {} GPU build time {:.3f} ms (main thread: texture+sampler)",
-            result.playlistIndex, CpuTimer::calcDuration(buildStart, buildEnd)
-        );
+        // Runs once per video frame (main thread) - aggregated for the same reason as the
+        // decode-side stats above.
+        static PeriodicStatsLogger sGpuBuildStats;
+        sGpuBuildStats.record("QuadLightVideoPlayer GPU build (main thread: texture+sampler)", CpuTimer::calcDuration(buildStart, buildEnd));
     }
 
     void QuadLightVideoPlayer::runWorker()

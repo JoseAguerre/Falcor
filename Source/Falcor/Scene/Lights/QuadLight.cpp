@@ -137,6 +137,20 @@ namespace Falcor
             "exactly one sample.",
             true
         );
+
+        widgets.var("Max BSDF-hit contribution", mData.maxBsdfHitContribution, 0.f, FLT_MAX, 0.1f);
+        widgets.tooltip(
+            "Firefly-suppression clamp: caps the radiance contribution a single BSDF-sampled "
+            "ray hitting this light may add to a pixel, on bounced rays only - never applied "
+            "on a camera ray that sees the light directly, so its rendered image is always "
+            "exact. Rescales toward the cap preserving hue rather than clamping the source "
+            "texture, so a legitimately bright but well-sampled feature (e.g. a bright sun "
+            "texel, which can easily read 5+ in linear radiance) is left alone - only rare, "
+            "pathological low-pdf/high-value outlier samples on indirect hits are affected. "
+            "0 disables clamping (default). Does not affect next-event-estimation (shadow-ray) "
+            "sampling of this light either way.",
+            true
+        );
     }
 
     bool QuadLight::loadTextureFromFile(const std::filesystem::path& path)
@@ -214,6 +228,11 @@ namespace Falcor
         mData.lightSamplesPerVertex = std::clamp(count, 1u, 64u);
     }
 
+    void QuadLight::setMaxBsdfHitContribution(float value)
+    {
+        mData.maxBsdfHitContribution = std::max(0.f, value);
+    }
+
     float QuadLight::getArea() const
     {
         return mData.size.x * mData.size.y;
@@ -239,6 +258,7 @@ namespace Falcor
         if (mData.intensity != mPrevData.intensity) mChanges |= Changes::Intensity;
         if (any(mData.tint != mPrevData.tint)) mChanges |= Changes::Intensity;
         if (mData.lightSamplesPerVertex != mPrevData.lightSamplesPerVertex) mChanges |= Changes::Intensity;
+        if (mData.maxBsdfHitContribution != mPrevData.maxBsdfHitContribution) mChanges |= Changes::Intensity;
         if (mSamplerType != mPrevSamplerType)
         {
             mChanges |= Changes::SamplerType;
@@ -306,5 +326,6 @@ namespace Falcor
         quadLight.def_property("doubleSided", &QuadLight::getDoubleSided, &QuadLight::setDoubleSided);
         quadLight.def_property("samplerType", &QuadLight::getSamplerType, &QuadLight::setSamplerType);
         quadLight.def_property("lightSamplesPerVertex", &QuadLight::getLightSamplesPerVertex, &QuadLight::setLightSamplesPerVertex);
+        quadLight.def_property("maxBsdfHitContribution", &QuadLight::getMaxBsdfHitContribution, &QuadLight::setMaxBsdfHitContribution);
     }
 }

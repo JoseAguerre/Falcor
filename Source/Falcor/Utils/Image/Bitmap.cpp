@@ -34,6 +34,7 @@
 #include "Utils/Logger.h"
 #include "Utils/StringUtils.h"
 #include "Utils/Timing/CpuTimer.h"
+#include "Utils/Timing/PeriodicStatsLogger.h"
 
 #include <ImfIO.h>
 #include <ImfInputFile.h>
@@ -47,6 +48,13 @@
 #include <windows.h>
 #endif
 #include <FreeImage.h>
+#if FALCOR_HAS_DEVIL
+#include <IL/il.h>
+#include <mutex>
+#endif
+#include <omp.h>
+#include <cstdio>
+#include <cstring>
 
 namespace Falcor
 {
@@ -92,6 +100,223 @@ bool isFloat16Exr(const MemoryMappedFile& inputFile)
         if (it.channel().type != Imf::HALF)
             return false;
     return true;
+}
+
+// --- Radiance HDR (.hdr) custom decoder ---
+// Two-pass parallel RLE decode + LUT-based RGBE->float conversion. Proven bit-exact against
+// FreeImage/stb_image/a canonical reference decoder/OpenImageIO, and on real playlist frames
+// measurably faster than both FreeImage and DevIL (see image_load_bench/ at the repo root for
+// the benchmark this was developed and validated in) - so it's tried first for .hdr, ahead of
+// DevIL, in Bitmap::createFromFile() below. It only understands Radiance's own RLE encoding,
+// not OpenEXR, so .exr always skips straight to the DevIL/FreeImage chain.
+
+struct RgbeByteReader
+{
+    const uint8_t* data;
+    size_t size;
+    size_t pos = 0;
+
+    int getc() { return pos < size ? data[pos++] : -1; }
+    size_t read(uint8_t* dst, size_t n)
+    {
+        size_t toRead = std::min(n, size - pos);
+        memcpy(dst, data + pos, toRead);
+        pos += toRead;
+        return toRead;
+    }
+};
+
+bool rgbeReadHeader(RgbeByteReader& r, int& width, int& height)
+{
+    auto readLine = [&](std::string& out) -> bool
+    {
+        out.clear();
+        if (r.pos >= r.size) return false;
+        while (r.pos < r.size)
+        {
+            char c = (char)r.data[r.pos++];
+            if (c == '\n') break;
+            if (c != '\r') out.push_back(c);
+        }
+        return true;
+    };
+
+    std::string line;
+    while (readLine(line))
+    {
+        if (line.empty()) break; // blank line ends the header
+    }
+    if (!readLine(line)) return false;
+
+    int h = 0, w = 0;
+    if (sscanf(line.c_str(), "-Y %d +X %d", &h, &w) == 2 || sscanf(line.c_str(), "+Y %d +X %d", &h, &w) == 2)
+    {
+        width = w;
+        height = h;
+        return width > 0 && height > 0;
+    }
+    return false;
+}
+
+// New-style scanline: 4 planar-RLE-encoded channels (R,G,B,E), each independently run-length-
+// encoded: a length byte >128 means "repeat the next byte (len-128) times", <=128 means "len
+// literal bytes follow".
+bool rgbeReadScanlineNewRLE(RgbeByteReader& r, int width, uint8_t* planar)
+{
+    for (int channel = 0; channel < 4; ++channel)
+    {
+        int x = 0;
+        uint8_t* dst = planar + (size_t)channel * width;
+        while (x < width)
+        {
+            int c = r.getc();
+            if (c < 0) return false;
+            if (c > 128)
+            {
+                int count = c - 128;
+                int val = r.getc();
+                if (val < 0 || x + count > width) return false;
+                memset(dst + x, (uint8_t)val, count);
+                x += count;
+            }
+            else
+            {
+                int count = c;
+                if (x + count > width) return false;
+                if (r.read(dst + x, count) != (size_t)count) return false;
+                x += count;
+            }
+        }
+    }
+    return true;
+}
+
+// Dry-run pass: same RLE state machine as rgbeReadScanlineNewRLE() above, but skips every
+// write - only advances a read cursor far enough to find where each row starts. Radiance's RLE
+// is a serial bitstream (you can't know where row N+1 starts without decoding row N, the same
+// reason DEFLATE/gzip streams resist parallel decoding without pre-inserted sync points), so
+// this serial pass is unavoidable - but it's cheaper than a full decode since it skips every
+// memcpy/memset/LUT-multiply, doing only run-length bookkeeping. Once it's done, every row's
+// offset is known and Pass 2 (see Bitmap::tryCreateFromFileRGBE() below) can decode+convert
+// rows independently in parallel. Takes `r` by value (a cheap 3-word copy) so the caller's own
+// reader position is left untouched.
+bool rgbeFindRowOffsets(RgbeByteReader r, int width, int height, std::vector<size_t>& rowOffsets)
+{
+    rowOffsets.resize(height);
+    for (int y = 0; y < height; ++y)
+    {
+        rowOffsets[y] = r.pos;
+        size_t rowStart = r.pos;
+        uint8_t marker[4];
+        size_t got4 = r.read(marker, 4);
+        bool isNewRLE = got4 == 4 && marker[0] == 2 && marker[1] == 2 && width >= 8 && width < 0x8000 &&
+                        ((marker[2] << 8) | marker[3]) == width;
+
+        if (isNewRLE)
+        {
+            for (int channel = 0; channel < 4; ++channel)
+            {
+                int x = 0;
+                while (x < width)
+                {
+                    int c = r.getc();
+                    if (c < 0) return false;
+                    if (c > 128)
+                    {
+                        int count = c - 128;
+                        int val = r.getc();
+                        if (val < 0 || x + count > width) return false;
+                        x += count;
+                    }
+                    else
+                    {
+                        int count = c;
+                        if (x + count > width || r.pos + (size_t)count > r.size) return false;
+                        r.pos += count;
+                        x += count;
+                    }
+                }
+            }
+        }
+        else
+        {
+            r.pos = rowStart;
+            int x = 0;
+            while (x < width)
+            {
+                uint8_t px[4];
+                if (r.read(px, 4) != 4) return false;
+                if (px[0] == 1 && px[1] == 1 && px[2] == 1)
+                    x += px[3];
+                else
+                    ++x;
+            }
+        }
+    }
+    return true;
+}
+
+// Decodes exactly one scanline (either encoding style), starting at r.pos, into a caller-
+// supplied interleaved RGBE scratch buffer (width*4 bytes) - Pass 2 calls this once per row,
+// each thread on its own row range. `planarScratch` (also width*4 bytes, caller-supplied so no
+// per-row heap allocation) is only used internally for the new-style RLE case.
+bool rgbeDecodeOneRow(RgbeByteReader& r, int width, uint8_t* rowOut, uint8_t* planarScratch)
+{
+    size_t rowStart = r.pos;
+    uint8_t marker[4];
+    size_t got4 = r.read(marker, 4);
+    bool isNewRLE = got4 == 4 && marker[0] == 2 && marker[1] == 2 && width >= 8 && width < 0x8000 &&
+                    ((marker[2] << 8) | marker[3]) == width;
+
+    if (isNewRLE)
+    {
+        if (!rgbeReadScanlineNewRLE(r, width, planarScratch)) return false;
+        for (int x = 0; x < width; ++x)
+        {
+            rowOut[x * 4 + 0] = planarScratch[0 * width + x];
+            rowOut[x * 4 + 1] = planarScratch[1 * width + x];
+            rowOut[x * 4 + 2] = planarScratch[2 * width + x];
+            rowOut[x * 4 + 3] = planarScratch[3 * width + x];
+        }
+    }
+    else
+    {
+        r.pos = rowStart;
+        int x = 0;
+        uint8_t prev[4] = {0, 0, 0, 0};
+        while (x < width)
+        {
+            uint8_t px[4];
+            if (r.read(px, 4) != 4) return false;
+            if (px[0] == 1 && px[1] == 1 && px[2] == 1)
+            {
+                int count = px[3];
+                for (int i = 0; i < count && x < width; ++i, ++x) memcpy(rowOut + x * 4, prev, 4);
+            }
+            else
+            {
+                memcpy(prev, px, 4);
+                memcpy(rowOut + x * 4, px, 4);
+                ++x;
+            }
+        }
+    }
+    return true;
+}
+
+// 256-entry lookup table of the exponent's scale factor (2^(e-136)), replacing a per-pixel
+// ldexpf() call - built once, on first use.
+const float* rgbeExpTable()
+{
+    static float table[256];
+    static bool built = false;
+    if (!built)
+    {
+        table[0] = 0.f;
+        for (int e = 1; e < 256; ++e) table[e] = ldexpf(1.0f, e - (128 + 8));
+        built = true;
+    }
+    return table;
 }
 
 } // namespace
@@ -310,6 +535,203 @@ Bitmap::UniqueConstPtr Bitmap::create(uint32_t width, uint32_t height, ResourceF
     return Bitmap::UniqueConstPtr(new Bitmap(width, height, format, pData));
 }
 
+Bitmap::UniqueConstPtr Bitmap::tryCreateFromFileRGBE(
+    const std::filesystem::path& path, bool isTopDown, ImportFlags importFlags, DecodeTimings* pTimings
+)
+{
+    const auto timeOpenStart = CpuTimer::getCurrentTimePoint();
+
+    MemoryMappedFile file(path, MemoryMappedFile::kWholeFile, MemoryMappedFile::AccessHint::SequentialScan);
+    if (!file.isOpen()) return nullptr;
+
+    const auto timePass1Start = CpuTimer::getCurrentTimePoint();
+    if (pTimings) pTimings->formatDetectAndOpenMs = CpuTimer::calcDuration(timeOpenStart, timePass1Start);
+
+    const uint8_t* fileData = reinterpret_cast<const uint8_t*>(file.getData());
+    const size_t fileSize = file.getSize();
+
+    RgbeByteReader headerReader{fileData, fileSize};
+    int width = 0, height = 0;
+    if (!rgbeReadHeader(headerReader, width, height)) return nullptr;
+
+    // Pass 1 (serial): find every row's starting byte offset - see rgbeFindRowOffsets()'s own
+    // comment for why this can't itself be parallelized.
+    std::vector<size_t> rowOffsets;
+    if (!rgbeFindRowOffsets(headerReader, width, height, rowOffsets)) return nullptr;
+
+    const auto timePass2Start = CpuTimer::getCurrentTimePoint();
+    if (pTimings) pTimings->decodeMs = CpuTimer::calcDuration(timePass1Start, timePass2Start);
+
+    const bool toFloat16 = is_set(importFlags, ImportFlags::ConvertToFloat16);
+    const ResourceFormat format = toFloat16 ? ResourceFormat::RGBA16Float : ResourceFormat::RGBA32Float;
+    UniqueConstPtr pBmp = UniqueConstPtr(new Bitmap((uint32_t)width, (uint32_t)height, format));
+    const float* table = rgbeExpTable();
+
+    // Per-thread scratch buffers, reused across that thread's rows - avoids a heap allocation
+    // per row (height of them) which would otherwise dominate at this scale.
+    //
+    // Capped, deliberately NOT omp_get_max_threads(): this runs on QuadLightVideoPlayer's
+    // background decode thread, once per video frame, while the MAIN thread is simultaneously
+    // doing its own CPU-bound work for the *same* frame (GPU command recording - see
+    // QuadLightVideoPlayer's "GPU build time" log). Using every logical core here briefly
+    // saturates the whole CPU on every decode call, directly starving that main-thread work -
+    // measured to make real end-to-end frame time *worse* than the unparallelized decoder despite
+    // the decode itself being faster in isolation. Capping leaves headroom for the main thread
+    // while still getting most of the parallel win (the two-pass architecture's own gain - not
+    // redoing RLE-decode work twice - matters more here than raw thread count).
+    const int maxThreads = std::min(omp_get_max_threads(), 4);
+    std::vector<std::vector<uint8_t>> rowBufs(maxThreads, std::vector<uint8_t>((size_t)width * 4));
+    std::vector<std::vector<uint8_t>> planarBufs(maxThreads, std::vector<uint8_t>((size_t)width * 4));
+    bool ok = true;
+
+    // Pass 2 (parallel over rows): every row's offset is now known, so each thread
+    // independently decodes+converts its own row range straight into the final buffer - rows
+    // write disjoint memory, so this needs no locking beyond OpenMP's own work distribution.
+    // (Unlike the DevIL path below, no mutex is needed around this: OpenMP's runtime is
+    // designed to handle concurrent parallel regions launched from different host threads -
+    // e.g. this function running on both the main thread and QuadLightVideoPlayer's background
+    // decode thread at once - by sharing/scheduling its own internal thread pool across them.)
+    #pragma omp parallel for schedule(dynamic, 16) num_threads(maxThreads)
+    for (int y = 0; y < height; ++y)
+    {
+        const int tid = omp_get_thread_num();
+        uint8_t* rowRGBE = rowBufs[tid].data();
+        uint8_t* planarScratch = planarBufs[tid].data();
+
+        RgbeByteReader r{fileData, fileSize, rowOffsets[y]};
+        if (!rgbeDecodeOneRow(r, width, rowRGBE, planarScratch))
+        {
+            ok = false; // benign: only ever written false, never back to true.
+            continue;
+        }
+
+        const int dstRow = isTopDown ? y : (height - 1 - y);
+        uint8_t* pDstRow = pBmp->getData() + (size_t)dstRow * pBmp->getRowPitch();
+
+        if (toFloat16)
+        {
+            uint16_t* pDst = reinterpret_cast<uint16_t*>(pDstRow);
+            for (int x = 0; x < width; ++x)
+            {
+                float scale = table[rowRGBE[x * 4 + 3]];
+                pDst[x * 4 + 0] = float16_t(rowRGBE[x * 4 + 0] * scale).toBits();
+                pDst[x * 4 + 1] = float16_t(rowRGBE[x * 4 + 1] * scale).toBits();
+                pDst[x * 4 + 2] = float16_t(rowRGBE[x * 4 + 2] * scale).toBits();
+                pDst[x * 4 + 3] = float16_t(1.0f).toBits();
+            }
+        }
+        else
+        {
+            float* pDst = reinterpret_cast<float*>(pDstRow);
+            for (int x = 0; x < width; ++x)
+            {
+                float scale = table[rowRGBE[x * 4 + 3]];
+                pDst[x * 4 + 0] = rowRGBE[x * 4 + 0] * scale;
+                pDst[x * 4 + 1] = rowRGBE[x * 4 + 1] * scale;
+                pDst[x * 4 + 2] = rowRGBE[x * 4 + 2] * scale;
+                pDst[x * 4 + 3] = 1.0f;
+            }
+        }
+    }
+
+    if (!ok) return nullptr;
+
+    if (pTimings)
+    {
+        pTimings->conversionMs = CpuTimer::calcDuration(timePass2Start, CpuTimer::getCurrentTimePoint());
+        pTimings->decoder = "CustomRGBE-LUT-MT";
+    }
+    return pBmp;
+}
+
+#if FALCOR_HAS_DEVIL
+Bitmap::UniqueConstPtr Bitmap::tryCreateFromFileDevIL(
+    const std::filesystem::path& path, bool isTopDown, ImportFlags importFlags, DecodeTimings* pTimings
+)
+{
+    // DevIL's C API is stateful (ilBindImage sets a "current image" that every subsequent il*
+    // call implicitly operates on) and this prebuilt SDK isn't known to be thread-safe, unlike
+    // FreeImage's stateless-per-call API - so unlike the FreeImage path below, every DevIL call
+    // here must be serialized. This matters because Bitmap::createFromFile() can be called
+    // concurrently from QuadLightVideoPlayer's background decode thread and the main thread at
+    // the same time.
+    static std::mutex mutex;
+    std::lock_guard<std::mutex> lock(mutex);
+
+    // One persistent image handle, reused for every call (this can be a hot per-frame path -
+    // e.g. QuadLightVideoPlayer's background decode thread) instead of gen/delete-ing a new
+    // DevIL image object every time. ilLoadImage() below fully overwrites the bound image's
+    // contents, so reuse is safe.
+    static bool initialized = false;
+    static ILuint imgId = 0;
+    if (!initialized)
+    {
+        ilInit();
+        ilEnable(IL_ORIGIN_SET);
+        ilOriginFunc(IL_ORIGIN_UPPER_LEFT); // Force top-down output so only one orientation case needs handling below.
+        ilGenImages(1, &imgId);
+        initialized = true;
+    }
+    ilBindImage(imgId);
+
+    const auto timeDecodeStart = CpuTimer::getCurrentTimePoint();
+
+    bool ok = ilLoadImage(path.string().c_str()) != IL_FALSE;
+    if (ok)
+        ok = ilConvertImage(IL_RGBA, IL_FLOAT) != IL_FALSE;
+
+    const auto timeCopyStart = CpuTimer::getCurrentTimePoint();
+    if (pTimings) pTimings->decodeMs = CpuTimer::calcDuration(timeDecodeStart, timeCopyStart);
+
+    UniqueConstPtr pBmp;
+    if (ok)
+    {
+        const int width = ilGetInteger(IL_IMAGE_WIDTH);
+        const int height = ilGetInteger(IL_IMAGE_HEIGHT);
+        const float* pSrc = reinterpret_cast<const float*>(ilGetData());
+
+        if (pSrc && width > 0 && height > 0)
+        {
+            const bool toFloat16 = is_set(importFlags, ImportFlags::ConvertToFloat16);
+            const ResourceFormat format = toFloat16 ? ResourceFormat::RGBA16Float : ResourceFormat::RGBA32Float;
+            pBmp = UniqueConstPtr(new Bitmap((uint32_t)width, (uint32_t)height, format));
+
+            for (int y = 0; y < height; y++)
+            {
+                // DevIL was forced to top-down above; flip rows here only if the caller wants bottom-up.
+                const int srcRow = isTopDown ? y : (height - 1 - y);
+                const float* pSrcRow = pSrc + size_t(srcRow) * width * 4;
+                uint8_t* pDstRow = pBmp->getData() + size_t(y) * pBmp->getRowPitch();
+
+                if (toFloat16)
+                {
+                    uint16_t* pDst = reinterpret_cast<uint16_t*>(pDstRow);
+                    for (int x = 0; x < width * 4; x++)
+                        pDst[x] = float16_t(pSrcRow[x]).toBits();
+                }
+                else
+                {
+                    std::memcpy(pDstRow, pSrcRow, size_t(width) * 4 * sizeof(float));
+                }
+            }
+        }
+    }
+
+    if (pBmp && pTimings)
+    {
+        pTimings->rawBitsCopyMs = CpuTimer::calcDuration(timeCopyStart, CpuTimer::getCurrentTimePoint());
+        pTimings->decoder = "DevIL";
+    }
+    return pBmp;
+}
+#endif // FALCOR_HAS_DEVIL
+
+// .hdr/.exr loads can happen every frame (video QuadLight playback) - logging each one
+// individually floods the console, so they're aggregated into a periodic per-decoder summary
+// instead (see PeriodicStatsLogger). One process-lifetime instance, shared across every caller
+// of createFromFile() regardless of thread.
+static PeriodicStatsLogger gImageDecodeStats;
+
 Bitmap::UniqueConstPtr Bitmap::createFromFile(const std::filesystem::path& path, bool isTopDown, ImportFlags importFlags, DecodeTimings* pTimings)
 {
     const auto timeOpenStart = CpuTimer::getCurrentTimePoint();
@@ -319,6 +741,41 @@ Bitmap::UniqueConstPtr Bitmap::createFromFile(const std::filesystem::path& path,
         logWarning("Error when loading image file. File '{}' does not exist.", path);
         return nullptr;
     }
+
+    // Falcor's own hand-rolled Radiance HDR (.hdr) decoder - proven bit-exact against
+    // FreeImage/stb_image/OpenImageIO/a canonical reference decoder, and measurably faster than
+    // both FreeImage and DevIL on real content (see image_load_bench/ at the repo root). Tried
+    // first, ahead of DevIL, for .hdr specifically - it only understands Radiance's own RLE
+    // encoding, not OpenEXR, so .exr always skips straight to the DevIL/FreeImage chain below.
+    // Falls back gracefully (returns nullptr) on anything it doesn't recognize, e.g. a
+    // non-standard header axis order this parser doesn't handle, or a corrupt file.
+    if (hasExtension(path, "hdr"))
+    {
+        if (auto pBmp = tryCreateFromFileRGBE(path, isTopDown, importFlags, pTimings))
+        {
+            gImageDecodeStats.record("Bitmap::createFromFile via CustomRGBE-LUT-MT", CpuTimer::calcDuration(timeOpenStart, CpuTimer::getCurrentTimePoint()));
+            return pBmp;
+        }
+    }
+
+#if FALCOR_HAS_DEVIL
+    // DevIL decodes Radiance HDR (.hdr) noticeably faster than FreeImage - see image_load_bench/
+    // at the repo root for the measurements that motivated this. Falcor's own RGBE decoder
+    // above is faster still and already handles .hdr, so in practice this only fires when that
+    // decoder declined the file, or for .exr (DevIL's only remaining candidate below it). Falls
+    // back to the FreeImage path on any failure, including the format simply not being
+    // supported by this DevIL build - which is the normal case for .exr with the currently
+    // vendored DevIL SDK (it reports IL_INVALID_EXTENSION for OpenEXR), so EXR always ends up
+    // on the FreeImage path in practice.
+    if (hasExtension(path, "hdr") || hasExtension(path, "exr"))
+    {
+        if (auto pBmp = tryCreateFromFileDevIL(path, isTopDown, importFlags, pTimings))
+        {
+            gImageDecodeStats.record("Bitmap::createFromFile via DevIL", CpuTimer::calcDuration(timeOpenStart, CpuTimer::getCurrentTimePoint()));
+            return pBmp;
+        }
+    }
+#endif
 
     FREE_IMAGE_FORMAT fifFormat = FIF_UNKNOWN;
 
@@ -371,7 +828,7 @@ Bitmap::UniqueConstPtr Bitmap::createFromFile(const std::filesystem::path& path,
     }
 
     const auto timeConversionStart = CpuTimer::getCurrentTimePoint();
-    if (pTimings) pTimings->freeImageDecodeMs = CpuTimer::calcDuration(timeDecodeStart, timeConversionStart);
+    if (pTimings) pTimings->decodeMs = CpuTimer::calcDuration(timeDecodeStart, timeConversionStart);
 
     // Create the bitmap
     const uint32_t height = FreeImage_GetHeight(pDib);
@@ -480,6 +937,13 @@ Bitmap::UniqueConstPtr Bitmap::createFromFile(const std::filesystem::path& path,
     FreeImage_Unload(pDib);
 
     if (pTimings) pTimings->rawBitsCopyMs = CpuTimer::calcDuration(timeRawBitsStart, CpuTimer::getCurrentTimePoint());
+
+    // Scoped to .hdr/.exr specifically (like the RGBE-MT/DevIL logs above) rather than every
+    // FreeImage load, which would spam the log for every ordinary PNG/JPG texture in a scene.
+    if (hasExtension(path, "hdr") || hasExtension(path, "exr"))
+    {
+        gImageDecodeStats.record("Bitmap::createFromFile via FreeImage", CpuTimer::calcDuration(timeOpenStart, CpuTimer::getCurrentTimePoint()));
+    }
 
     return pBmp;
 }

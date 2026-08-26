@@ -227,6 +227,20 @@ elseif(FALCOR_LINUX)
     )
 endif()
 
+# DevIL
+# Note: vendored locally (not via packman) - see external/DevIL/README.md. Prebuilt MSVC
+# binaries only exist for Windows and only in a Release configuration, so used in both
+# configs there (same rationale as assimp above) and unavailable on Linux (FALCOR_HAS_DEVIL,
+# set in the top-level CMakeLists.txt, reflects this).
+if(FALCOR_HAS_DEVIL)
+    add_library(DevIL SHARED IMPORTED GLOBAL)
+    set_target_properties(DevIL PROPERTIES
+        INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/DevIL/include
+        IMPORTED_IMPLIB ${CMAKE_CURRENT_SOURCE_DIR}/DevIL/lib/x64/DevIL.lib
+        IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/DevIL/bin/x64/DevIL.dll
+    )
+endif()
+
 # hdf5
 if(FALCOR_WINDOWS)
     add_library(hdf5 SHARED IMPORTED GLOBAL)

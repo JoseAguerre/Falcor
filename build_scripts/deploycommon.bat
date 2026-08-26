@@ -38,6 +38,12 @@ robocopy %ExtDir%\cuda\bin\ %OutDir% nvrtc*.dll /r:0 >nul
 robocopy %ExtDir%\cuda\bin\ %OutDir% cublas*.dll /r:0 >nul
 robocopy %ExtDir%\cuda\bin\ %OutDir% curand*.dll /r:0 >nul
 
+rem Copy DevIL (vendored locally, not via packman - see external/DevIL/README.md)
+set DevILDir=%1\external\DevIL
+if exist %DevILDir% (
+    robocopy %DevILDir%\bin\x64 %OutDir% *.dll /r:0 >nul
+)
+
 rem Copy Aftermath
 set AftermathDir=%ExtDir%\aftermath
 if exist %AftermathDir% (

@@ -60,6 +60,9 @@ message(STATUS "Platform: ${FALCOR_PLATFORM}")
 set(FALCOR_HAS_D3D12 ${FALCOR_WINDOWS})
 set(FALCOR_HAS_VULKAN ON)
 
+# DevIL is only vendored as prebuilt Windows binaries (see external/DevIL/README.md).
+set(FALCOR_HAS_DEVIL ${FALCOR_WINDOWS})
+
 # -----------------------------------------------------------------------------
 # git submodules
 # -----------------------------------------------------------------------------
@@ -216,6 +219,7 @@ message(STATUS "FALCOR_HAS_NRD: ${FALCOR_HAS_NRD}")
 message(STATUS "FALCOR_HAS_DLSS: ${FALCOR_HAS_DLSS}")
 message(STATUS "FALCOR_HAS_NV_USD: ${FALCOR_HAS_NV_USD}")
 message(STATUS "FALCOR_HAS_MDL_SDK: ${FALCOR_HAS_MDL_SDK}")
+message(STATUS "FALCOR_HAS_DEVIL: ${FALCOR_HAS_DEVIL}")
 message(STATUS "FALCOR_ENABLE_USD: ${FALCOR_ENABLE_USD}")
 
 # -----------------------------------------------------------------------------

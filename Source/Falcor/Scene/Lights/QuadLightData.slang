@@ -59,6 +59,7 @@ struct QuadLightData
 
     uint        doubleSided = 0;        ///< If false (default), the light only emits from the side its normal (local +Y) points toward; the back side is dark.
     uint        lightSamplesPerVertex = 1; ///< Number of independent NEE samples of this light to draw and average per path vertex (only when this light is the selected type - see PathTracer.slang). Plain runtime value, not a specialization constant, so changing it doesn't trigger a shader recompile.
+    float       maxBsdfHitContribution = 0.f; ///< Caps the radiance contribution added when a BSDF-sampled ray hits this light on a bounced (non-primary) ray only (see PathTracer.slang) - rescales toward the cap preserving hue, rather than clamping the raw texture value, so a legitimately bright but well-sampled feature (e.g. a bright sun texel) is left alone and only pathological low-pdf/high-value outlier samples are affected. Never applied on a camera ray that sees the light directly. 0 (default) disables clamping entirely.
 };
 
 END_NAMESPACE_FALCOR

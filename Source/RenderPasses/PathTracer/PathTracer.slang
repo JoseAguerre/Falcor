@@ -918,7 +918,28 @@ struct PathTracer
                     misWeight = evalMIS(1, path.pdf, quadSamples, lightPdf);
                 }
 
-                addToPathContribution(path, misWeight * gScene.quadLight.eval(gScene.quadLight.worldToUv(sd.posW)));
+                float3 Le = misWeight * gScene.quadLight.eval(gScene.quadLight.worldToUv(sd.posW));
+
+                // Firefly suppression, scoped to this light only (see QuadLightData::
+                // maxBsdfHitContribution): rescale the contribution toward the cap rather
+                // than clamping gScene.quadLight.eval()'s raw texture value, so a
+                // legitimately bright but well-sampled feature (e.g. a bright sun texel,
+                // which can easily be 5+ in linear radiance) is left alone - only rare,
+                // pathological low-pdf/high-value outlier samples are affected. Does not
+                // touch NEE (shadow-ray) sampling of this light, only direct BSDF-ray hits.
+                // Never applied on the primary hit (!isPrimaryHit below) - a camera ray that
+                // sees the light directly should render its exact, unclamped image; the
+                // firefly problem this exists for only shows up on bounced BSDF rays whose
+                // pdf doesn't anticipate hitting a small bright light. 0 (default) disables
+                // this entirely.
+                float cap = gScene.quadLight.data.maxBsdfHitContribution;
+                if (cap > 0.f && !isPrimaryHit)
+                {
+                    float lum = luminance(Le);
+                    if (lum > cap) Le *= cap / lum;
+                }
+
+                addToPathContribution(path, Le);
             }
             path.terminate();
             return;

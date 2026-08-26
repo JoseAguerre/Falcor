@@ -749,6 +749,7 @@ target_sources(Falcor PRIVATE
     Utils/Timing/Clock.cpp
     Utils/Timing/Clock.h
     Utils/Timing/CpuTimer.h
+    Utils/Timing/PeriodicStatsLogger.h
     Utils/Timing/FrameRate.cpp
     Utils/Timing/FrameRate.h
     Utils/Timing/GpuTimer.slang
@@ -982,6 +983,7 @@ target_compile_definitions(Falcor
         FALCOR_HAS_NVAPI=$<BOOL:${FALCOR_HAS_NVAPI}>
         FALCOR_HAS_CUDA=$<BOOL:${FALCOR_HAS_CUDA}>
         FALCOR_HAS_D3D12_AGILITY_SDK=$<BOOL:${FALCOR_HAS_D3D12_AGILITY_SDK}>
+        FALCOR_HAS_DEVIL=$<BOOL:${FALCOR_HAS_DEVIL}>
         # TODO: RTXDI is always available, we might want to remove the feature flag.
         FALCOR_HAS_RTXDI=1
         IMGUI_USER_CONFIG="Utils/UI/ImGuiConfig.h"
@@ -1000,6 +1002,9 @@ if(FALCOR_USE_SYSTEM_PYTHON)
     )
 endif()
 
+# Used by Bitmap.cpp's own Radiance HDR (.hdr) decoder (two-pass parallel RLE decode).
+find_package(OpenMP REQUIRED)
+
 target_link_libraries(Falcor
     PUBLIC
         fmt pybind11::embed Vulkan::Headers
@@ -1013,6 +1018,8 @@ target_link_libraries(Falcor
     PRIVATE
         git_version
         FreeImage assimp OpenEXR OpenVDB lz4 zlib pugixml opensubdiv
+        $<$<BOOL:${FALCOR_HAS_DEVIL}>:DevIL>
+        OpenMP::OpenMP_CXX
         glfw mikktspace nvtt
         $<$<BOOL:${FALCOR_HAS_D3D12}>:d3d12>
         $<$<BOOL:${FALCOR_HAS_D3D12_AGILITY_SDK}>:agility-sdk>

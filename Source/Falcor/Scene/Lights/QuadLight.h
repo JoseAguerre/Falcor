@@ -129,6 +129,24 @@ namespace Falcor
         */
         uint32_t getLightSamplesPerVertex() const { return mData.lightSamplesPerVertex; }
 
+        /** Set the maximum radiance contribution a single BSDF-sampled ray hitting this
+            light on a bounced (non-primary) ray may add to a pixel (see PathTracer.slang) -
+            a firefly-suppression clamp scoped to this light only. Never applied on a camera
+            ray that sees the light directly, so its rendered image is always exact.
+            Rescales the contribution toward the cap (preserving hue) rather than clamping
+            the source texture value, so it only affects rare, pathological low-pdf/high-
+            value outlier samples on indirect hits, not legitimately bright but well-sampled
+            features (a bright sun texel in an HDRI-like texture can easily be 5+ in linear
+            radiance and should render as-is). 0 disables clamping (default) - deliberately
+            opt-in, since it introduces a small amount of bias in exchange for reduced
+            variance and isn't needed for every scene.
+        */
+        void setMaxBsdfHitContribution(float value);
+
+        /** Get the current BSDF-hit contribution clamp (0 = disabled).
+        */
+        float getMaxBsdfHitContribution() const { return mData.maxBsdfHitContribution; }
+
         /** Set the materialID of the placeholder material assigned to the quad's mesh instance.
             Used at hit time to identify direct hits on this light's geometry.
         */

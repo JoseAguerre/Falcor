@@ -79,10 +79,13 @@ public:
     */
     struct DecodeTimings
     {
-        double formatDetectAndOpenMs = 0; ///< File-existence/format-detection calls plus opening the memory-mapped file.
-        double freeImageDecodeMs = 0;     ///< FreeImage_LoadFromMemory - the actual codec work (e.g. OpenEXR/Radiance-HDR decompression).
+        double formatDetectAndOpenMs = 0; ///< File-existence/format-detection calls plus opening the memory-mapped file. Always zero on
+                                           ///< the DevIL path below - it does its own file I/O internally, not split out into this phase.
+        double decodeMs = 0;              ///< The actual codec work (e.g. OpenEXR/Radiance-HDR decompression) - via FreeImage or DevIL,
+                                           ///< whichever decoder actually produced this Bitmap (see 'decoder').
         double conversionMs = 0;          ///< Any post-decode pixel-format conversion (e.g. RGBF->RGBAF, palette->RGBA, half-float).
-        double rawBitsCopyMs = 0;         ///< Final allocation + FreeImage_ConvertToRawBits copy into the returned Bitmap's own buffer.
+        double rawBitsCopyMs = 0;         ///< Final allocation + copy into the returned Bitmap's own buffer.
+        const char* decoder = "FreeImage"; ///< Which decoder actually produced this Bitmap: "FreeImage" or "DevIL".
     };
 
     /**
@@ -177,6 +180,28 @@ protected:
     Bitmap() = default;
     Bitmap(uint32_t width, uint32_t height, ResourceFormat format);
     Bitmap(uint32_t width, uint32_t height, ResourceFormat format, const uint8_t* pData);
+
+    /** Attempts to decode 'path' using Falcor's own hand-rolled Radiance HDR (.hdr) decoder
+        (two-pass parallel RLE decode + LUT-based RGBE->float conversion - see Bitmap.cpp).
+        Returns nullptr on any failure - including simply not recognizing the file (e.g. a
+        non-standard header axis order) - in which case createFromFile() falls back to
+        DevIL/FreeImage unchanged. Doesn't understand OpenEXR at all, so never attempted for
+        .exr.
+    */
+    static UniqueConstPtr tryCreateFromFileRGBE(
+        const std::filesystem::path& path, bool isTopDown, ImportFlags importFlags, DecodeTimings* pTimings
+    );
+
+#if FALCOR_HAS_DEVIL
+    /** Attempts to decode 'path' using DevIL instead of FreeImage. Returns nullptr on any
+        failure - including the format simply not being supported by this DevIL build (this is
+        the normal case for .exr; see external/DevIL/README.md) - in which case createFromFile()
+        falls back to the FreeImage path below unchanged.
+    */
+    static UniqueConstPtr tryCreateFromFileDevIL(
+        const std::filesystem::path& path, bool isTopDown, ImportFlags importFlags, DecodeTimings* pTimings
+    );
+#endif
 
     std::unique_ptr<uint8_t[]> mpData;
     uint32_t mWidth = 0;    ///< Width in pixels.

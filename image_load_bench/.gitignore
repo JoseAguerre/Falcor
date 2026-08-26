@@ -1,0 +1,8 @@
+# Third-party dependencies fetched/built for this standalone benchmark tool only - not used by
+# Falcor itself (Falcor's own DevIL copy lives in external/DevIL/ and is tracked there). See
+# CMakeLists.txt and main.cpp's header comment for what each one is and where it came from:
+# libvips, the DevIL Windows SDK, OpenImageIO's vcpkg checkout + build output, etc.
+deps/
+
+# CMake/MSBuild build output - regenerated from CMakeLists.txt + main.cpp.
+build/

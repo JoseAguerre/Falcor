@@ -31,6 +31,7 @@
 #include "Core/API/Device.h"
 #include "Utils/Logger.h"
 #include "Utils/Timing/CpuTimer.h"
+#include "Utils/Timing/PeriodicStatsLogger.h"
 
 #include <algorithm>
 #include <cmath>
@@ -176,10 +177,11 @@ namespace Falcor
         }
 
         auto hierarchyEnd = CpuTimer::getCurrentTimePoint();
-        logInfo(
-            "QuadLightAliasCtuSampler: superblock hierarchy build time {:.3f} ms ({} leaves)",
-            CpuTimer::calcDuration(hierarchyStart, hierarchyEnd), leaves.size()
-        );
+        // build() runs every video frame for a video QuadLight (once per playlist advance) -
+        // logging each call individually floods the console, so it's aggregated (see
+        // PeriodicStatsLogger's doc comment).
+        static PeriodicStatsLogger sHierarchyStats;
+        sHierarchyStats.record("QuadLightAliasCtuSampler superblock hierarchy build", CpuTimer::calcDuration(hierarchyStart, hierarchyEnd));
 
         // Weight each leaf by its total flux (avg luminance * area) - the same unbiased
         // weighting the per-pixel/CDF techniques use, just aggregated over the leaf.
@@ -210,7 +212,8 @@ namespace Falcor
         std::mt19937 rng(1234u);
         mpAliasTable = std::make_unique<AliasTable>(mpDevice, std::move(weights), rng);
         auto aliasEnd = CpuTimer::getCurrentTimePoint();
-        logInfo("QuadLightAliasCtuSampler: alias table build time {:.3f} ms", CpuTimer::calcDuration(aliasStart, aliasEnd));
+        static PeriodicStatsLogger sAliasTableStats;
+        sAliasTableStats.record("QuadLightAliasCtuSampler alias table build", CpuTimer::calcDuration(aliasStart, aliasEnd));
 
         mpLeafRects = mpDevice->createStructuredBuffer(
             sizeof(float4), (uint32_t)rects.size(), ResourceBindFlags::ShaderResource, MemoryType::DeviceLocal, rects.data(), false
