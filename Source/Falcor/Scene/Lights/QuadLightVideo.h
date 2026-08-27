@@ -29,6 +29,7 @@
 #include "Core/Macros.h"
 #include "Core/Object.h"
 #include "Rendering/Lights/QuadLightSamplerType.slangh"
+#include "Utils/Math/Vector.h"
 #include <atomic>
 #include <condition_variable>
 #include <cstdint>
@@ -173,6 +174,12 @@ namespace Falcor
 
         ref<Texture> getCurrentTexture() const;
 
+        /** EXPERIMENTAL (see QuadLightData::useAvgEmissionOnDiffuseBsdfHit): the current
+            frame's precomputed average RGB emission, consumed the same way as
+            getCurrentTexture() - read once per frame advance by QuadLight::updateVideoPlayback().
+        */
+        float3 getCurrentAvgEmission() const;
+
         /** Returns the prebuilt sampler for the current frame, consuming it - a second call
             returns null until the next advance. Null if it isn't ready yet (shouldn't
             normally happen for the *current* frame, since tick() only advances once the
@@ -204,6 +211,7 @@ namespace Falcor
             uint32_t playlistIndex = 0;
             uint64_t generation = 0;
             bool ready = false;
+            float3 avgEmission = float3(0.f); ///< EXPERIMENTAL, see QuadLightData::useAvgEmissionOnDiffuseBsdfHit.
         };
 
         /** A unit of background work: decode one playlist frame under one sampler
@@ -230,6 +238,7 @@ namespace Falcor
             std::unique_ptr<const Bitmap> pBitmap; ///< Decoded source image - texture creation is deferred to the main thread.
             std::vector<float> luminance;          ///< Empty for QuadLightSamplerType::Random, which needs none.
             uint32_t width = 0, height = 0;
+            float3 avgEmission = float3(0.f); ///< EXPERIMENTAL, see QuadLightData::useAvgEmissionOnDiffuseBsdfHit. Computed from pBitmap on the worker thread - cheap relative to the decode itself.
         };
 
         /** Worker thread only: decode+compute the CPU-side data for one job (no GPU calls),

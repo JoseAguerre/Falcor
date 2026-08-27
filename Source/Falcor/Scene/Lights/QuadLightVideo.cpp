@@ -256,6 +256,10 @@ namespace Falcor
             result.luminance = computeLuminanceFromBitmap(*result.pBitmap, result.width, result.height, entry.path);
         }
 
+        // EXPERIMENTAL (see QuadLightData::useAvgEmissionOnDiffuseBsdfHit) - independent of
+        // sampler type/technique, so computed unconditionally.
+        result.avgEmission = computeAverageColorFromBitmap(*result.pBitmap, entry.path);
+
         return result;
     }
 
@@ -289,6 +293,7 @@ namespace Falcor
         slot.pSampler = std::move(pSampler);
         slot.playlistIndex = result.playlistIndex;
         slot.generation = result.generation;
+        slot.avgEmission = result.avgEmission;
         slot.ready = true;
 
         const auto buildEnd = CpuTimer::getCurrentTimePoint();
@@ -428,6 +433,11 @@ namespace Falcor
     ref<Texture> QuadLightVideoPlayer::getCurrentTexture() const
     {
         return mSlots[mSequence % mSlots.size()].pTexture;
+    }
+
+    float3 QuadLightVideoPlayer::getCurrentAvgEmission() const
+    {
+        return mSlots[mSequence % mSlots.size()].avgEmission;
     }
 
     std::unique_ptr<QuadLightSampler> QuadLightVideoPlayer::takeCurrentSampler()

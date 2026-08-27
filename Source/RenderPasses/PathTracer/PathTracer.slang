@@ -918,7 +918,16 @@ struct PathTracer
                     misWeight = evalMIS(1, path.pdf, quadSamples, lightPdf);
                 }
 
-                float3 Le = misWeight * gScene.quadLight.eval(gScene.quadLight.worldToUv(sd.posW));
+                // EXPERIMENTAL test (see QuadLightData::useAvgEmissionOnDiffuseBsdfHit): on a
+                // bounced BSDF-sampled ray whose last scatter event was diffuse/rough - not
+                // sharp/glossy-specular (path.isSpecular(), the same roughness-threshold
+                // classification used above for isSpecular/kDisableCaustics) and not a delta
+                // event (path.isDelta(), e.g. a mirror or clear-glass refraction) - substitute
+                // the light's flat average color for the textured value. NEE (shadow-ray)
+                // sampling of this light and the primary/camera-ray view of it are untouched
+                // either way; this only ever replaces what a diffuse-bounce BSDF ray sees.
+                bool useAvg = gScene.quadLight.useAvgEmissionOnDiffuseBsdfHit() && !isPrimaryHit && !path.isSpecular() && !path.isDelta();
+                float3 Le = misWeight * (useAvg ? gScene.quadLight.evalAverage() : gScene.quadLight.eval(gScene.quadLight.worldToUv(sd.posW)));
 
                 // Firefly suppression, scoped to this light only (see QuadLightData::
                 // maxBsdfHitContribution): rescale the contribution toward the cap rather

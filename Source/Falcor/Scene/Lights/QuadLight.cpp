@@ -28,6 +28,7 @@
 #include "QuadLight.h"
 #include "QuadLightVideo.h"
 #include "Rendering/Lights/QuadLightSampler.h"
+#include "Rendering/Lights/QuadLightLuminance.h"
 #include "Core/API/Device.h"
 #include "Core/Platform/OS.h"
 #include "Core/Program/ShaderVar.h"
@@ -48,6 +49,19 @@ namespace Falcor
         bool isPlaylistPath(const std::filesystem::path& path)
         {
             return path.extension() == ".exrplaylist" || path.extension() == ".hdrplaylist";
+        }
+
+        // EXPERIMENTAL (see QuadLightData::useAvgEmissionOnDiffuseBsdfHit) - for a static
+        // (non-video) image, decodes the file a second time on the CPU, same pattern
+        // computeQuadLightLuminance() already uses for the same reason (the GPU texture
+        // upload path doesn't keep the decoded Bitmap around). Returns black (0,0,0) on
+        // decode failure rather than failing the whole load - this is a test feature, not
+        // load-bearing for correctness of the light itself.
+        float3 computeAvgEmissionForStaticImage(const std::filesystem::path& path)
+        {
+            auto pBitmap = Bitmap::createFromFile(path, true);
+            if (!pBitmap) return float3(0.f);
+            return computeAverageColorFromBitmap(*pBitmap, path);
         }
     }
 
@@ -81,6 +95,8 @@ namespace Falcor
             pLight->mpVideoPlayer->primeFirstFrame();
             pLight->mpTexture = pLight->mpVideoPlayer->getCurrentTexture();
             pLight->mpPendingSampler = pLight->mpVideoPlayer->takeCurrentSampler();
+            pLight->mData.avgEmission = pLight->mpVideoPlayer->getCurrentAvgEmission();
+            pLight->mPrevData.avgEmission = pLight->mData.avgEmission;
             return pLight;
         }
 
@@ -88,7 +104,10 @@ namespace Falcor
         // is pure wasted GPU work here, so mip generation is disabled.
         auto pTexture = Texture::createFromFile(pDevice, path, false, false);
         if (!pTexture) return nullptr;
-        return create(pDevice, pTexture);
+        ref<QuadLight> pLight = create(pDevice, pTexture);
+        pLight->mData.avgEmission = computeAvgEmissionForStaticImage(path);
+        pLight->mPrevData.avgEmission = pLight->mData.avgEmission;
+        return pLight;
     }
 
     void QuadLight::renderUI(Gui::Widgets& widgets)
@@ -151,6 +170,20 @@ namespace Falcor
             "sampling of this light either way.",
             true
         );
+
+        bool useAvgEmission = mData.useAvgEmissionOnDiffuseBsdfHit != 0;
+        if (widgets.checkbox("Use avg emission on diffuse BSDF hit (EXPERIMENTAL)", useAvgEmission))
+        {
+            mData.useAvgEmissionOnDiffuseBsdfHit = useAvgEmission ? 1 : 0;
+        }
+        widgets.tooltip(
+            "EXPERIMENTAL test: on a bounced (non-primary) BSDF-sampled ray hitting this light "
+            "whose last scatter event was diffuse/rough (not sharp/glossy-specular, not a "
+            "delta/mirror/clear-refraction event), returns this light's flat average color "
+            "instead of the textured value. NEE (shadow-ray) sampling and the primary/camera-"
+            "ray view of the light are unaffected either way. Off by default.",
+            true
+        );
     }
 
     bool QuadLight::loadTextureFromFile(const std::filesystem::path& path)
@@ -164,6 +197,7 @@ namespace Falcor
             mpVideoPlayer->primeFirstFrame();
             mpTexture = mpVideoPlayer->getCurrentTexture();
             mpPendingSampler = mpVideoPlayer->takeCurrentSampler();
+            mData.avgEmission = mpVideoPlayer->getCurrentAvgEmission();
             mTextureChanged = true;
             return true;
         }
@@ -175,6 +209,7 @@ namespace Falcor
         if (!pTexture) return false;
 
         mpTexture = pTexture;
+        mData.avgEmission = computeAvgEmissionForStaticImage(path);
         mTextureChanged = true;
         return true;
     }
@@ -188,6 +223,7 @@ namespace Falcor
         {
             mpTexture = mpVideoPlayer->getCurrentTexture();
             mpPendingSampler = mpVideoPlayer->takeCurrentSampler();
+            mData.avgEmission = mpVideoPlayer->getCurrentAvgEmission(); // EXPERIMENTAL, see QuadLightData::useAvgEmissionOnDiffuseBsdfHit.
             mTextureChanged = true; // reuses the existing Changes::Texture / QuadLightChanged / AccumulatePass reset pipeline verbatim.
         }
     }
@@ -259,6 +295,8 @@ namespace Falcor
         if (any(mData.tint != mPrevData.tint)) mChanges |= Changes::Intensity;
         if (mData.lightSamplesPerVertex != mPrevData.lightSamplesPerVertex) mChanges |= Changes::Intensity;
         if (mData.maxBsdfHitContribution != mPrevData.maxBsdfHitContribution) mChanges |= Changes::Intensity;
+        if (mData.useAvgEmissionOnDiffuseBsdfHit != mPrevData.useAvgEmissionOnDiffuseBsdfHit) mChanges |= Changes::Intensity;
+        if (any(mData.avgEmission != mPrevData.avgEmission)) mChanges |= Changes::Intensity;
         if (mSamplerType != mPrevSamplerType)
         {
             mChanges |= Changes::SamplerType;
@@ -327,5 +365,8 @@ namespace Falcor
         quadLight.def_property("samplerType", &QuadLight::getSamplerType, &QuadLight::setSamplerType);
         quadLight.def_property("lightSamplesPerVertex", &QuadLight::getLightSamplesPerVertex, &QuadLight::setLightSamplesPerVertex);
         quadLight.def_property("maxBsdfHitContribution", &QuadLight::getMaxBsdfHitContribution, &QuadLight::setMaxBsdfHitContribution);
+        quadLight.def_property(
+            "useAvgEmissionOnDiffuseBsdfHit", &QuadLight::getUseAvgEmissionOnDiffuseBsdfHit, &QuadLight::setUseAvgEmissionOnDiffuseBsdfHit
+        );
     }
 }

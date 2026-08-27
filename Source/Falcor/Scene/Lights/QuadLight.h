@@ -147,6 +147,19 @@ namespace Falcor
         */
         float getMaxBsdfHitContribution() const { return mData.maxBsdfHitContribution; }
 
+        /** EXPERIMENTAL test toggle (see QuadLightData::useAvgEmissionOnDiffuseBsdfHit /
+            PathTracer.slang): when true, a BSDF-sampled ray hitting this light on a bounced
+            (non-primary) ray whose last scatter event was diffuse/rough returns this light's
+            precomputed average color instead of the textured value. Sharp/glossy-specular
+            BSDF hits, NEE (shadow-ray) sampling, and the primary/camera-ray view of the light
+            are all unaffected either way.
+        */
+        void setUseAvgEmissionOnDiffuseBsdfHit(bool value) { mData.useAvgEmissionOnDiffuseBsdfHit = value ? 1 : 0; }
+
+        /** Get the current state of the experimental toggle above.
+        */
+        bool getUseAvgEmissionOnDiffuseBsdfHit() const { return mData.useAvgEmissionOnDiffuseBsdfHit != 0; }
+
         /** Set the materialID of the placeholder material assigned to the quad's mesh instance.
             Used at hit time to identify direct hits on this light's geometry.
         */

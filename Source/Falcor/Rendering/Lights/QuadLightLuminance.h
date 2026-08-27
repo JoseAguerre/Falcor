@@ -27,6 +27,7 @@
  **************************************************************************/
 #pragma once
 #include "Core/Macros.h"
+#include "Utils/Math/Vector.h"
 #include <cstdint>
 #include <filesystem>
 #include <vector>
@@ -69,4 +70,20 @@ namespace Falcor
         \return Row-major luminance array of size outWidth*outHeight. Empty on failure.
     */
     FALCOR_API std::vector<float> computeQuadLightLuminance(const QuadLight& light, uint32_t& outWidth, uint32_t& outHeight);
+
+    /** Compute the raw (pre-tint/intensity), unweighted average RGB emission across every
+        texel of an already-decoded Bitmap - i.e. exactly the value QuadLight::eval() would
+        average over if sampled uniformly at infinite resolution. Used by PathTracer.slang's
+        experimental "use a flat average instead of the textured value on diffuse/rough
+        BSDF-sampled hits" path (see QuadLightData::avgEmission) - kept as its own
+        independent pass (not sharing code with computeLuminanceFromBitmap() above) so it
+        carries zero risk of changing that function's already-verified importance-sampling
+        behavior.
+
+        \param[in] bitmap The decoded source image.
+        \param[in] pathForLogging Optional source path, used only to identify the image in
+            warning messages (unsupported format). May be empty.
+        \return Average RGB, in the same linear/unpremultiplied space eval() samples from.
+    */
+    FALCOR_API float3 computeAverageColorFromBitmap(const Bitmap& bitmap, const std::filesystem::path& pathForLogging = {});
 }

@@ -60,6 +60,13 @@ struct QuadLightData
     uint        doubleSided = 0;        ///< If false (default), the light only emits from the side its normal (local +Y) points toward; the back side is dark.
     uint        lightSamplesPerVertex = 1; ///< Number of independent NEE samples of this light to draw and average per path vertex (only when this light is the selected type - see PathTracer.slang). Plain runtime value, not a specialization constant, so changing it doesn't trigger a shader recompile.
     float       maxBsdfHitContribution = 0.f; ///< Caps the radiance contribution added when a BSDF-sampled ray hits this light on a bounced (non-primary) ray only (see PathTracer.slang) - rescales toward the cap preserving hue, rather than clamping the raw texture value, so a legitimately bright but well-sampled feature (e.g. a bright sun texel) is left alone and only pathological low-pdf/high-value outlier samples are affected. Never applied on a camera ray that sees the light directly. 0 (default) disables clamping entirely.
+    uint        useAvgEmissionOnDiffuseBsdfHit = 0; ///< EXPERIMENTAL test flag (see PathTracer.slang): when true, a BSDF-sampled ray hitting this light on a bounced (non-primary) ray, whose last scatter event was classified diffuse/rough (PathState::isSpecular() false - same roughness threshold PathTracer already uses elsewhere), returns avgEmission instead of the textured eval() value. Sharp/glossy-specular BSDF hits and all NEE (shadow-ray) sampling are unaffected either way. 0 (default) disables this entirely.
+
+    // Own 16-byte slot (see the field-order comment at the top of this struct) - avgEmission
+    // is a float3, so it needs a trailing scalar to complete the slot; nothing meaningful to
+    // put there, hence the explicit pad name.
+    float3      avgEmission = {0.f, 0.f, 0.f}; ///< Precomputed raw (pre-tint/intensity) average RGB of the source image - see computeAverageColorFromBitmap() and useAvgEmissionOnDiffuseBsdfHit above. Recomputed on every texture load/video frame advance.
+    float       pad0 = 0.f;
 };
 
 END_NAMESPACE_FALCOR

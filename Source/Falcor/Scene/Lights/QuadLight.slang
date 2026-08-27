@@ -61,6 +61,23 @@ struct QuadLight
         return tex.SampleLevel(sampler, uv, lod).rgb * getIntensity();
     }
 
+    /** EXPERIMENTAL: the precomputed average of eval() over the whole texture (see
+        QuadLightData::useAvgEmissionOnDiffuseBsdfHit) - same tint/intensity scaling as eval(),
+        just a flat value instead of a per-uv texture sample.
+    */
+    float3 evalAverage()
+    {
+        return data.avgEmission * getIntensity();
+    }
+
+    /** True if a BSDF-sampled hit on this light whose last scatter event was diffuse/rough
+        should use evalAverage() instead of eval() (see QuadLightData::useAvgEmissionOnDiffuseBsdfHit).
+    */
+    bool useAvgEmissionOnDiffuseBsdfHit()
+    {
+        return data.useAvgEmissionOnDiffuseBsdfHit != 0;
+    }
+
     /** Transform a local-space uv coordinate ([0,1)^2) to a world-space position.
         v=0 is the top row of the source texture (standard image convention), which maps
         to local +Z (screen "up") - i.e. the v axis is flipped relative to local Z.
