@@ -62,7 +62,7 @@ sceneBuilder.addMeshInstance(
     sceneBuilder.addTriangleMesh(quadMesh, quadLightMat)  # same quadLightMat instance -> addMaterial dedupes to quadLightMatID
 )
 
-quadLight = QuadLight.createFromFile('C:/packman-repo/chk/falcor_media/7acdf8b0/test_images/monalisa.jpg')
+quadLight = QuadLight.createFromFile('quadlight/hdr/frame_00048.hdr')
 quadLight.materialID = quadLightMatID
 quadLight.transform = quadTransform.matrix
 quadLight.size = quadSize

@@ -94,7 +94,7 @@ sceneBuilder.addMeshInstance(
     sceneBuilder.addTriangleMesh(TriangleMesh.createQuad(quadSize), quadLightMat)  # same quadLightMat instance -> addMaterial dedupes to quadLightMatID
 )
 
-quadLight = QuadLight.createFromFile('C:/Users/Elojo/Downloads/vp9macroblock/vp9macroblock-viewer/encoded/frames/frame_00048.exr')
+quadLight = QuadLight.createFromFile('quadlight/hdr/frame_00048.hdr')
 quadLight.materialID = quadLightMatID
 quadLight.transform = quadTransform.matrix
 quadLight.size = quadSize
