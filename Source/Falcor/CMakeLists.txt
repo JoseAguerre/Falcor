@@ -713,6 +713,8 @@ target_sources(Falcor PRIVATE
     Utils/Sampling/SampleGenerator.slang
     Utils/Sampling/SampleGeneratorInterface.slang
     Utils/Sampling/SampleGeneratorType.slangh
+    Utils/Sampling/HaltonSampleGenerator.slang
+    Utils/Sampling/WeylSampleGenerator.slang
     Utils/Sampling/TinyUniformSampleGenerator.slang
     Utils/Sampling/UniformSampleGenerator.slang
 

@@ -48,5 +48,11 @@ typedef TinyUniformSampleGenerator SampleGenerator;
 #elif defined(SAMPLE_GENERATOR_TYPE) && SAMPLE_GENERATOR_TYPE == SAMPLE_GENERATOR_UNIFORM
 import Utils.Sampling.UniformSampleGenerator;
 typedef UniformSampleGenerator SampleGenerator;
+#elif defined(SAMPLE_GENERATOR_TYPE) && SAMPLE_GENERATOR_TYPE == SAMPLE_GENERATOR_HALTON
+import Utils.Sampling.HaltonSampleGenerator;
+typedef HaltonSampleGenerator SampleGenerator;
+#elif defined(SAMPLE_GENERATOR_TYPE) && SAMPLE_GENERATOR_TYPE == SAMPLE_GENERATOR_WEYL
+import Utils.Sampling.WeylSampleGenerator;
+typedef WeylSampleGenerator SampleGenerator;
 #endif
 

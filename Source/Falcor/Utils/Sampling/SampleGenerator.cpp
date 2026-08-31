@@ -74,6 +74,16 @@ void SampleGenerator::registerAll()
         "Uniform (128-bit)",
         [](ref<Device> pDevice) { return ref<SampleGenerator>(new SampleGenerator(pDevice, SAMPLE_GENERATOR_UNIFORM)); }
     );
+    registerType(
+        SAMPLE_GENERATOR_HALTON,
+        "Halton (scrambled, 32 dims + PRNG fallback)",
+        [](ref<Device> pDevice) { return ref<SampleGenerator>(new SampleGenerator(pDevice, SAMPLE_GENERATOR_HALTON)); }
+    );
+    registerType(
+        SAMPLE_GENERATOR_WEYL,
+        "Weyl/Kronecker sqrt (64 dims + PRNG fallback, experimental)",
+        [](ref<Device> pDevice) { return ref<SampleGenerator>(new SampleGenerator(pDevice, SAMPLE_GENERATOR_WEYL)); }
+    );
 }
 
 // Automatically register basic sampler types.
