@@ -40,6 +40,20 @@ FALCOR_ENUM_REGISTER(OptixDenoiserModelKind);
 
 namespace
 {
+// Checks an OptixResult and throws with the driver's own error name/string if it's not success.
+// None of the optixDenoiser* calls in this file previously checked their return codes, which let
+// a failed optixDenoiserCreate() silently leave mDenoiser.denoiser invalid, so the following
+// optixDenoiserComputeMemoryResources() call read back garbage (undefined behavior on an invalid
+// handle) instead of surfacing the real driver error.
+inline void checkOptixResult(OptixResult result, const char* call)
+{
+    if (result != OPTIX_SUCCESS)
+    {
+        FALCOR_THROW("Optix call {} failed with error {} ({}).", call, optixGetErrorName(result), optixGetErrorString(result));
+    }
+}
+#define FALCOR_OPTIX_CHECK(call) checkOptixResult(call, #call)
+
 // Names for pass input and output textures
 const char kColorInput[] = "color";
 const char kAlbedoInput[] = "albedo";
@@ -470,10 +484,18 @@ void OptixDenoiser_::setupDenoiser()
     }
 
     // Create the denoiser
-    optixDenoiserCreate(mOptixContext, mDenoiser.modelKind, &mDenoiser.options, &mDenoiser.denoiser);
+    FALCOR_OPTIX_CHECK(optixDenoiserCreate(mOptixContext, mDenoiser.modelKind, &mDenoiser.options, &mDenoiser.denoiser));
 
     // Find out how much memory is needed for the requested denoiser
-    optixDenoiserComputeMemoryResources(mDenoiser.denoiser, mDenoiser.tileWidth, mDenoiser.tileHeight, &mDenoiser.sizes);
+    FALCOR_OPTIX_CHECK(optixDenoiserComputeMemoryResources(mDenoiser.denoiser, mDenoiser.tileWidth, mDenoiser.tileHeight, &mDenoiser.sizes));
+
+    logInfo(
+        "OptixDenoiser: tile {}x{}, requested stateSizeInBytes={}, withoutOverlapScratchSizeInBytes={}, "
+        "withOverlapScratchSizeInBytes={}, overlapWindowSizeInPixels={}",
+        mDenoiser.tileWidth, mDenoiser.tileHeight, mDenoiser.sizes.stateSizeInBytes,
+        mDenoiser.sizes.withoutOverlapScratchSizeInBytes, mDenoiser.sizes.withOverlapScratchSizeInBytes,
+        mDenoiser.sizes.overlapWindowSizeInPixels
+    );
 
     // Allocate/resize some temporary CUDA buffers for internal OptiX processing/state
     mDenoiser.scratchBuffer.resize(mDenoiser.sizes.withoutOverlapScratchSizeInBytes);
