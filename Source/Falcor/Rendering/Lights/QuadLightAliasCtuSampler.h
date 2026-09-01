@@ -68,7 +68,8 @@ namespace Falcor
 
         uint2 mGridDim;
         ref<Buffer> mpLeafRects;       ///< Per-leaf normalized (u0,v0,u1,v1) rects, indexed identically to the alias table.
-        ref<Buffer> mpLeafIndexMap;    ///< WxH map from texel -> leaf index, for O(1) evalPdf() lookups.
+        ref<Buffer> mpLeafIndexMap;    ///< ceil(W/8)xceil(H/8) map from texel/8 -> leaf index, for O(1) evalPdf() lookups.
+        uint2 mLeafIndexMapDim;        ///< Dimensions of mpLeafIndexMap (ceil(W/8), ceil(H/8)).
         std::unique_ptr<AliasTable> mpAliasTable;
     };
 }

@@ -98,7 +98,7 @@ namespace Falcor
             BlockStats stats = computeBlockStats(luminance, stride, x0, y0, x1, y1);
 
             bool shouldSplit = false;
-            if (bw > kMinBlock && bh > kMinBlock)
+            if (bw >= 2 * kMinBlock && bh >= 2 * kMinBlock)
             {
                 // Coefficient of variation (not raw variance): our luminance is unbounded
                 // HDR, unlike VP9's fixed 0-255 luma range, so a scale-invariant criterion
@@ -111,8 +111,19 @@ namespace Falcor
 
             if (shouldSplit)
             {
-                uint32_t xm = x0 + bw / 2;
-                uint32_t ym = y0 + bh / 2;
+                // Round split points to the nearest multiple of kMinBlock (not a plain
+                // bisection) so every leaf boundary stays kMinBlock-aligned in absolute
+                // image coordinates - including ragged edge superblocks whose width/height
+                // isn't itself a power of two (e.g. a 56px-tall remainder strip at the
+                // bottom of a 1080-tall image). x0/y0 are always kMinBlock-aligned already
+                // (top-level superblocks start at multiples of kMaxBlock), and the
+                // `bw >= 2*kMinBlock` guard above ensures (bw/2)/kMinBlock >= 1, so this
+                // can't degenerate to a zero-size child. That alignment invariant is what
+                // lets evalPdf() map an arbitrary pixel to its leaf via a single
+                // kMinBlock-downsampled lookup instead of a full-resolution one - see
+                // leafIndexMap below.
+                uint32_t xm = x0 + ((bw / 2) / kMinBlock) * kMinBlock;
+                uint32_t ym = y0 + ((bh / 2) / kMinBlock) * kMinBlock;
                 splitBlock(luminance, stride, x0, y0, xm, ym, leaves);
                 splitBlock(luminance, stride, xm, y0, x1, ym, leaves);
                 splitBlock(luminance, stride, x0, ym, xm, y1, leaves);
@@ -195,15 +206,22 @@ namespace Falcor
             rects[i] = float4(float(leaf.x0) / float(w), float(leaf.y0) / float(h), float(leaf.x1) / float(w), float(leaf.y1) / float(h));
         }
 
-        // Per-texel -> leaf-index map, for O(1) evalPdf() lookups (built in one pass over
-        // the final leaf list, each texel visited exactly once).
-        std::vector<uint32_t> leafIndexMap((size_t)w * h, 0);
+        // Leaf-index map for O(1) evalPdf() lookups, downsampled by kMinBlock rather than
+        // stored at full WxH: since splitBlock() now guarantees every leaf boundary is
+        // kMinBlock-aligned (see the comment there), no kMinBlock x kMinBlock pixel block
+        // ever straddles two leaves, so indexing by pixel/kMinBlock is lossless. This is a
+        // kMinBlock^2 (64x) reduction in both build cost and buffer size, which matters
+        // since build() reruns every video frame for a video QuadLight.
+        uint32_t mapW = (w + kMinBlock - 1) / kMinBlock;
+        uint32_t mapH = (h + kMinBlock - 1) / kMinBlock;
+        mLeafIndexMapDim = uint2(mapW, mapH);
+        std::vector<uint32_t> leafIndexMap((size_t)mapW * mapH, 0);
         for (size_t i = 0; i < leaves.size(); ++i)
         {
             const Leaf& leaf = leaves[i];
-            for (uint32_t y = leaf.y0; y < leaf.y1; ++y)
-                for (uint32_t x = leaf.x0; x < leaf.x1; ++x)
-                    leafIndexMap[(size_t)y * w + x] = (uint32_t)i;
+            for (uint32_t y = leaf.y0; y < leaf.y1; y += kMinBlock)
+                for (uint32_t x = leaf.x0; x < leaf.x1; x += kMinBlock)
+                    leafIndexMap[(size_t)(y / kMinBlock) * mapW + (x / kMinBlock)] = (uint32_t)i;
         }
 
         // Deterministic seed: construction happens once per technique switch (or scene
@@ -231,6 +249,7 @@ namespace Falcor
         var["gridDim"] = mGridDim;
         var["leafRects"] = mpLeafRects;
         var["leafIndexMap"] = mpLeafIndexMap;
+        var["leafIndexMapDim"] = mLeafIndexMapDim;
         mpAliasTable->bindShaderData(var["table"]);
     }
 }

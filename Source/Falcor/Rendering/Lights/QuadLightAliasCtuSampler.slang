@@ -48,7 +48,11 @@ struct QuadLightAliasCtuSampler : IQuadLightSampler
 {
     AliasTable                 table;
     StructuredBuffer<float4>   leafRects;      ///< Per-leaf normalized (u0,v0,u1,v1) rects, indexed identically to 'table'.
-    StructuredBuffer<uint>     leafIndexMap;   ///< WxH texel -> leaf index map, for O(1) evalPdf() lookups.
+    // Downsampled by kMinBlock=8 (see QuadLightAliasCtuSampler.cpp's splitBlock()): every
+    // leaf boundary is guaranteed 8-aligned, so texel/8 -> leaf index is lossless while
+    // using 1/64th the memory and build cost of a full WxH map.
+    StructuredBuffer<uint>     leafIndexMap;   ///< ceil(W/8)xceil(H/8) (texel/8) -> leaf index map, for O(1) evalPdf() lookups.
+    uint2                      leafIndexMapDim;
     uint2                      gridDim;
 
     // avgLuma_i = weight_i / (leaf area in texels), derived from the alias table's own
@@ -118,7 +122,9 @@ struct QuadLightAliasCtuSampler : IQuadLightSampler
 
         uint col = clamp(uint(uv.x * float(gridDim.x)), 0u, gridDim.x - 1);
         uint row = clamp(uint(uv.y * float(gridDim.y)), 0u, gridDim.y - 1);
-        uint leafIdx = leafIndexMap[row * gridDim.x + col];
+        uint mapCol = min(col / 8, leafIndexMapDim.x - 1);
+        uint mapRow = min(row / 8, leafIndexMapDim.y - 1);
+        uint leafIdx = leafIndexMap[mapRow * leafIndexMapDim.x + mapCol];
 
         float weight = table.getWeight(leafIdx);
         if (weight <= 0.f) return 0.f;
