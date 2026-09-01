@@ -222,6 +222,16 @@ namespace Falcor
         */
         std::unique_ptr<QuadLightSampler> takePrebuiltSampler();
 
+        /** Sets/clears the currently active QuadLightSampler instance, so renderUI() can
+            surface technique-specific UI (parameters, diagnostics) alongside the "Sampler"
+            dropdown. Called by whoever owns the sampler (currently PathTracer - see
+            QuadLightSampler.h's ownership note) whenever it creates, replaces, or destroys
+            one. Stored as a raw, non-owning pointer - mirrors QuadLightSampler's own
+            back-pointer to its QuadLight.
+            \param[in] pSampler The active sampler, or nullptr if none is currently built.
+        */
+        void setActiveSampler(QuadLightSampler* pSampler) { mpActiveSampler = pSampler; }
+
         /** Current playlist position (0-based), only meaningful when isVideo() is true. */
         uint32_t getVideoFrameIndex() const;
 
@@ -278,6 +288,7 @@ namespace Falcor
 
         std::unique_ptr<QuadLightVideoPlayer> mpVideoPlayer;   ///< Non-null only in video mode (see isVideo()).
         std::unique_ptr<QuadLightSampler>     mpPendingSampler; ///< Set by updateVideoPlayback() on a frame advance; consumed by takePrebuiltSampler().
+        QuadLightSampler*                     mpActiveSampler = nullptr; ///< Non-owning - see setActiveSampler().
 
         Changes                 mChanges = Changes::None;
 

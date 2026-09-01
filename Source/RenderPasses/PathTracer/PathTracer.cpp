@@ -422,6 +422,10 @@ void PathTracer::setScene(RenderContext* pRenderContext, const ref<Scene>& pScen
     // Must release the quad light sampler before mpScene is reassigned below: it holds a raw
     // (non-owning) pointer back to the outgoing scene's QuadLight (see QuadLightSampler.h),
     // which becomes dangling the instant the outgoing mpScene's ref<QuadLight> is dropped.
+    if (mpScene)
+    {
+        if (auto pQuadLight = mpScene->getQuadLight()) pQuadLight->setActiveSampler(nullptr);
+    }
     mpQuadLightSampler = nullptr;
 
     mpScene = pScene;
@@ -937,6 +941,10 @@ void PathTracer::resetLighting()
 
     mpEmissiveSampler = nullptr;
     mpEnvMapSampler = nullptr;
+    if (mpScene)
+    {
+        if (auto pQuadLight = mpScene->getQuadLight()) pQuadLight->setActiveSampler(nullptr);
+    }
     mpQuadLightSampler = nullptr;
     mRecompile = true;
 }
@@ -999,6 +1007,7 @@ bool PathTracer::prepareLighting(RenderContext* pRenderContext)
     {
         // Note: no mRecompile = true here (see below for why) - during video playback this
         // fires on every single frame advance (see QuadLight::updateVideoPlayback()).
+        if (auto pQuadLight = mpScene->getQuadLight()) pQuadLight->setActiveSampler(nullptr);
         mpQuadLightSampler = nullptr;
         lightingChanged = true;
     }
@@ -1010,6 +1019,7 @@ bool PathTracer::prepareLighting(RenderContext* pRenderContext)
             mpQuadLightSampler = mpScene->getQuadLight()->takePrebuiltSampler();
             if (!mpQuadLightSampler)
                 mpQuadLightSampler = createQuadLightSampler(mpScene->getQuadLight()->getSamplerType(), mpDevice, mpScene->getQuadLight());
+            mpScene->getQuadLight()->setActiveSampler(mpQuadLightSampler.get());
             lightingChanged = true;
 
             // The sampler object identity changed (new CDF/luminance/alias-table GPU buffers),
@@ -1031,6 +1041,7 @@ bool PathTracer::prepareLighting(RenderContext* pRenderContext)
     {
         if (mpQuadLightSampler)
         {
+            if (auto pQuadLight = mpScene->getQuadLight()) pQuadLight->setActiveSampler(nullptr);
             mpQuadLightSampler = nullptr;
             lightingChanged = true;
             mRecompile = true;

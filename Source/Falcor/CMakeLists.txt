@@ -222,6 +222,9 @@ target_sources(Falcor PRIVATE
     Rendering/Lights/QuadLightAliasCtuSampler.cpp
     Rendering/Lights/QuadLightAliasCtuSampler.h
     Rendering/Lights/QuadLightAliasCtuSampler.slang
+    Rendering/Lights/QuadLightBudgetLeafAliasSampler.cpp
+    Rendering/Lights/QuadLightBudgetLeafAliasSampler.h
+    Rendering/Lights/QuadLightBudgetLeafAliasSampler.slang
     Rendering/Lights/QuadLightAliasSampler.cpp
     Rendering/Lights/QuadLightAliasSampler.h
     Rendering/Lights/QuadLightAliasSampler.slang

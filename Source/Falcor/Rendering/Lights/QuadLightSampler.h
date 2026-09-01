@@ -59,6 +59,11 @@ namespace Falcor
         */
         virtual DefineList getDefines() const;
 
+        /** Render technique-specific UI (e.g. tunable parameters, diagnostics). Default is a no-op.
+            \return True if a setting changed that requires re-binding shader data (defines are unaffected either way - see getDefines()).
+        */
+        virtual bool renderUI(Gui::Widgets& widget) { return false; }
+
         /** Returns the type of quad light sampler.
         */
         QuadLightSamplerType getType() const { return mType; }

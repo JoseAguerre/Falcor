@@ -31,6 +31,7 @@
 #include "QuadLightMipSampler.h"
 #include "QuadLightAliasSampler.h"
 #include "QuadLightAliasCtuSampler.h"
+#include "QuadLightBudgetLeafAliasSampler.h"
 #include "Core/Error.h"
 
 namespace Falcor
@@ -54,6 +55,8 @@ namespace Falcor
             return std::make_unique<QuadLightAliasSampler>(pDevice, pQuadLight);
         case QuadLightSamplerType::AliasCtu:
             return std::make_unique<QuadLightAliasCtuSampler>(pDevice, pQuadLight);
+        case QuadLightSamplerType::BudgetLeafAlias:
+            return std::make_unique<QuadLightBudgetLeafAliasSampler>(pDevice, pQuadLight);
         default:
             FALCOR_THROW("Unknown or not-yet-implemented QuadLightSamplerType");
         }
@@ -75,6 +78,8 @@ namespace Falcor
             return std::make_unique<QuadLightAliasSampler>(pDevice, pQuadLight, width, height, luminance);
         case QuadLightSamplerType::AliasCtu:
             return std::make_unique<QuadLightAliasCtuSampler>(pDevice, pQuadLight, width, height, luminance);
+        case QuadLightSamplerType::BudgetLeafAlias:
+            return std::make_unique<QuadLightBudgetLeafAliasSampler>(pDevice, pQuadLight, width, height, luminance);
         default:
             FALCOR_THROW("Unknown or not-yet-implemented QuadLightSamplerType");
         }

@@ -40,6 +40,7 @@ enum class QuadLightSamplerType : uint32_t
     HierarchicalMip = 2,
     AliasPerPixel   = 3,
     AliasCtu        = 4,
+    BudgetLeafAlias = 5,
 
     Null            = 0xff,
 };
@@ -50,6 +51,7 @@ FALCOR_ENUM_INFO(QuadLightSamplerType, {
     { QuadLightSamplerType::HierarchicalMip, "HierarchicalMip" },
     { QuadLightSamplerType::AliasPerPixel, "AliasPerPixel" },
     { QuadLightSamplerType::AliasCtu, "AliasCtu" },
+    { QuadLightSamplerType::BudgetLeafAlias, "BudgetLeafAlias" },
     { QuadLightSamplerType::Null, "Null" },
 });
 FALCOR_ENUM_REGISTER(QuadLightSamplerType);
@@ -61,6 +63,7 @@ FALCOR_ENUM_REGISTER(QuadLightSamplerType);
 #define QUAD_LIGHT_SAMPLER_HIERARCHICAL_MIP   2
 #define QUAD_LIGHT_SAMPLER_ALIAS_PER_PIXEL    3
 #define QUAD_LIGHT_SAMPLER_ALIAS_CTU          4
+#define QUAD_LIGHT_SAMPLER_BUDGET_LEAF_ALIAS  5
 #define QUAD_LIGHT_SAMPLER_NULL               0xff
 
 #ifdef HOST_CODE
@@ -69,6 +72,7 @@ static_assert((uint32_t)QuadLightSamplerType::Cdf2D == QUAD_LIGHT_SAMPLER_CDF_2D
 static_assert((uint32_t)QuadLightSamplerType::HierarchicalMip == QUAD_LIGHT_SAMPLER_HIERARCHICAL_MIP);
 static_assert((uint32_t)QuadLightSamplerType::AliasPerPixel == QUAD_LIGHT_SAMPLER_ALIAS_PER_PIXEL);
 static_assert((uint32_t)QuadLightSamplerType::AliasCtu == QUAD_LIGHT_SAMPLER_ALIAS_CTU);
+static_assert((uint32_t)QuadLightSamplerType::BudgetLeafAlias == QUAD_LIGHT_SAMPLER_BUDGET_LEAF_ALIAS);
 static_assert((uint32_t)QuadLightSamplerType::Null == QUAD_LIGHT_SAMPLER_NULL);
 #endif
 

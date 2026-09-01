@@ -146,6 +146,8 @@ namespace Falcor
         widgets.dropdown("Sampler", mSamplerType);
         widgets.tooltip("Selects which importance-sampling technique to use for this quad light.", true);
 
+        if (mpActiveSampler) mpActiveSampler->renderUI(widgets);
+
         widgets.var("Light samples/vertex", mData.lightSamplesPerVertex, 1u, 64u, 1u);
         widgets.tooltip(
             "Number of independent shadow-ray samples of this quad light to draw and average "
