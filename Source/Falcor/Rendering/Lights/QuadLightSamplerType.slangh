@@ -41,6 +41,9 @@ enum class QuadLightSamplerType : uint32_t
     AliasPerPixel   = 3,
     AliasCtu        = 4,
     BudgetLeafAlias = 5,
+    Cdf2DDiv8       = 6, ///< Cdf2D, but the CDF/luminance grid is built at 1/8 the source resolution (box-filtered).
+    Cdf2DDiv16      = 7, ///< Cdf2D, but at 1/16 the source resolution.
+    Cdf2DDiv32      = 8, ///< Cdf2D, but at 1/32 the source resolution.
 
     Null            = 0xff,
 };
@@ -52,6 +55,9 @@ FALCOR_ENUM_INFO(QuadLightSamplerType, {
     { QuadLightSamplerType::AliasPerPixel, "AliasPerPixel" },
     { QuadLightSamplerType::AliasCtu, "AliasCtu" },
     { QuadLightSamplerType::BudgetLeafAlias, "BudgetLeafAlias" },
+    { QuadLightSamplerType::Cdf2DDiv8, "Cdf2DDiv8" },
+    { QuadLightSamplerType::Cdf2DDiv16, "Cdf2DDiv16" },
+    { QuadLightSamplerType::Cdf2DDiv32, "Cdf2DDiv32" },
     { QuadLightSamplerType::Null, "Null" },
 });
 FALCOR_ENUM_REGISTER(QuadLightSamplerType);
@@ -64,6 +70,9 @@ FALCOR_ENUM_REGISTER(QuadLightSamplerType);
 #define QUAD_LIGHT_SAMPLER_ALIAS_PER_PIXEL    3
 #define QUAD_LIGHT_SAMPLER_ALIAS_CTU          4
 #define QUAD_LIGHT_SAMPLER_BUDGET_LEAF_ALIAS  5
+#define QUAD_LIGHT_SAMPLER_CDF_2D_DIV8         6
+#define QUAD_LIGHT_SAMPLER_CDF_2D_DIV16        7
+#define QUAD_LIGHT_SAMPLER_CDF_2D_DIV32        8
 #define QUAD_LIGHT_SAMPLER_NULL               0xff
 
 #ifdef HOST_CODE
@@ -73,6 +82,9 @@ static_assert((uint32_t)QuadLightSamplerType::HierarchicalMip == QUAD_LIGHT_SAMP
 static_assert((uint32_t)QuadLightSamplerType::AliasPerPixel == QUAD_LIGHT_SAMPLER_ALIAS_PER_PIXEL);
 static_assert((uint32_t)QuadLightSamplerType::AliasCtu == QUAD_LIGHT_SAMPLER_ALIAS_CTU);
 static_assert((uint32_t)QuadLightSamplerType::BudgetLeafAlias == QUAD_LIGHT_SAMPLER_BUDGET_LEAF_ALIAS);
+static_assert((uint32_t)QuadLightSamplerType::Cdf2DDiv8 == QUAD_LIGHT_SAMPLER_CDF_2D_DIV8);
+static_assert((uint32_t)QuadLightSamplerType::Cdf2DDiv16 == QUAD_LIGHT_SAMPLER_CDF_2D_DIV16);
+static_assert((uint32_t)QuadLightSamplerType::Cdf2DDiv32 == QUAD_LIGHT_SAMPLER_CDF_2D_DIV32);
 static_assert((uint32_t)QuadLightSamplerType::Null == QUAD_LIGHT_SAMPLER_NULL);
 #endif
 

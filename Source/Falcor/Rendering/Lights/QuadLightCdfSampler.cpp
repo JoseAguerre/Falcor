@@ -32,10 +32,30 @@
 #include "Utils/Logger.h"
 #include "Utils/Timing/CpuTimer.h"
 
+namespace
+{
+    // Cdf2DDiv8/16/32 are just Cdf2D built at a reduced resolution - map the requested
+    // divisor to the matching QuadLightSamplerType so getDefines() reports the right
+    // technique (see QuadLightSampler.slang's dispatcher, which routes all four defines to
+    // this same class).
+    Falcor::QuadLightSamplerType cdfTypeForDivisor(uint32_t downsampleFactor)
+    {
+        switch (downsampleFactor)
+        {
+        case 1: return Falcor::QuadLightSamplerType::Cdf2D;
+        case 8: return Falcor::QuadLightSamplerType::Cdf2DDiv8;
+        case 16: return Falcor::QuadLightSamplerType::Cdf2DDiv16;
+        case 32: return Falcor::QuadLightSamplerType::Cdf2DDiv32;
+        default:
+            FALCOR_THROW("QuadLightCdfSampler: unsupported downsampleFactor {} (must be 1, 8, 16, or 32).", downsampleFactor);
+        }
+    }
+} // namespace
+
 namespace Falcor
 {
-    QuadLightCdfSampler::QuadLightCdfSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight)
-        : QuadLightSampler(QuadLightSamplerType::Cdf2D, pDevice, pQuadLight)
+    QuadLightCdfSampler::QuadLightCdfSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight, uint32_t downsampleFactor)
+        : QuadLightSampler(cdfTypeForDivisor(downsampleFactor), pDevice, pQuadLight)
     {
         auto luminanceStart = CpuTimer::getCurrentTimePoint();
 
@@ -48,18 +68,19 @@ namespace Falcor
             CpuTimer::calcDuration(luminanceStart, luminanceEnd), w, h
         );
 
-        build(w, h, luminance);
+        build(w, h, luminance, downsampleFactor);
     }
 
     QuadLightCdfSampler::QuadLightCdfSampler(
-        ref<Device> pDevice, ref<QuadLight> pQuadLight, uint32_t width, uint32_t height, const std::vector<float>& luminance
+        ref<Device> pDevice, ref<QuadLight> pQuadLight, uint32_t width, uint32_t height, const std::vector<float>& luminance,
+        uint32_t downsampleFactor
     )
-        : QuadLightSampler(QuadLightSamplerType::Cdf2D, pDevice, pQuadLight)
+        : QuadLightSampler(cdfTypeForDivisor(downsampleFactor), pDevice, pQuadLight)
     {
-        build(width, height, luminance);
+        build(width, height, luminance, downsampleFactor);
     }
 
-    void QuadLightCdfSampler::build(uint32_t w, uint32_t h, const std::vector<float>& luminanceIn)
+    void QuadLightCdfSampler::build(uint32_t w, uint32_t h, const std::vector<float>& luminanceIn, uint32_t downsampleFactor)
     {
         // Fall back to a single uniform texel so the sampler is still well-defined.
         std::vector<float> fallback;
@@ -69,6 +90,20 @@ namespace Falcor
             w = h = 1;
             fallback = {1.f};
             pLuminance = &fallback;
+        }
+
+        // Cdf2DDiv8/16/32: shrink the grid before building the CDF over it - box-filtered,
+        // so relative energy between regions is preserved rather than aliased (see
+        // downsampleLuminanceBox()'s own comment). Everything below is otherwise identical
+        // to native Cdf2D; it just runs on a much smaller w x h.
+        std::vector<float> downsampled;
+        if (downsampleFactor > 1)
+        {
+            uint32_t dw = 0, dh = 0;
+            downsampled = downsampleLuminanceBox(*pLuminance, w, h, downsampleFactor, dw, dh);
+            w = dw;
+            h = dh;
+            pLuminance = &downsampled;
         }
         const std::vector<float>& luminance = *pLuminance;
         mGridDim = uint2(w, h);
@@ -112,7 +147,10 @@ namespace Falcor
         );
 
         auto end = CpuTimer::getCurrentTimePoint();
-        logInfo("QuadLightCdfSampler: build time {:.3f} ms", CpuTimer::calcDuration(start, end));
+        logInfo(
+            "QuadLightCdfSampler: build time {:.3f} ms (grid {}x{}{})", CpuTimer::calcDuration(start, end), w, h,
+            downsampleFactor > 1 ? fmt::format(", downsampled 1/{}", downsampleFactor) : std::string()
+        );
     }
 
     void QuadLightCdfSampler::bindShaderData(const ShaderVar& var) const

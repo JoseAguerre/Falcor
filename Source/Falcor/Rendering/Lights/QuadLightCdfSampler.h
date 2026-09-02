@@ -37,29 +37,42 @@ namespace Falcor
         CDF over rows + per-row conditional CDF), inverted via binary search in the shader.
         The default technique - identical math to the original single-technique QuadLightSampler.
 
-        Everything is built on the CPU (see QuadLightLuminance.h) at the source image's
-        native resolution and uploaded once; the shader only does the (log N) binary-search
-        sampling.
+        Everything is built on the CPU (see QuadLightLuminance.h) and uploaded once; the
+        shader only does the (log N) binary-search sampling. Also backs the Cdf2DDiv8/16/32
+        technique variants (see the downsampleFactor constructor parameter and
+        QuadLightSamplerType.slangh): the CDF/luminance grid is built at 1/8, 1/16, or 1/32
+        of the source image's resolution (box-filtered, see QuadLightLuminance.h's
+        downsampleLuminanceBox()) instead of natively, trading precision for a much smaller
+        GPU structure and shorter binary search - the runtime sample()/evalPdf() shader code
+        is identical regardless (see QuadLightCdfSampler.slang - it only ever sees gridDim,
+        not the source image's actual resolution).
     */
     class FALCOR_API QuadLightCdfSampler : public QuadLightSampler
     {
     public:
-        /** Decodes pQuadLight's source image itself (via computeQuadLightLuminance()) before building. */
-        QuadLightCdfSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight);
+        /** Decodes pQuadLight's source image itself (via computeQuadLightLuminance()) before building.
+            \param[in] downsampleFactor Build the CDF/luminance grid at 1/downsampleFactor of
+                the source resolution (box-filtered). Must be 1 (native, the default -
+                QuadLightSamplerType::Cdf2D), 8, 16, or 32 (Cdf2DDiv8/16/32 respectively).
+        */
+        QuadLightCdfSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight, uint32_t downsampleFactor = 1);
 
         /** Builds directly from an already-computed luminance array, skipping the decode -
             for callers (e.g. video playback prefetch) that already have one on hand from
             building the GPU texture, so the same source image isn't decoded twice.
         */
-        QuadLightCdfSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight, uint32_t width, uint32_t height, const std::vector<float>& luminance);
+        QuadLightCdfSampler(
+            ref<Device> pDevice, ref<QuadLight> pQuadLight, uint32_t width, uint32_t height, const std::vector<float>& luminance,
+            uint32_t downsampleFactor = 1
+        );
 
         void bindShaderData(const ShaderVar& var) const override;
 
     private:
-        void build(uint32_t width, uint32_t height, const std::vector<float>& luminance);
+        void build(uint32_t width, uint32_t height, const std::vector<float>& luminance, uint32_t downsampleFactor);
 
         uint2       mGridDim;
-        ref<Texture> mpLuminance;      ///< WxH raw luminance grid.
+        ref<Texture> mpLuminance;      ///< WxH (post-downsample, if any) raw luminance grid.
         ref<Buffer>  mpConditionalCDF; ///< H*(W+1) raw prefix sums.
         ref<Buffer>  mpMarginalCDF;    ///< H+1 raw prefix sum.
     };

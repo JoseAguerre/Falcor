@@ -48,7 +48,14 @@ __exported import Rendering.Lights.QuadLightSamplerInterface;
     import Rendering.Lights.QuadLightRandomSampler;
     typedef QuadLightRandomSampler QuadLightSampler;
 
-#elif _QUAD_LIGHT_SAMPLER_TYPE == QUAD_LIGHT_SAMPLER_CDF_2D
+#elif _QUAD_LIGHT_SAMPLER_TYPE == QUAD_LIGHT_SAMPLER_CDF_2D || \
+      _QUAD_LIGHT_SAMPLER_TYPE == QUAD_LIGHT_SAMPLER_CDF_2D_DIV8 || \
+      _QUAD_LIGHT_SAMPLER_TYPE == QUAD_LIGHT_SAMPLER_CDF_2D_DIV16 || \
+      _QUAD_LIGHT_SAMPLER_TYPE == QUAD_LIGHT_SAMPLER_CDF_2D_DIV32
+    // Cdf2DDiv8/16/32 reuse this exact same shader type: the CDF grid's resolution is a
+    // purely CPU-side build-time choice (see QuadLightCdfSampler.cpp/.h) that this code
+    // never sees - it only ever reads whatever gridDim was bound (see
+    // QuadLightCdfSampler.slang), so there's nothing here to specialize on.
     import Rendering.Lights.QuadLightCdfSampler;
     typedef QuadLightCdfSampler QuadLightSampler;
 

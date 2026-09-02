@@ -31,6 +31,7 @@
 #include "Utils/Logger.h"
 #include "Utils/Math/ScalarTypes.h"
 
+#include <algorithm>
 #include <cmath>
 
 namespace Falcor
@@ -348,5 +349,51 @@ namespace Falcor
         size_t numValid = n - numInvalid;
         if (numValid == 0) return float3(0.f);
         return float3(float(sumR / numValid), float(sumG / numValid), float(sumB / numValid));
+    }
+
+    std::vector<float> downsampleLuminanceBox(
+        const std::vector<float>& src, uint32_t srcWidth, uint32_t srcHeight, uint32_t factor, uint32_t& outWidth, uint32_t& outHeight
+    )
+    {
+        factor = std::max(1u, factor);
+        outWidth = std::max(1u, (srcWidth + factor - 1) / factor);
+        outHeight = std::max(1u, (srcHeight + factor - 1) / factor);
+
+        if (factor == 1 || srcWidth == 0 || srcHeight == 0)
+        {
+            outWidth = std::max(1u, srcWidth);
+            outHeight = std::max(1u, srcHeight);
+            return src;
+        }
+
+        std::vector<float> dst((size_t)outWidth * outHeight, 0.f);
+        for (uint32_t dy = 0; dy < outHeight; ++dy)
+        {
+            uint32_t sy0 = dy * factor;
+            uint32_t sy1 = std::min(sy0 + factor, srcHeight);
+            for (uint32_t dx = 0; dx < outWidth; ++dx)
+            {
+                uint32_t sx0 = dx * factor;
+                uint32_t sx1 = std::min(sx0 + factor, srcWidth);
+
+                // Double accumulation: same rationale as the CDF/AliasCtu build's own
+                // luminance sums (QuadLightCdfSampler.cpp) - up to factor*factor texels
+                // summed per output texel is small enough that this is essentially free,
+                // but avoids compounding float32 rounding for large downsample factors.
+                double sum = 0.0;
+                uint32_t count = 0;
+                for (uint32_t sy = sy0; sy < sy1; ++sy)
+                {
+                    const float* row = src.data() + (size_t)sy * srcWidth;
+                    for (uint32_t sx = sx0; sx < sx1; ++sx)
+                    {
+                        sum += double(row[sx]);
+                        ++count;
+                    }
+                }
+                dst[(size_t)dy * outWidth + dx] = count > 0 ? float(sum / double(count)) : 0.f;
+            }
+        }
+        return dst;
     }
 }

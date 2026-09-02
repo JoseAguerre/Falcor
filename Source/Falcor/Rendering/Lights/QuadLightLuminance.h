@@ -86,4 +86,24 @@ namespace Falcor
         \return Average RGB, in the same linear/unpremultiplied space eval() samples from.
     */
     FALCOR_API float3 computeAverageColorFromBitmap(const Bitmap& bitmap, const std::filesystem::path& pathForLogging = {});
+
+    /** Box-filter downsample a row-major luminance array by an integer factor: each output
+        texel is the plain average of the up-to-factor*factor source texels it covers
+        (fewer at the right/bottom edge if the source dimensions aren't a multiple of
+        factor - no source texel is dropped or double-counted). Unlike a point-sampled/
+        strided downsample, this preserves each region's average luminance rather than
+        aliasing it, which matters for importance sampling - the resulting grid's relative
+        per-texel weights should still reflect the source's actual energy distribution as
+        closely as a box filter allows.
+        \param[in] src Row-major source luminance array of size srcWidth*srcHeight.
+        \param[in] srcWidth Source width in texels.
+        \param[in] srcHeight Source height in texels.
+        \param[in] factor Downsample factor (1 = no-op passthrough). Clamped to >= 1.
+        \param[out] outWidth Output width in texels: max(1, ceil(srcWidth / factor)).
+        \param[out] outHeight Output height in texels: max(1, ceil(srcHeight / factor)).
+        \return Row-major output luminance array of size outWidth*outHeight.
+    */
+    FALCOR_API std::vector<float> downsampleLuminanceBox(
+        const std::vector<float>& src, uint32_t srcWidth, uint32_t srcHeight, uint32_t factor, uint32_t& outWidth, uint32_t& outHeight
+    );
 }

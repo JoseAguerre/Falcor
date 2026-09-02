@@ -57,6 +57,12 @@ namespace Falcor
             return std::make_unique<QuadLightAliasCtuSampler>(pDevice, pQuadLight);
         case QuadLightSamplerType::BudgetLeafAlias:
             return std::make_unique<QuadLightBudgetLeafAliasSampler>(pDevice, pQuadLight);
+        case QuadLightSamplerType::Cdf2DDiv8:
+            return std::make_unique<QuadLightCdfSampler>(pDevice, pQuadLight, 8);
+        case QuadLightSamplerType::Cdf2DDiv16:
+            return std::make_unique<QuadLightCdfSampler>(pDevice, pQuadLight, 16);
+        case QuadLightSamplerType::Cdf2DDiv32:
+            return std::make_unique<QuadLightCdfSampler>(pDevice, pQuadLight, 32);
         default:
             FALCOR_THROW("Unknown or not-yet-implemented QuadLightSamplerType");
         }
@@ -80,6 +86,12 @@ namespace Falcor
             return std::make_unique<QuadLightAliasCtuSampler>(pDevice, pQuadLight, width, height, luminance);
         case QuadLightSamplerType::BudgetLeafAlias:
             return std::make_unique<QuadLightBudgetLeafAliasSampler>(pDevice, pQuadLight, width, height, luminance);
+        case QuadLightSamplerType::Cdf2DDiv8:
+            return std::make_unique<QuadLightCdfSampler>(pDevice, pQuadLight, width, height, luminance, 8);
+        case QuadLightSamplerType::Cdf2DDiv16:
+            return std::make_unique<QuadLightCdfSampler>(pDevice, pQuadLight, width, height, luminance, 16);
+        case QuadLightSamplerType::Cdf2DDiv32:
+            return std::make_unique<QuadLightCdfSampler>(pDevice, pQuadLight, width, height, luminance, 32);
         default:
             FALCOR_THROW("Unknown or not-yet-implemented QuadLightSamplerType");
         }
