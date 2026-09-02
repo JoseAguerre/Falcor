@@ -1,0 +1,916 @@
+<scene version="3.0.0">
+    <default name="integrator" value="path"/>
+    <default name="spp" value="64"/>
+    <default name="resx" value="860"/>
+    <default name="resy" value="720"/>
+    <default name="pixel_format" value="rgb"/>
+    <default name="max_depth" value="8"/>
+    <default name="rr_depth" value="64"/>
+
+    <integrator type="$integrator">
+        <integer name="max_depth" value="$max_depth"/>
+        <integer name="rr_depth" value="$rr_depth"/>
+        <boolean name="hide_emitters" value="false"/>
+    </integrator>
+
+    <film type="hdrfilm" id="film">
+        <integer name="width" value="$resx"/>
+        <integer name="height" value="$resy"/>
+        <rfilter type="box"/>
+        <string  name="pixel_format" value="$pixel_format"/>
+    </film>
+    <sampler type="independent" id="sampler">
+        <integer name="sample_count" value="$spp"/>
+    </sampler>
+
+    <sensor type="perspective">
+        <string name="fov_axis" value="smaller"/>
+        <float name="fov" value="20.0"/>
+        <transform name="to_world">
+            <rotate x="1" angle="-170.9201291112598"/>
+            <rotate y="1" angle="38.321556062631714"/>
+            <rotate z="1" angle="179.99988206555128"/>
+            <translate value="-14.036 5.3 17.576447"/>
+        </transform>
+        <ref id="sampler"/>
+        <ref id="film"/>
+    </sensor>
+
+    <emitter type="constant">
+        <rgb name="radiance" value="1.0"/>
+    </emitter>
+
+    <shape type="rectangle">
+        <transform name="to_world">
+            <scale value="100"/>
+            <rotate x="1" angle="-90"/>
+        </transform>
+		<bsdf type="diffuse">
+			<rgb value="1.0" name="reflectance"/>
+		</bsdf>
+    </shape>
+
+<!-- Materials -->
+
+	<bsdf type="twosided" id="mat- Bronzish">
+		<bsdf type="roughconductor">
+			<float name="alpha" value="0.0250000"/>
+			<string name="distribution" value="ggx"/>
+			<rgb value="0.072426 0.038899 0.016263" name="specular_reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-SAFETY STRIPE">
+		<bsdf type="diffuse">
+			<texture type="bitmap" name="reflectance">
+				<string name="filename" value="textures/saftey stripe long.jpg"/>
+			</texture>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-sheet metal">
+		<bsdf type="diffuse">
+			<texture type="bitmap" name="reflectance">
+				<string name="filename" value="textures/old-sheet-metal-albedo.png"/>
+				<boolean name="raw" value="true"/>
+			</texture>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Window frames">
+		<bsdf type="diffuse">
+			<rgb value="0.386429 0.137132 0.091224" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-panel mat 03">
+		<bsdf type="diffuse">
+			<rgb value="0.051269 0.068478 0.082283" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-panel mat">
+		<bsdf type="diffuse">
+			<rgb value="0.212231 0.246201 0.318547" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-panel mat 02">
+		<bsdf type="roughconductor">
+			<float name="alpha" value="0.250000"/>
+			<string name="distribution" value="ggx"/>
+			<rgb value="0.523764 0.523764 0.523764" name="specular_reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="diffuse" id="mat-panel mat 04">
+		<rgb value="1.000000 0.000000 0.300000" name="reflectance"/>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Yellow.001">
+		<bsdf type="diffuse">
+			<rgb value="0.483091 0.244228 0.038728" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Rover Body worn">
+		<bsdf type="roughconductor">
+			<float name="alpha" value="0.250000"/>
+			<string name="distribution" value="ggx"/>
+			<rgb value="0.138432 0.205079 0.270498" name="specular_reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Wheel grey brown">
+		<bsdf type="diffuse">
+			<rgb value="0.101338 0.096674 0.088985" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Alumin">
+		<bsdf type="diffuse">
+			<rgb value="0.640803 0.785671 0.794828" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Scifi Panels 13">
+		<bsdf type="roughconductor">
+			<float name="alpha" value="0.250000"/>
+			<string name="distribution" value="ggx"/>
+			<rgb value="0.800000 0.533690 0.190821" name="specular_reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="diffuse" id="mat-Light">
+		<rgb value="0.800000 0.800000 0.800000" name="reflectance"/>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Scifi Grid 01">
+		<bsdf type="diffuse">
+			<rgb value="0.017642 0.016807 0.015209" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Scifi Panels 04">
+		<bsdf type="diffuse">
+			<rgb value="0.014351 0.023149 0.032615" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Scifi Panels 10">
+		<bsdf type="diffuse">
+			<rgb value="0.270778 0.270778 0.270778" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Rover white ext">
+		<bsdf type="diffuse">
+			<rgb value="0.800000 0.800000 0.800000" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Ware material">
+		<bsdf type="diffuse">
+			<rgb value="0.170361 0.060213 0.019639" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Black">
+		<bsdf type="diffuse">
+			<rgb value="0.009997 0.009997 0.009997" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Wheel white">
+		<bsdf type="diffuse">
+			<rgb value="0.665776 0.665776 0.665776" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Rover int walls">
+		<bsdf type="diffuse">
+			<rgb value="0.441158 0.249164 0.172947" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Procedural Metal Plates">
+		<bsdf type="roughconductor">
+			<float name="alpha" value="0.250000"/>
+			<string name="distribution" value="ggx"/>
+			<rgb value="0.226624 0.226624 0.226624" name="specular_reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Aluminioum">
+		<bsdf type="diffuse">
+			<rgb value="0.300544 0.341915 0.386429" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Material.026">
+		<bsdf type="diffuse">
+			<rgb value="0.134798 0.134798 0.134798" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Material.027">
+		<bsdf type="diffuse">
+			<rgb value="0.692798 0.692798 0.692798" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Material.025">
+		<bsdf type="diffuse">
+			<rgb value="0.000000 0.000000 0.000000" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Material.024">
+		<bsdf type="diffuse">
+			<rgb value="0.403598 0.016234 0.001138" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="diffuse" id="mat-Material.023">
+		<rgb value="1.000000 0.000000 0.300000" name="reflectance"/>
+	</bsdf>
+	<bsdf type="diffuse" id="empty-emitter-bsdf">
+		<rgb value="0.000000" name="reflectance"/>
+	</bsdf>
+	<bsdf type="twosided" id="mat-decal1">
+		<bsdf type="diffuse">
+			<texture type="bitmap" name="reflectance">
+				<string name="filename" value="textures/decal1.png"/>
+			</texture>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-decal3">
+		<bsdf type="diffuse">
+			<texture type="bitmap" name="reflectance">
+				<string name="filename" value="textures/decal3.png"/>
+			</texture>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-decal4">
+		<bsdf type="diffuse">
+			<texture type="bitmap" name="reflectance">
+				<string name="filename" value="textures/decal4.png"/>
+			</texture>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-SIGN1">
+		<bsdf type="diffuse">
+			<texture type="bitmap" name="reflectance">
+				<string name="filename" value="textures/SIGN1.png"/>
+			</texture>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-warnsign2">
+		<bsdf type="diffuse">
+			<texture type="bitmap" name="reflectance">
+				<string name="filename" value="textures/warnsign2.png"/>
+			</texture>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-warnsign3">
+		<bsdf type="diffuse">
+			<texture type="bitmap" name="reflectance">
+				<string name="filename" value="textures/warnsign3.png"/>
+			</texture>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Material.004">
+		<bsdf type="diffuse">
+			<rgb value="0.800000 0.800000 0.800000" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Material.009">
+		<bsdf type="diffuse">
+			<rgb value="0.351533 0.274677 0.212231" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="diffuse" id="mat-Material.008">
+		<rgb value="1.000000 0.000000 0.300000" name="reflectance"/>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Material.007">
+		<bsdf type="diffuse">
+			<rgb value="0.800000 0.800000 0.800000" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Consol Black">
+		<bsdf type="diffuse">
+			<rgb value="0.048124 0.050104 0.056327" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="blendbsdf" id="mat-Belt.001">
+		<float name="weight" value="0.500000"/>
+		<bsdf type="twosided">
+			<bsdf type="diffuse">
+				<rgb value="0.000000 0.000000 0.000000" name="reflectance"/>
+			</bsdf>
+		</bsdf>
+		<bsdf type="twosided">
+			<bsdf type="roughconductor">
+				<float name="alpha" value="0.200000"/>
+				<string name="distribution" value="ggx"/>
+				<rgb value="0.224359 0.224359 0.224359" name="specular_reflectance"/>
+			</bsdf>
+		</bsdf>
+	</bsdf>
+	<bsdf type="blendbsdf" id="mat-Material.040">
+		<float name="weight" value="0.172131"/>
+		<bsdf type="twosided">
+			<bsdf type="diffuse">
+				<rgb value="0.239517 0.255783 0.355796" name="reflectance"/>
+			</bsdf>
+		</bsdf>
+		<bsdf type="twosided">
+			<bsdf type="roughconductor">
+				<float name="alpha" value="0.200000"/>
+				<string name="distribution" value="ggx"/>
+				<rgb value="0.800000 0.800000 0.800000" name="specular_reflectance"/>
+			</bsdf>
+		</bsdf>
+	</bsdf>
+	<bsdf type="dielectric" id="mat-glass">
+		<float name="int_ior" value="1.100000"/>
+		<rgb value="1.000000 1.000000 1.000000" name="specular_transmittance"/>
+	</bsdf>
+	<bsdf type="diffuse" id="mat-Orange">
+		<rgb value="0.800000 0.285923 0.057919" name="reflectance"/>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Wheel black">
+		<bsdf type="diffuse">
+			<rgb value="0.027368 0.023997 0.019919" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Yellow">
+		<bsdf type="diffuse">
+			<rgb value="0.800000 0.459935 0.097614" name="reflectance"/>
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="mat-Material">
+		<bsdf type="diffuse">
+			<texture type="bitmap" name="reflectance">
+				<string name="filename" value="textures/brnlethr.png"/>
+			</texture>
+		</bsdf>
+	</bsdf>
+
+<!-- Emitters -->
+
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-Material.022.ply"/>
+		<ref id="empty-emitter-bsdf" name="bsdf"/>
+		<!-- <emitter type="area">
+			<rgb value="2.887838 7.595667 8.299999" name="radiance"/>
+		</emitter> -->
+	</shape>
+
+<!-- Shapes -->
+
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-body-glass.ply"/>
+		<ref id="mat-glass" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-body- Bronzish.ply"/>
+		<ref id="mat- Bronzish" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-body-SAFETY STRIPE.ply"/>
+		<ref id="mat-SAFETY STRIPE" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-body-sheet metal.ply"/>
+		<ref id="mat-sheet metal" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-body-Window frames.ply"/>
+		<ref id="mat-Window frames" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-body-panel mat 03.ply"/>
+		<ref id="mat-panel mat 03" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-body-panel mat.ply"/>
+		<ref id="mat-panel mat" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-body-panel mat 02.ply"/>
+		<ref id="mat-panel mat 02" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-body-panel mat 04.ply"/>
+		<ref id="mat-panel mat 04" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-body-Yellow.001.ply"/>
+		<ref id="mat-Yellow.001" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-body-Rover Body worn.ply"/>
+		<ref id="mat-Rover Body worn" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/External_Instruments_001-Rover Body worn.ply"/>
+		<ref id="mat-Rover Body worn" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/External_Instruments_001-Wheel grey brown.ply"/>
+		<ref id="mat-Wheel grey brown" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/External_Instruments_001- Bronzish.ply"/>
+		<ref id="mat- Bronzish" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/External_Instruments_001-Yellow.001.ply"/>
+		<ref id="mat-Yellow.001" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/External_Instruments_001-Alumin.ply"/>
+		<ref id="mat-Alumin" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/External_Instruments_001-Scifi Panels 13.ply"/>
+		<ref id="mat-Scifi Panels 13" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/External_Instruments_001-Light.ply"/>
+		<ref id="mat-Light" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/External_Instruments_001-Scifi Grid 01.ply"/>
+		<ref id="mat-Scifi Grid 01" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/External_Instruments_001-Scifi Panels 04.ply"/>
+		<ref id="mat-Scifi Panels 04" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/External_Instruments_001-Scifi Panels 10.ply"/>
+		<ref id="mat-Scifi Panels 10" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/External_Instruments_001-Rover white ext.ply"/>
+		<ref id="mat-Rover white ext" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/External_Instruments_001-Window frames.ply"/>
+		<ref id="mat-Window frames" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/External_Instruments_001-Ware material.ply"/>
+		<ref id="mat-Ware material" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/External_Instruments_001-Black.ply"/>
+		<ref id="mat-Black" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/External_Instruments_001-Wheel white.ply"/>
+		<ref id="mat-Wheel white" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/External_Instruments_001-sheet metal.ply"/>
+		<ref id="mat-sheet metal" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/External_Instruments_001-Rover white ext.ply"/>
+		<ref id="mat-Rover white ext" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-Alumin.ply"/>
+		<ref id="mat-Alumin" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-Rover int walls.ply"/>
+		<ref id="mat-Rover int walls" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001- Bronzish.ply"/>
+		<ref id="mat- Bronzish" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-Procedural Metal Plates.ply"/>
+		<ref id="mat-Procedural Metal Plates" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-Aluminioum.ply"/>
+		<ref id="mat-Aluminioum" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-Window frames.ply"/>
+		<ref id="mat-Window frames" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-Material.026.ply"/>
+		<ref id="mat-Material.026" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-Material.027.ply"/>
+		<ref id="mat-Material.027" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-Material.025.ply"/>
+		<ref id="mat-Material.025" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-Material.024.ply"/>
+		<ref id="mat-Material.024" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-Material.023.ply"/>
+		<ref id="mat-Material.023" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-decal1.ply"/>
+		<ref id="mat-decal1" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-decal3.ply"/>
+		<ref id="mat-decal3" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-decal4.ply"/>
+		<ref id="mat-decal4" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-SIGN1.ply"/>
+		<ref id="mat-SIGN1" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-warnsign2.ply"/>
+		<ref id="mat-warnsign2" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-warnsign3.ply"/>
+		<ref id="mat-warnsign3" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-Material.004.ply"/>
+		<ref id="mat-Material.004" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-Material.009.ply"/>
+		<ref id="mat-Material.009" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-Material.008.ply"/>
+		<ref id="mat-Material.008" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-Material.007.ply"/>
+		<ref id="mat-Material.007" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-Rover Body worn.ply"/>
+		<ref id="mat-Rover Body worn" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-Consol Black.ply"/>
+		<ref id="mat-Consol Black" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-Black.ply"/>
+		<ref id="mat-Black" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-Belt.001.ply"/>
+		<ref id="mat-Belt.001" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_body_internal_001-Material.040.ply"/>
+		<ref id="mat-Material.040" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/aIRLOCK_DOOR_005-Procedural Metal Plates.ply"/>
+		<ref id="mat-Procedural Metal Plates" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/aIRLOCK_DOOR_005-Aluminioum.ply"/>
+		<ref id="mat-Aluminioum" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/aIRLOCK_DOOR_005-Yellow.001.ply"/>
+		<ref id="mat-Yellow.001" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/aIRLOCK_DOOR_005-glass.ply"/>
+		<ref id="mat-glass" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/aIRLOCK_DOOR_005-Orange.ply"/>
+		<ref id="mat-Orange" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/aIRLOCK_DOOR_003-Procedural Metal Plates.ply"/>
+		<ref id="mat-Procedural Metal Plates" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/aIRLOCK_DOOR_003-Aluminioum.ply"/>
+		<ref id="mat-Aluminioum" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/aIRLOCK_DOOR_003-Yellow.001.ply"/>
+		<ref id="mat-Yellow.001" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/aIRLOCK_DOOR_003-glass.ply"/>
+		<ref id="mat-glass" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/aIRLOCK_DOOR_003-Orange.ply"/>
+		<ref id="mat-Orange" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/aIRLOCK_DOOR_003- Bronzish.ply"/>
+		<ref id="mat- Bronzish" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/aIRLOCK_DOOR_003-Alumin.ply"/>
+		<ref id="mat-Alumin" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/aIRLOCK_DOOR_004-Procedural Metal Plates.ply"/>
+		<ref id="mat-Procedural Metal Plates" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/aIRLOCK_DOOR_004-Aluminioum.ply"/>
+		<ref id="mat-Aluminioum" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/aIRLOCK_DOOR_004-Yellow.001.ply"/>
+		<ref id="mat-Yellow.001" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/aIRLOCK_DOOR_004-glass.ply"/>
+		<ref id="mat-glass" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/aIRLOCK_DOOR_004-Orange.ply"/>
+		<ref id="mat-Orange" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/aIRLOCK_DOOR_004- Bronzish.ply"/>
+		<ref id="mat- Bronzish" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/aIRLOCK_DOOR_004-Alumin.ply"/>
+		<ref id="mat-Alumin" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_R-Wheel grey brown.ply"/>
+		<ref id="mat-Wheel grey brown" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_R-Wheel white.ply"/>
+		<ref id="mat-Wheel white" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_R-Wheel black.ply"/>
+		<ref id="mat-Wheel black" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_R-Aluminioum.ply"/>
+		<ref id="mat-Aluminioum" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_R-Yellow.001.ply"/>
+		<ref id="mat-Yellow.001" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_R- Bronzish.ply"/>
+		<ref id="mat- Bronzish" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Ft_R-Wheel grey brown.ply"/>
+		<ref id="mat-Wheel grey brown" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Ft_R-Wheel white.ply"/>
+		<ref id="mat-Wheel white" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Ft_R-Wheel black.ply"/>
+		<ref id="mat-Wheel black" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Ft_R-Aluminioum.ply"/>
+		<ref id="mat-Aluminioum" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Ft_R-Yellow.001.ply"/>
+		<ref id="mat-Yellow.001" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Ft_R- Bronzish.ply"/>
+		<ref id="mat- Bronzish" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_R_001-Wheel grey brown.ply"/>
+		<ref id="mat-Wheel grey brown" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_R_001-Wheel white.ply"/>
+		<ref id="mat-Wheel white" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_R_001-Wheel black.ply"/>
+		<ref id="mat-Wheel black" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_R_001-Aluminioum.ply"/>
+		<ref id="mat-Aluminioum" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_R_001-Yellow.001.ply"/>
+		<ref id="mat-Yellow.001" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_R_001- Bronzish.ply"/>
+		<ref id="mat- Bronzish" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-WheelBrake_Bk_R.ply"/>
+		<ref id="mat-Wheel grey brown" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-WheelBrake_Bk_R_001.ply"/>
+		<ref id="mat-Wheel grey brown" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-WheelBrake_Ft_R.ply"/>
+		<ref id="mat-Wheel grey brown" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_L-Wheel grey brown.ply"/>
+		<ref id="mat-Wheel grey brown" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_L-Wheel white.ply"/>
+		<ref id="mat-Wheel white" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_L-Wheel black.ply"/>
+		<ref id="mat-Wheel black" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_L-Aluminioum.ply"/>
+		<ref id="mat-Aluminioum" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_L-Yellow.001.ply"/>
+		<ref id="mat-Yellow.001" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_L- Bronzish.ply"/>
+		<ref id="mat- Bronzish" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_L_001-Wheel grey brown.ply"/>
+		<ref id="mat-Wheel grey brown" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_L_001-Wheel white.ply"/>
+		<ref id="mat-Wheel white" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_L_001-Wheel black.ply"/>
+		<ref id="mat-Wheel black" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_L_001-Aluminioum.ply"/>
+		<ref id="mat-Aluminioum" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_L_001-Yellow.001.ply"/>
+		<ref id="mat-Yellow.001" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Bk_L_001- Bronzish.ply"/>
+		<ref id="mat- Bronzish" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Ft_L-Wheel grey brown.ply"/>
+		<ref id="mat-Wheel grey brown" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Ft_L-Wheel white.ply"/>
+		<ref id="mat-Wheel white" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Ft_L-Wheel black.ply"/>
+		<ref id="mat-Wheel black" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Ft_L-Aluminioum.ply"/>
+		<ref id="mat-Aluminioum" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Ft_L-Yellow.001.ply"/>
+		<ref id="mat-Yellow.001" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-Wheel_Ft_L- Bronzish.ply"/>
+		<ref id="mat- Bronzish" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-WheelBrake_Bk_L.ply"/>
+		<ref id="mat-Wheel grey brown" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-WheelBrake_Bk_L_001.ply"/>
+		<ref id="mat-Wheel grey brown" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover-WheelBrake_Ft_L.ply"/>
+		<ref id="mat-Wheel grey brown" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_006-Aluminioum.ply"/>
+		<ref id="mat-Aluminioum" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_006-Yellow.ply"/>
+		<ref id="mat-Yellow" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_006- Bronzish.ply"/>
+		<ref id="mat- Bronzish" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_006-Material.ply"/>
+		<ref id="mat-Material" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_008-Aluminioum.ply"/>
+		<ref id="mat-Aluminioum" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_008-Yellow.ply"/>
+		<ref id="mat-Yellow" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_008- Bronzish.ply"/>
+		<ref id="mat- Bronzish" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_008-Material.ply"/>
+		<ref id="mat-Material" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_009-Aluminioum.ply"/>
+		<ref id="mat-Aluminioum" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_009-Yellow.ply"/>
+		<ref id="mat-Yellow" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_009- Bronzish.ply"/>
+		<ref id="mat- Bronzish" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_009-Material.ply"/>
+		<ref id="mat-Material" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_010-Aluminioum.ply"/>
+		<ref id="mat-Aluminioum" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_010-Yellow.ply"/>
+		<ref id="mat-Yellow" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_010- Bronzish.ply"/>
+		<ref id="mat- Bronzish" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_010-Material.ply"/>
+		<ref id="mat-Material" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_011-Aluminioum.ply"/>
+		<ref id="mat-Aluminioum" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_011-Yellow.ply"/>
+		<ref id="mat-Yellow" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_011- Bronzish.ply"/>
+		<ref id="mat- Bronzish" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_011-Material.ply"/>
+		<ref id="mat-Material" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_012-Aluminioum.ply"/>
+		<ref id="mat-Aluminioum" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_012-Yellow.ply"/>
+		<ref id="mat-Yellow" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_012- Bronzish.ply"/>
+		<ref id="mat- Bronzish" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_012-Material.ply"/>
+		<ref id="mat-Material" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_013-Aluminioum.ply"/>
+		<ref id="mat-Aluminioum" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_013-Yellow.ply"/>
+		<ref id="mat-Yellow" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_013- Bronzish.ply"/>
+		<ref id="mat- Bronzish" name="bsdf"/>
+	</shape>
+	<shape type="ply">
+		<string name="filename" value="meshes/Rover_Seat_013-Material.ply"/>
+		<ref id="mat-Material" name="bsdf"/>
+	</shape>
+</scene>

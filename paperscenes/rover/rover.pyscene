@@ -1,0 +1,372 @@
+from falcor import *
+import math
+
+# Converted from scene_v3.xml (Mitsuba 3 XML scene in this same folder), reusing all the
+# original .ply meshes and textures. Notes on the conversion:
+#
+# - Mitsuba's `twosided` wrapper -> StandardMaterial.doubleSided.
+# - `roughconductor` (alpha, specular_reflectance) -> metallic=1, baseColor=specular_reflectance,
+#   roughness=sqrt(alpha) (GGX alpha = roughness^2 is Falcor's convention).
+# - `dielectric` (glass) -> specularTransmission=1, indexOfRefraction=int_ior, roughness=0.
+# - `blendbsdf` (diffuse/conductor mix, weight 0=first..1=second per Mitsuba's convention) has no
+#   direct Falcor equivalent, so it's approximated as a single material: baseColor lerped between
+#   the two components by `weight`, metallic=weight, roughness=sqrt(conductor alpha).
+# - Diffuse texture `raw=true` (linear, no sRGB decode) -> loadTexture(..., useSrgb=False);
+#   otherwise Mitsuba's default bitmap sRGB decode -> useSrgb=True.
+# - The scene's `<emitter type="constant"><rgb value="1.0"/></emitter>` (uniform white ambient
+#   light from all directions) has no direct Falcor Python binding (EnvMap only loads an image),
+#   so it's reproduced exactly as a 4x4 solid-white 1.0-radiance .hdr generated alongside this
+#   file (constant_white.hdr) and used as the env map at intensity 1.0 - mathematically identical
+#   to Mitsuba's constant emitter.
+# - The ground `<shape type="rectangle">` (scale 100, rotate -90 about X) works out to a flat
+#   200x200 quad in the XZ plane with normal +Y - exactly what TriangleMesh.createQuad() already
+#   produces by default, so no extra rotation is needed, just the matching size.
+# - The commented-out `<emitter type="area">` on the Rover_body_internal_001-Material.022 shape is
+#   left inactive here too (that shape just keeps its plain black `empty-emitter-bsdf` material),
+#   matching the source scene exactly - it's currently not an active light there either.
+# - None of the <shape> entries carry a per-shape <transform> - the .ply files are already
+#   pre-transformed into world space (typical for a per-material-split Blender/Mitsuba export),
+#   so every mesh instance below uses an identity Transform().
+#
+# Camera: Mitsuba's sensor to_world composes as translate * rotate_z * rotate_y * rotate_x (applied
+# to a local point in that listed order), with the camera looking along local +Z, up=+Y by Mitsuba's
+# convention. fov_axis="smaller" with the reference resolution (860x720, portrait's smaller axis is
+# height) means the 20-degree FOV is vertical. Position/target/up/focalLength below were computed
+# numerically from that (not hand-derived) - see the conversion notes if you need to redo this for
+# a different Mitsuba camera.
+
+
+# ---------------------------------------------------------------------------
+# Materials
+# ---------------------------------------------------------------------------
+
+materials = {}
+
+def make_diffuse(mat_id, rgb, double_sided=True):
+    m = StandardMaterial(mat_id)
+    m.baseColor = float4(rgb[0], rgb[1], rgb[2], 1.0)
+    m.roughness = 1.0
+    m.metallic = 0.0
+    m.doubleSided = double_sided
+    materials[mat_id] = m
+    return m
+
+def make_diffuse_tex(mat_id, tex_path, use_srgb=True, double_sided=True):
+    m = StandardMaterial(mat_id)
+    m.roughness = 1.0
+    m.metallic = 0.0
+    m.doubleSided = double_sided
+    m.loadTexture(MaterialTextureSlot.BaseColor, tex_path, use_srgb)
+    materials[mat_id] = m
+    return m
+
+def make_conductor(mat_id, spec_rgb, alpha, double_sided=True):
+    m = StandardMaterial(mat_id)
+    m.baseColor = float4(spec_rgb[0], spec_rgb[1], spec_rgb[2], 1.0)
+    m.roughness = math.sqrt(alpha)
+    m.metallic = 1.0
+    m.doubleSided = double_sided
+    materials[mat_id] = m
+    return m
+
+def make_blend(mat_id, diffuse_rgb, weight, spec_rgb, alpha, double_sided=True):
+    # No native blend-BSDF in Falcor - approximate Mitsuba's blendbsdf (weight 0 -> first/diffuse,
+    # weight 1 -> second/conductor) as a single metallic-roughness material interpolated the same way.
+    m = StandardMaterial(mat_id)
+    c = tuple(diffuse_rgb[i] * (1.0 - weight) + spec_rgb[i] * weight for i in range(3))
+    m.baseColor = float4(c[0], c[1], c[2], 1.0)
+    m.metallic = weight
+    m.roughness = math.sqrt(alpha)
+    m.doubleSided = double_sided
+    materials[mat_id] = m
+    return m
+
+def make_dielectric(mat_id, int_ior, double_sided=True):
+    m = StandardMaterial(mat_id)
+    m.baseColor = float4(1.0, 1.0, 1.0, 1.0)
+    m.roughness = 0.0
+    m.metallic = 0.0
+    m.specularTransmission = 1.0
+    m.indexOfRefraction = int_ior
+    m.doubleSided = double_sided
+    materials[mat_id] = m
+    return m
+
+# Plain diffuse (rgb, doubleSided) - id, rgb, doubleSided
+for mat_id, rgb, ds in [
+    ('mat-Window frames',      (0.386429, 0.137132, 0.091224), True),
+    ('mat-panel mat 03',       (0.051269, 0.068478, 0.082283), True),
+    ('mat-panel mat',          (0.212231, 0.246201, 0.318547), True),
+    ('mat-panel mat 04',       (1.000000, 0.000000, 0.300000), False),
+    ('mat-Yellow.001',         (0.483091, 0.244228, 0.038728), True),
+    ('mat-Wheel grey brown',   (0.101338, 0.096674, 0.088985), True),
+    ('mat-Alumin',             (0.640803, 0.785671, 0.794828), True),
+    ('mat-Light',              (0.800000, 0.800000, 0.800000), False),
+    ('mat-Scifi Grid 01',      (0.017642, 0.016807, 0.015209), True),
+    ('mat-Scifi Panels 04',    (0.014351, 0.023149, 0.032615), True),
+    ('mat-Scifi Panels 10',    (0.270778, 0.270778, 0.270778), True),
+    ('mat-Rover white ext',    (0.800000, 0.800000, 0.800000), True),
+    ('mat-Ware material',      (0.170361, 0.060213, 0.019639), True),
+    ('mat-Black',              (0.009997, 0.009997, 0.009997), True),
+    ('mat-Wheel white',        (0.665776, 0.665776, 0.665776), True),
+    ('mat-Rover int walls',    (0.441158, 0.249164, 0.172947), True),
+    ('mat-Aluminioum',         (0.300544, 0.341915, 0.386429), True),
+    ('mat-Material.026',       (0.134798, 0.134798, 0.134798), True),
+    ('mat-Material.027',       (0.692798, 0.692798, 0.692798), True),
+    ('mat-Material.025',       (0.000000, 0.000000, 0.000000), True),
+    ('mat-Material.024',       (0.403598, 0.016234, 0.001138), True),
+    ('mat-Material.023',       (1.000000, 0.000000, 0.300000), False),
+    ('empty-emitter-bsdf',     (0.000000, 0.000000, 0.000000), False),
+    ('mat-Material.004',       (0.800000, 0.800000, 0.800000), True),
+    ('mat-Material.009',       (0.351533, 0.274677, 0.212231), True),
+    ('mat-Material.008',       (1.000000, 0.000000, 0.300000), False),
+    ('mat-Material.007',       (0.800000, 0.800000, 0.800000), True),
+    ('mat-Consol Black',       (0.048124, 0.050104, 0.056327), True),
+    ('mat-Orange',             (0.800000, 0.285923, 0.057919), False),
+    ('mat-Wheel black',        (0.027368, 0.023997, 0.019919), True),
+    ('mat-Yellow',             (0.800000, 0.459935, 0.097614), True),
+]:
+    make_diffuse(mat_id, rgb, ds)
+
+# Textured diffuse - id, texture path, useSrgb, doubleSided
+for mat_id, tex_path, use_srgb, ds in [
+    ('mat-SAFETY STRIPE', 'textures/saftey stripe long.jpg',    True,  True),
+    ('mat-sheet metal',   'textures/old-sheet-metal-albedo.png', False, True),  # raw=true in Mitsuba -> linear
+    ('mat-decal1',        'textures/decal1.png',                True,  True),
+    ('mat-decal3',        'textures/decal3.png',                True,  True),
+    ('mat-decal4',        'textures/decal4.png',                True,  True),
+    ('mat-SIGN1',         'textures/SIGN1.png',                 True,  True),
+    ('mat-warnsign2',     'textures/warnsign2.png',              True,  True),
+    ('mat-warnsign3',     'textures/warnsign3.png',              True,  True),
+    ('mat-Material',      'textures/brnlethr.png',               True,  True),
+]:
+    make_diffuse_tex(mat_id, tex_path, use_srgb, ds)
+
+# roughconductor - id, specular_reflectance, alpha, doubleSided
+for mat_id, spec, alpha, ds in [
+    ('mat- Bronzish',                (0.072426, 0.038899, 0.016263), 0.025, True),
+    ('mat-panel mat 02',             (0.523764, 0.523764, 0.523764), 0.25,  True),
+    ('mat-Rover Body worn',          (0.138432, 0.205079, 0.270498), 0.25,  True),
+    ('mat-Scifi Panels 13',          (0.800000, 0.533690, 0.190821), 0.25,  True),
+    ('mat-Procedural Metal Plates',  (0.226624, 0.226624, 0.226624), 0.25,  True),
+]:
+    make_conductor(mat_id, spec, alpha, ds)
+
+# blendbsdf (diffuse + roughconductor) - id, diffuse rgb, weight, conductor specular, alpha, doubleSided
+for mat_id, diff, w, spec, alpha, ds in [
+    ('mat-Belt.001',    (0.000000, 0.000000, 0.000000), 0.500000, (0.224359, 0.224359, 0.224359), 0.2, True),
+    ('mat-Material.040',(0.239517, 0.255783, 0.355796), 0.172131, (0.800000, 0.800000, 0.800000), 0.2, True),
+]:
+    make_blend(mat_id, diff, w, spec, alpha, ds)
+
+make_dielectric('mat-glass', 1.1, True)
+
+
+# ---------------------------------------------------------------------------
+# Ground plane (Mitsuba's scaled+rotated built-in `rectangle` shape)
+# ---------------------------------------------------------------------------
+
+ground_mat = StandardMaterial('Ground')
+ground_mat.baseColor = float4(1.0, 1.0, 1.0, 1.0)
+ground_mat.roughness = 1.0
+ground_mat.metallic = 0.0
+
+ground_mesh = TriangleMesh.createQuad(float2(200.0, 200.0))
+sceneBuilder.addMeshInstance(
+    sceneBuilder.addNode('Ground', Transform()),
+    sceneBuilder.addTriangleMesh(ground_mesh, ground_mat)
+)
+
+
+# ---------------------------------------------------------------------------
+# Environment light (Mitsuba's constant radiance=1.0 emitter)
+# ---------------------------------------------------------------------------
+
+envMap = EnvMap('constant_white.hdr')
+envMap.intensity = 1.0
+sceneBuilder.envMap = envMap
+
+
+# ---------------------------------------------------------------------------
+# Camera
+# ---------------------------------------------------------------------------
+
+camera = Camera()
+camera.position = float3(-14.036000, 5.300000, 17.576447)
+camera.target = float3(-7.912960, 3.721876, 9.829324)
+camera.up = float3(0.097857, 0.987469, -0.123810)
+camera.focalLength = 68.055382  # fovY=20deg @ 24mm frame height, matching fov_axis="smaller" at 860x720
+sceneBuilder.addCamera(camera)
+
+
+# ---------------------------------------------------------------------------
+# Shapes - every <shape type="ply"> from scene_v3.xml, in the same order, each at an
+# identity transform (see the note at the top of this file).
+# ---------------------------------------------------------------------------
+
+_SHAPES = [
+    ('Rover_body_internal_001-Material.022.ply', 'empty-emitter-bsdf'),
+    ('Rover-body-glass.ply', 'mat-glass'),
+    ('Rover-body- Bronzish.ply', 'mat- Bronzish'),
+    ('Rover-body-SAFETY STRIPE.ply', 'mat-SAFETY STRIPE'),
+    ('Rover-body-sheet metal.ply', 'mat-sheet metal'),
+    ('Rover-body-Window frames.ply', 'mat-Window frames'),
+    ('Rover-body-panel mat 03.ply', 'mat-panel mat 03'),
+    ('Rover-body-panel mat.ply', 'mat-panel mat'),
+    ('Rover-body-panel mat 02.ply', 'mat-panel mat 02'),
+    ('Rover-body-panel mat 04.ply', 'mat-panel mat 04'),
+    ('Rover-body-Yellow.001.ply', 'mat-Yellow.001'),
+    ('Rover-body-Rover Body worn.ply', 'mat-Rover Body worn'),
+    ('External_Instruments_001-Rover Body worn.ply', 'mat-Rover Body worn'),
+    ('External_Instruments_001-Wheel grey brown.ply', 'mat-Wheel grey brown'),
+    ('External_Instruments_001- Bronzish.ply', 'mat- Bronzish'),
+    ('External_Instruments_001-Yellow.001.ply', 'mat-Yellow.001'),
+    ('External_Instruments_001-Alumin.ply', 'mat-Alumin'),
+    ('External_Instruments_001-Scifi Panels 13.ply', 'mat-Scifi Panels 13'),
+    ('External_Instruments_001-Light.ply', 'mat-Light'),
+    ('External_Instruments_001-Scifi Grid 01.ply', 'mat-Scifi Grid 01'),
+    ('External_Instruments_001-Scifi Panels 04.ply', 'mat-Scifi Panels 04'),
+    ('External_Instruments_001-Scifi Panels 10.ply', 'mat-Scifi Panels 10'),
+    ('External_Instruments_001-Rover white ext.ply', 'mat-Rover white ext'),
+    ('External_Instruments_001-Window frames.ply', 'mat-Window frames'),
+    ('External_Instruments_001-Ware material.ply', 'mat-Ware material'),
+    ('External_Instruments_001-Black.ply', 'mat-Black'),
+    ('External_Instruments_001-Wheel white.ply', 'mat-Wheel white'),
+    ('External_Instruments_001-sheet metal.ply', 'mat-sheet metal'),
+    ('External_Instruments_001-Rover white ext.ply', 'mat-Rover white ext'),
+    ('Rover_body_internal_001-Alumin.ply', 'mat-Alumin'),
+    ('Rover_body_internal_001-Rover int walls.ply', 'mat-Rover int walls'),
+    ('Rover_body_internal_001- Bronzish.ply', 'mat- Bronzish'),
+    ('Rover_body_internal_001-Procedural Metal Plates.ply', 'mat-Procedural Metal Plates'),
+    ('Rover_body_internal_001-Aluminioum.ply', 'mat-Aluminioum'),
+    ('Rover_body_internal_001-Window frames.ply', 'mat-Window frames'),
+    ('Rover_body_internal_001-Material.026.ply', 'mat-Material.026'),
+    ('Rover_body_internal_001-Material.027.ply', 'mat-Material.027'),
+    ('Rover_body_internal_001-Material.025.ply', 'mat-Material.025'),
+    ('Rover_body_internal_001-Material.024.ply', 'mat-Material.024'),
+    ('Rover_body_internal_001-Material.023.ply', 'mat-Material.023'),
+    ('Rover_body_internal_001-decal1.ply', 'mat-decal1'),
+    ('Rover_body_internal_001-decal3.ply', 'mat-decal3'),
+    ('Rover_body_internal_001-decal4.ply', 'mat-decal4'),
+    ('Rover_body_internal_001-SIGN1.ply', 'mat-SIGN1'),
+    ('Rover_body_internal_001-warnsign2.ply', 'mat-warnsign2'),
+    ('Rover_body_internal_001-warnsign3.ply', 'mat-warnsign3'),
+    ('Rover_body_internal_001-Material.004.ply', 'mat-Material.004'),
+    ('Rover_body_internal_001-Material.009.ply', 'mat-Material.009'),
+    ('Rover_body_internal_001-Material.008.ply', 'mat-Material.008'),
+    ('Rover_body_internal_001-Material.007.ply', 'mat-Material.007'),
+    ('Rover_body_internal_001-Rover Body worn.ply', 'mat-Rover Body worn'),
+    ('Rover_body_internal_001-Consol Black.ply', 'mat-Consol Black'),
+    ('Rover_body_internal_001-Black.ply', 'mat-Black'),
+    ('Rover_body_internal_001-Belt.001.ply', 'mat-Belt.001'),
+    ('Rover_body_internal_001-Material.040.ply', 'mat-Material.040'),
+    ('aIRLOCK_DOOR_005-Procedural Metal Plates.ply', 'mat-Procedural Metal Plates'),
+    ('aIRLOCK_DOOR_005-Aluminioum.ply', 'mat-Aluminioum'),
+    ('aIRLOCK_DOOR_005-Yellow.001.ply', 'mat-Yellow.001'),
+    ('aIRLOCK_DOOR_005-glass.ply', 'mat-glass'),
+    ('aIRLOCK_DOOR_005-Orange.ply', 'mat-Orange'),
+    ('aIRLOCK_DOOR_003-Procedural Metal Plates.ply', 'mat-Procedural Metal Plates'),
+    ('aIRLOCK_DOOR_003-Aluminioum.ply', 'mat-Aluminioum'),
+    ('aIRLOCK_DOOR_003-Yellow.001.ply', 'mat-Yellow.001'),
+    ('aIRLOCK_DOOR_003-glass.ply', 'mat-glass'),
+    ('aIRLOCK_DOOR_003-Orange.ply', 'mat-Orange'),
+    ('aIRLOCK_DOOR_003- Bronzish.ply', 'mat- Bronzish'),
+    ('aIRLOCK_DOOR_003-Alumin.ply', 'mat-Alumin'),
+    ('aIRLOCK_DOOR_004-Procedural Metal Plates.ply', 'mat-Procedural Metal Plates'),
+    ('aIRLOCK_DOOR_004-Aluminioum.ply', 'mat-Aluminioum'),
+    ('aIRLOCK_DOOR_004-Yellow.001.ply', 'mat-Yellow.001'),
+    ('aIRLOCK_DOOR_004-glass.ply', 'mat-glass'),
+    ('aIRLOCK_DOOR_004-Orange.ply', 'mat-Orange'),
+    ('aIRLOCK_DOOR_004- Bronzish.ply', 'mat- Bronzish'),
+    ('aIRLOCK_DOOR_004-Alumin.ply', 'mat-Alumin'),
+    ('Rover-Wheel_Bk_R-Wheel grey brown.ply', 'mat-Wheel grey brown'),
+    ('Rover-Wheel_Bk_R-Wheel white.ply', 'mat-Wheel white'),
+    ('Rover-Wheel_Bk_R-Wheel black.ply', 'mat-Wheel black'),
+    ('Rover-Wheel_Bk_R-Aluminioum.ply', 'mat-Aluminioum'),
+    ('Rover-Wheel_Bk_R-Yellow.001.ply', 'mat-Yellow.001'),
+    ('Rover-Wheel_Bk_R- Bronzish.ply', 'mat- Bronzish'),
+    ('Rover-Wheel_Ft_R-Wheel grey brown.ply', 'mat-Wheel grey brown'),
+    ('Rover-Wheel_Ft_R-Wheel white.ply', 'mat-Wheel white'),
+    ('Rover-Wheel_Ft_R-Wheel black.ply', 'mat-Wheel black'),
+    ('Rover-Wheel_Ft_R-Aluminioum.ply', 'mat-Aluminioum'),
+    ('Rover-Wheel_Ft_R-Yellow.001.ply', 'mat-Yellow.001'),
+    ('Rover-Wheel_Ft_R- Bronzish.ply', 'mat- Bronzish'),
+    ('Rover-Wheel_Bk_R_001-Wheel grey brown.ply', 'mat-Wheel grey brown'),
+    ('Rover-Wheel_Bk_R_001-Wheel white.ply', 'mat-Wheel white'),
+    ('Rover-Wheel_Bk_R_001-Wheel black.ply', 'mat-Wheel black'),
+    ('Rover-Wheel_Bk_R_001-Aluminioum.ply', 'mat-Aluminioum'),
+    ('Rover-Wheel_Bk_R_001-Yellow.001.ply', 'mat-Yellow.001'),
+    ('Rover-Wheel_Bk_R_001- Bronzish.ply', 'mat- Bronzish'),
+    ('Rover-WheelBrake_Bk_R.ply', 'mat-Wheel grey brown'),
+    ('Rover-WheelBrake_Bk_R_001.ply', 'mat-Wheel grey brown'),
+    ('Rover-WheelBrake_Ft_R.ply', 'mat-Wheel grey brown'),
+    ('Rover-Wheel_Bk_L-Wheel grey brown.ply', 'mat-Wheel grey brown'),
+    ('Rover-Wheel_Bk_L-Wheel white.ply', 'mat-Wheel white'),
+    ('Rover-Wheel_Bk_L-Wheel black.ply', 'mat-Wheel black'),
+    ('Rover-Wheel_Bk_L-Aluminioum.ply', 'mat-Aluminioum'),
+    ('Rover-Wheel_Bk_L-Yellow.001.ply', 'mat-Yellow.001'),
+    ('Rover-Wheel_Bk_L- Bronzish.ply', 'mat- Bronzish'),
+    ('Rover-Wheel_Bk_L_001-Wheel grey brown.ply', 'mat-Wheel grey brown'),
+    ('Rover-Wheel_Bk_L_001-Wheel white.ply', 'mat-Wheel white'),
+    ('Rover-Wheel_Bk_L_001-Wheel black.ply', 'mat-Wheel black'),
+    ('Rover-Wheel_Bk_L_001-Aluminioum.ply', 'mat-Aluminioum'),
+    ('Rover-Wheel_Bk_L_001-Yellow.001.ply', 'mat-Yellow.001'),
+    ('Rover-Wheel_Bk_L_001- Bronzish.ply', 'mat- Bronzish'),
+    ('Rover-Wheel_Ft_L-Wheel grey brown.ply', 'mat-Wheel grey brown'),
+    ('Rover-Wheel_Ft_L-Wheel white.ply', 'mat-Wheel white'),
+    ('Rover-Wheel_Ft_L-Wheel black.ply', 'mat-Wheel black'),
+    ('Rover-Wheel_Ft_L-Aluminioum.ply', 'mat-Aluminioum'),
+    ('Rover-Wheel_Ft_L-Yellow.001.ply', 'mat-Yellow.001'),
+    ('Rover-Wheel_Ft_L- Bronzish.ply', 'mat- Bronzish'),
+    ('Rover-WheelBrake_Bk_L.ply', 'mat-Wheel grey brown'),
+    ('Rover-WheelBrake_Bk_L_001.ply', 'mat-Wheel grey brown'),
+    ('Rover-WheelBrake_Ft_L.ply', 'mat-Wheel grey brown'),
+    ('Rover_Seat_006-Aluminioum.ply', 'mat-Aluminioum'),
+    ('Rover_Seat_006-Yellow.ply', 'mat-Yellow'),
+    ('Rover_Seat_006- Bronzish.ply', 'mat- Bronzish'),
+    ('Rover_Seat_006-Material.ply', 'mat-Material'),
+    ('Rover_Seat_008-Aluminioum.ply', 'mat-Aluminioum'),
+    ('Rover_Seat_008-Yellow.ply', 'mat-Yellow'),
+    ('Rover_Seat_008- Bronzish.ply', 'mat- Bronzish'),
+    ('Rover_Seat_008-Material.ply', 'mat-Material'),
+    ('Rover_Seat_009-Aluminioum.ply', 'mat-Aluminioum'),
+    ('Rover_Seat_009-Yellow.ply', 'mat-Yellow'),
+    ('Rover_Seat_009- Bronzish.ply', 'mat- Bronzish'),
+    ('Rover_Seat_009-Material.ply', 'mat-Material'),
+    ('Rover_Seat_010-Aluminioum.ply', 'mat-Aluminioum'),
+    ('Rover_Seat_010-Yellow.ply', 'mat-Yellow'),
+    ('Rover_Seat_010- Bronzish.ply', 'mat- Bronzish'),
+    ('Rover_Seat_010-Material.ply', 'mat-Material'),
+    ('Rover_Seat_011-Aluminioum.ply', 'mat-Aluminioum'),
+    ('Rover_Seat_011-Yellow.ply', 'mat-Yellow'),
+    ('Rover_Seat_011- Bronzish.ply', 'mat- Bronzish'),
+    ('Rover_Seat_011-Material.ply', 'mat-Material'),
+    ('Rover_Seat_012-Aluminioum.ply', 'mat-Aluminioum'),
+    ('Rover_Seat_012-Yellow.ply', 'mat-Yellow'),
+    ('Rover_Seat_012- Bronzish.ply', 'mat- Bronzish'),
+    ('Rover_Seat_012-Material.ply', 'mat-Material'),
+    ('Rover_Seat_013-Aluminioum.ply', 'mat-Aluminioum'),
+    ('Rover_Seat_013-Yellow.ply', 'mat-Yellow'),
+    ('Rover_Seat_013- Bronzish.ply', 'mat- Bronzish'),
+    ('Rover_Seat_013-Material.ply', 'mat-Material'),
+]
+
+_skipped = []
+for i, (filename, mat_id) in enumerate(_SHAPES):
+    mesh = TriangleMesh.createFromFile('meshes/' + filename)
+    if mesh is None:
+        # A handful of the source .ply files are corrupted (Assimp reports e.g. "Broken face
+        # data" - same header/size as their siblings, so this looks like genuine bit damage in
+        # that specific file rather than a format issue). Skip gracefully rather than aborting
+        # the whole scene load; see the printed summary below for exactly which ones.
+        _skipped.append(filename)
+        continue
+    sceneBuilder.addMeshInstance(
+        sceneBuilder.addNode('{}_{}'.format(filename, i), Transform()),
+        sceneBuilder.addTriangleMesh(mesh, materials[mat_id])
+    )
+
+if _skipped:
+    print('rover.pyscene: skipped {} mesh(es) that failed to load (corrupted source .ply):'.format(len(_skipped)))
+    for f in _skipped:
+        print('  - ' + f)
