@@ -97,6 +97,30 @@ namespace Falcor
         */
         float2 getSize() const { return mData.size; }
 
+        /** Bend the light into a 90-degree-style corner (two panels sharing a hinge edge -
+            e.g. a two-wall virtual-production LED volume), without changing its uv
+            parameterization: `hingeX` is the local X (in the same units as size.x, i.e.
+            within [-size.x/2, size.x/2]) where the fold happens, and `foldAngleRad` is how
+            far the far side is rotated (about the local Z axis) out of the flat plane.
+            0 (the default) leaves the light exactly flat regardless of hingeX. See
+            QuadLightData.slang's struct comment and QuadLight.slang's uvToWorld() for the
+            full convention (the uv domain itself is unaffected - it's still the flat,
+            never-folded unwrapping of the whole light).
+        */
+        void setFold(float hingeX, float foldAngleRad)
+        {
+            mData.hingeX = hingeX;
+            mData.foldAngle = foldAngleRad;
+        }
+
+        /** Get the fold hinge's local X (see setFold()). Only meaningful when getFoldAngle() != 0.
+        */
+        float getHingeX() const { return mData.hingeX; }
+
+        /** Get the fold angle in radians (see setFold()). 0 = flat (default).
+        */
+        float getFoldAngle() const { return mData.foldAngle; }
+
         /** Set intensity (scalar multiplier, independent of color tint).
         */
         void setIntensity(float intensity);

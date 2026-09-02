@@ -40,18 +40,32 @@ struct QuadLight
 
     QuadLightData   data;           ///< Quad light data.
 
-    /** World-space area of the quad. Exact since `transform` carries no scale.
+    /** World-space area of the quad. Exact since `transform` carries no scale - still exact
+        for a folded (corner) light too: the fold is a rigid rotation of the region beyond
+        the hinge, which preserves area, and the uv->unfolded-flat-local-X map stays the
+        same affine function of uv.x on both sides of the hinge (only where those points
+        subsequently land differs) - see uvToWorld()'s comment for the full argument.
     */
     float getArea()
     {
         return data.size.x * data.size.y;
     }
 
-    /** World-space (unit-length) normal of the quad.
+    /** World-space (unit-length) normal at a given uv coordinate. Constant (data.transform's
+        local +Y) unless this is a folded (corner) light and uv lands on the far side of the
+        hinge, in which case it's local +Y rotated by foldAngle about local Z - see
+        uvToWorld()'s comment for the corner convention.
     */
-    float3 getNormalW()
+    float3 getNormalW(float2 uv)
     {
-        return normalize(mul((float3x3)data.transform, float3(0, 1, 0)));
+        float xFlat = (uv.x - 0.5f) * data.size.x;
+        float3 normalL = float3(0.f, 1.f, 0.f);
+        if (data.foldAngle != 0.f && xFlat > data.hingeX)
+        {
+            float s = sin(data.foldAngle), c = cos(data.foldAngle);
+            normalL = float3(-s, c, 0.f); // Same local-Z-axis rotation applied to (0,1,0).
+        }
+        return normalize(mul((float3x3)data.transform, normalL));
     }
 
     /** Evaluates the radiance at a given uv coordinate, uv in [0,1)^2.
@@ -81,19 +95,61 @@ struct QuadLight
     /** Transform a local-space uv coordinate ([0,1)^2) to a world-space position.
         v=0 is the top row of the source texture (standard image convention), which maps
         to local +Z (screen "up") - i.e. the v axis is flipped relative to local Z.
+
+        Corner (folded) lights: `xFlat` below is exactly the same affine function of uv.x as
+        the plain flat-quad case always used - i.e. the uv parameterization is the flat,
+        never-folded unwrapping of the whole light, same as if you'd printed one image across
+        both panels and then bent the sheet. Where a given uv's position actually lands
+        differs beyond the hinge: panel A (xFlat <= hingeX) is untouched; panel B is that
+        same local point rotated by foldAngle about the local Z axis, pivoting at the hinge
+        line (local X = hingeX). This is why getArea() needs no changes for a corner light:
+        the uv->xFlat map's Jacobian (ds/duv.x = size.x, constant) never changes, only where
+        that flat position gets rotated to afterward - a rigid rotation preserves area.
     */
     float3 uvToWorld(float2 uv)
     {
-        float3 posL = float3((uv.x - 0.5f) * data.size.x, 0.f, (0.5f - uv.y) * data.size.y);
+        float xFlat = (uv.x - 0.5f) * data.size.x;
+        float z = (0.5f - uv.y) * data.size.y;
+        float3 posL;
+        if (data.foldAngle != 0.f && xFlat > data.hingeX)
+        {
+            float d = xFlat - data.hingeX; // Distance past the hinge, pre-fold.
+            float s = sin(data.foldAngle), c = cos(data.foldAngle);
+            posL = float3(data.hingeX + d * c, d * s, z);
+        }
+        else
+        {
+            posL = float3(xFlat, 0.f, z);
+        }
         return mul(data.transform, float4(posL, 1.f));
     }
 
-    /** Transform a world-space position (assumed to lie on the quad's plane) to a local-space uv coordinate.
+    /** Transform a world-space position (assumed to lie on the quad's plane, or on either of
+        its two panels for a corner light) to a local-space uv coordinate. Inverse of
+        uvToWorld() - see its comment for the folded-light convention.
     */
     float2 worldToUv(float3 posW)
     {
         float3 posL = mul(data.invTransform, float4(posW, 1.f));
-        return float2(posL.x / data.size.x + 0.5f, 0.5f - posL.z / data.size.y);
+        float xFlat = posL.x;
+        if (data.foldAngle != 0.f)
+        {
+            // Distinguish which panel posL is actually on by checking which panel's plane
+            // equation it satisfies more closely (both planes meet exactly at the hinge line,
+            // so a point that's really on one of them satisfies that one almost exactly - up
+            // to the ray-triangle intersection's floating-point error).
+            float s = sin(data.foldAngle), c = cos(data.foldAngle);
+            float distA = abs(posL.y);
+            float distB = abs(c * posL.y - s * (posL.x - data.hingeX));
+            if (distB < distA)
+            {
+                // Invert the fold rotation: recover d (distance past the hinge, pre-fold)
+                // from whichever of sin/cos has larger magnitude, to avoid dividing by ~0.
+                float d = (abs(s) > abs(c)) ? (posL.y / s) : ((posL.x - data.hingeX) / c);
+                xFlat = data.hingeX + d;
+            }
+        }
+        return float2(xFlat / data.size.x + 0.5f, 0.5f - posL.z / data.size.y);
     }
 
     /** Get the intensity scaling factor (including tint).

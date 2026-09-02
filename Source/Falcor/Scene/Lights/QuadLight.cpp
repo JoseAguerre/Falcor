@@ -115,6 +115,19 @@ namespace Falcor
         widgets.var("Size", mData.size, 0.001f, FLT_MAX, 0.01f);
         widgets.var("Intensity", mData.intensity, 0.f, 1000000.f);
         widgets.var("Color tint", mData.tint, 0.f, 1.f);
+
+        {
+            float foldAngleDeg = math::degrees(mData.foldAngle);
+            bool foldDirty = widgets.var("Fold angle (deg)", foldAngleDeg, -180.f, 180.f, 0.5f);
+            widgets.tooltip(
+                "Bends the light into a two-panel corner (e.g. a virtual-production LED wall "
+                "corner) about a hinge at local X = Hinge X, without changing the light's uv "
+                "parameterization. 0 = flat (default), regardless of Hinge X.",
+                true
+            );
+            bool hingeDirty = widgets.var("Hinge X", mData.hingeX, -0.5f * mData.size.x, 0.5f * mData.size.x, 0.01f);
+            if (foldDirty || hingeDirty) setFold(mData.hingeX, math::radians(foldAngleDeg));
+        }
         widgets.text("QuadLight: " + mpTexture->getSourcePath().string());
         widgets.text(fmt::format("Resolution: {}x{}", mpTexture->getWidth(), mpTexture->getHeight()));
 
@@ -357,6 +370,17 @@ namespace Falcor
         quadLight.def_property("tint", &QuadLight::getTint, &QuadLight::setTint);
         quadLight.def_property(
             "size", [](const QuadLight& light) { return light.getSize(); }, [](QuadLight& light, float2 size) { light.setSize(size); }
+        );
+        quadLight.def(
+            "setFold",
+            [](QuadLight& light, float hingeX, float foldAngleDeg) { light.setFold(hingeX, math::radians(foldAngleDeg)); },
+            "hingeX"_a, "foldAngleDeg"_a,
+            "Bend the light into a two-panel corner - see QuadLight::setFold()'s C++ doc comment for the exact convention. "
+            "foldAngleDeg=0 (default) leaves the light flat regardless of hingeX."
+        );
+        quadLight.def_property_readonly("hingeX", &QuadLight::getHingeX);
+        quadLight.def_property_readonly(
+            "foldAngleDeg", [](const QuadLight& light) { return math::degrees(light.getFoldAngle()); }
         );
         quadLight.def_property(
             "materialID",

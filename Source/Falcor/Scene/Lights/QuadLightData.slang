@@ -39,6 +39,18 @@ BEGIN_NAMESPACE_FALCOR
     same transform can be shared directly with the quad's visible mesh instance, and so
     that `size.x * size.y` is the exact world-space area without needing to inspect the
     transform for a scale factor.
+
+    Optionally bent into a 90-degree-style corner (two coplanar-in-uv but non-coplanar-in-
+    space panels sharing a hinge edge - e.g. a two-wall virtual-production LED volume): the
+    uv domain is still the flat [0,1)^2 unwrapping of the whole light as if it had never
+    been folded (so `hingeX`/`foldAngle` below only affect where a given uv's *position*
+    lands, not the uv parameterization itself), split at local X = hingeX. Points with
+    unfolded-flat local X <= hingeX are on panel A (unrotated, exactly the plain flat-quad
+    case). Points beyond hingeX are on panel B, rotated by foldAngle (radians) about the
+    local Z axis (the hinge line, at local X = hingeX, any Z), i.e. bent out of the local Y=0
+    plane. foldAngle = 0 (default) degenerates to exactly today's flat quad, for any value of
+    hingeX - see QuadLight.slang's uvToWorld()/worldToUv()/getNormalW() for the exact math,
+    and its "fold area is Jacobian-preserving" comment for why getArea() needs no changes.
 */
 struct QuadLightData
 {
@@ -63,10 +75,13 @@ struct QuadLightData
     uint        useAvgEmissionOnDiffuseBsdfHit = 0; ///< EXPERIMENTAL test flag (see PathTracer.slang): when true, a BSDF-sampled ray hitting this light on a bounced (non-primary) ray, whose last scatter event was classified diffuse/rough (PathState::isSpecular() false - same roughness threshold PathTracer already uses elsewhere), returns avgEmission instead of the textured eval() value. Sharp/glossy-specular BSDF hits and all NEE (shadow-ray) sampling are unaffected either way. 0 (default) disables this entirely.
 
     // Own 16-byte slot (see the field-order comment at the top of this struct) - avgEmission
-    // is a float3, so it needs a trailing scalar to complete the slot; nothing meaningful to
-    // put there, hence the explicit pad name.
+    // is a float3, so it needs a trailing scalar to complete the slot. hingeX reuses that
+    // slot (it was pure padding before the corner-fold feature was added).
     float3      avgEmission = {0.f, 0.f, 0.f}; ///< Precomputed raw (pre-tint/intensity) average RGB of the source image - see computeAverageColorFromBitmap() and useAvgEmissionOnDiffuseBsdfHit above. Recomputed on every texture load/video frame advance.
-    float       pad0 = 0.f;
+    float       hingeX = 0.f;           ///< Local X of the fold hinge (see the struct-level comment above). Irrelevant when foldAngle == 0.
+
+    float       foldAngle = 0.f;        ///< Corner fold angle in radians, about the local Z axis at local X = hingeX. 0 (default) = flat quad, exactly today's behavior regardless of hingeX.
+    float3      pad1 = {0.f, 0.f, 0.f}; ///< Completes foldAngle's 16-byte slot - see the field-order comment at the top of this struct.
 };
 
 END_NAMESPACE_FALCOR

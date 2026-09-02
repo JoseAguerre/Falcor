@@ -105,7 +105,7 @@ struct QuadLightAliasCtuSampler : IQuadLightSampler
         float pdfArea = pdfUv / gScene.quadLight.getArea();
 
         result.posW = gScene.quadLight.uvToWorld(uv);
-        result.normalW = gScene.quadLight.getNormalW();
+        result.normalW = gScene.quadLight.getNormalW(uv);
         result.pdf = quadLightPdfAreaToSolidAngle(pdfArea, shadingPosW, result.posW, result.normalW, gScene.quadLight.isDoubleSided());
         result.Le = gScene.quadLight.eval(uv);
 
@@ -134,7 +134,7 @@ struct QuadLightAliasCtuSampler : IQuadLightSampler
         float pdfUv = avgLuma * float(gridDim.x * gridDim.y) / table.weightSum;
         float pdfArea = pdfUv / gScene.quadLight.getArea();
 
-        float3 normalW = gScene.quadLight.getNormalW();
+        float3 normalW = gScene.quadLight.getNormalW(uv);
         return quadLightPdfAreaToSolidAngle(pdfArea, shadingPosW, hitPosW, normalW, gScene.quadLight.isDoubleSided());
     }
 };

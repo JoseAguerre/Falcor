@@ -1,0 +1,1218 @@
+(Info) Falcor 8.0 (commit: b92ca7a1, branch: support-for-emissive-textures, contains uncommitted changes)
+(Info) Created CUDA device 'NVIDIA GeForce RTX 4080 SUPER' (architecture 8.9).
+(Info) Created GPU device 'NVIDIA GeForce RTX 4080 SUPER' using 'Direct3D 12' API (SM6.7).
+(Warning) Warnings in program:
+Utils/UI/TextRenderer.3d.slang (vsMain, psMain)
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils\UI\TextRenderer.3d.slang(48): warning 30081: implicit conversion from 'vector<float,2>' to 'vector<int,2>' is not recommended
+    float4 color = gFontTex.Load(int3(texC, 0));
+                                      ^~~~
+
+(Info) Loaded 34 plugin(s) in 0.0878s
+(Warning) Shader Execution Reordering (SER) is not supported on this device. Disabling SER.
+(Info) Importing scene: paperscenes/rover/rover.pyscene
+(Info) QuadLightPlaylist: 'C:\Users\Jose\Desktop\Falcor\quadlight\road\road.hdrplaylist' line 1: '#prefetch 5' recognized.
+(Info) QuadLightVideoPlayer: prefetch ring size = 5 (requested: 5, playlist has 300 frames).
+(Info) QuadLightCdfSampler: build time 7.087 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.192 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.325 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.785 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.293 ms (grid 1920x1080)
+(Info) QuadLightVideoPlayer: prefetch ring fully primed (5/5 slots ready).
+(Warning) Failed to load triangle mesh from 'C:\Users\Jose\Desktop\Falcor\paperscenes\rover\meshes\Rover_Seat_011-Yellow.ply': Broken face data
+(Info) Pre-transformed 145 static meshes to world space.
+(Info) Optimized scene graph by removing 2 internal static nodes.
+(Info) Found 146 static non-instanced meshes, arranged in 1 mesh group.
+(Info) Found 0 displaced non-instanced meshes, arranged in 1 mesh group.
+(Info) Found 0 dynamic non-instanced meshes, arranged in 0 mesh groups.
+(Info) Found 0 instanced meshes, arranged in 0 mesh groups.
+(Info) Analyzing 9 material textures.
+(Info) Optimized materials by disabling alpha test for 1 materials.
+(Info) Removing duplicate material 'empty-emitter-bsdf' (duplicate of 'LedWallPanel').
+(Info) Removing duplicate material 'mat-Material.023' (duplicate of 'mat-panel mat 04').
+(Info) Removing duplicate material 'mat-Material.004' (duplicate of 'mat-Rover white ext').
+(Info) Removing duplicate material 'mat-Material.008' (duplicate of 'mat-panel mat 04').
+(Info) Removing duplicate material 'mat-Material.007' (duplicate of 'mat-Rover white ext').
+(Info) HitInfo: Total size is 128 bits (type: 3 bits, instanceID: 8 bits, primitiveIndex: 20 bits)
+(Warning) Warnings in program:
+Scene/Material/MaterialSystem.slang (main)
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Math/FormatConversion.slang(393): warning 30081: implicit conversion from 'uint64_t' to 'uint' is not recommended
+    return uint2(v & 0xffffffff, v >> 32);
+                   ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Math/FormatConversion.slang(393): warning 30081: implicit conversion from 'uint64_t' to 'uint' is not recommended
+    return uint2(v & 0xffffffff, v >> 32);
+                                   ^~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(140): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isDoubleSided() CONST_FUNCTION { return packedData.x & (1u << kDoubleSidedFlagOffset); }
+                                                              ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(148): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isThinSurface() CONST_FUNCTION { return packedData.x & (1u << kThinSurfaceFlagOffset); }
+                                                              ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(156): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isEmissive() CONST_FUNCTION { return packedData.x & (1u << kEmissiveFlagOffset); }
+                                                           ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(164): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isBasicMaterial() CONST_FUNCTION { return packedData.x & (1u << kIsBasicMaterialFlagOffset); }
+                                                                ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(172): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isLightProfileEnabled() CONST_FUNCTION { return packedData.y & (1u << kEnableLightProfileOffset); }
+                                                                      ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(180): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isDeltaSpecular() CONST_FUNCTION { return packedData.y & (1u << kDeltaSpecularFlagOffset); }
+                                                                ^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+
+(Warning) Warnings in program:
+Scene/SceneBlock.slang (main)
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Math/FormatConversion.slang(393): warning 30081: implicit conversion from 'uint64_t' to 'uint' is not recommended
+    return uint2(v & 0xffffffff, v >> 32);
+                   ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Math/FormatConversion.slang(393): warning 30081: implicit conversion from 'uint64_t' to 'uint' is not recommended
+    return uint2(v & 0xffffffff, v >> 32);
+                                   ^~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(140): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isDoubleSided() CONST_FUNCTION { return packedData.x & (1u << kDoubleSidedFlagOffset); }
+                                                              ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(148): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isThinSurface() CONST_FUNCTION { return packedData.x & (1u << kThinSurfaceFlagOffset); }
+                                                              ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(156): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isEmissive() CONST_FUNCTION { return packedData.x & (1u << kEmissiveFlagOffset); }
+                                                           ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(164): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isBasicMaterial() CONST_FUNCTION { return packedData.x & (1u << kIsBasicMaterialFlagOffset); }
+                                                                ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(172): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isLightProfileEnabled() CONST_FUNCTION { return packedData.y & (1u << kEnableLightProfileOffset); }
+                                                                      ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(180): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isDeltaSpecular() CONST_FUNCTION { return packedData.y & (1u << kDeltaSpecularFlagOffset); }
+                                                                ^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(170): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        return lookupIndex(worldToIndexPos(pos), accessor);
+                                          ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(224): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        const int3 i = floor(indexOffset);
+                            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(242): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        const int3 i = floor(indexOffset);
+                            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(272): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        return lookupIndex(floor(index + (u - 0.5f)), accessor);
+                                ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(282): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        return lookupIndexTex(index + (u - 0.5f));
+                                    ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(195): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                     ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(195): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                                                      ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(195): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                                                                                       ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(206): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                     ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(206): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                                                      ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(206): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                                                                                       ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Displacement/DisplacementMapping.slang(432): warning 30081: implicit conversion from 'float' to 'int' is not recommended
+    int maxCount = ceil(abs(viewDirection.x)) + ceil(abs(viewDirection.y)) + 2;
+                                                                           ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Scene.slang(318): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        uint3 vtxIndices = getLocalIndices(mesh.ibOffset, triangleIndex, mesh.flags & uint(MeshFlags::Use16BitIndices));
+                                                                                    ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Scene.slang(331): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        uint3 vtxIndices = getLocalIndices(instance.ibOffset, triangleIndex, instance.flags & uint(GeometryInstanceFlags::Use16BitIndices));
+                                                                                            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Scene.slang(615): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        uint3 vtxIndices = getLocalIndices(instance.ibOffset, triangleIndex, instance.flags & uint(GeometryInstanceFlags::Use16BitIndices));
+                                                                                            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Scene.slang(660): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        uint3 vtxIndices = getLocalIndices(instance.ibOffset, hit.primitiveIndex, instance.flags & uint(GeometryInstanceFlags::Use16BitIndices));
+                                                                                                 ^
+
+(Info) Post processing geometry: 0.165953 s
+(Info) Optimizing materials:     0.053689 s
+(Info) Creating resources:       0.681903 s
+(Info) Loading scene (total):    5.294447 s
+(Warning) Warnings in program:
+Rendering/Materials/StandardMaterial.slang RenderPasses/GBuffer/VBuffer/VBufferRT.rt.slang (rayGen, miss, closestHit, anyHit)
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(140): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isDoubleSided() CONST_FUNCTION { return packedData.x & (1u << kDoubleSidedFlagOffset); }
+                                                              ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(148): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isThinSurface() CONST_FUNCTION { return packedData.x & (1u << kThinSurfaceFlagOffset); }
+                                                              ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(156): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isEmissive() CONST_FUNCTION { return packedData.x & (1u << kEmissiveFlagOffset); }
+                                                           ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(164): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isBasicMaterial() CONST_FUNCTION { return packedData.x & (1u << kIsBasicMaterialFlagOffset); }
+                                                                ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(172): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isLightProfileEnabled() CONST_FUNCTION { return packedData.y & (1u << kEnableLightProfileOffset); }
+                                                                      ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(180): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isDeltaSpecular() CONST_FUNCTION { return packedData.y & (1u << kDeltaSpecularFlagOffset); }
+                                                                ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(195): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                     ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(195): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                                                      ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(195): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                                                                                       ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(206): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                     ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(206): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                                                      ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(206): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                                                                                       ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Math/FormatConversion.slang(393): warning 30081: implicit conversion from 'uint64_t' to 'uint' is not recommended
+    return uint2(v & 0xffffffff, v >> 32);
+                   ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Math/FormatConversion.slang(393): warning 30081: implicit conversion from 'uint64_t' to 'uint' is not recommended
+    return uint2(v & 0xffffffff, v >> 32);
+                                   ^~
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Rendering/Materials/BSDFs/StandardBSDF.slang(175): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+            (activeLobes & (uint)LobeType::DiffuseReflection) ? detach(diffuseWeight * dielectricBSDF * (1.f - diffTrans)) : 0.f;
+            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Rendering/Materials/BSDFs/StandardBSDF.slang(177): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+            (activeLobes & (uint)LobeType::DiffuseTransmission) ? detach(diffuseWeight * dielectricBSDF * diffTrans) : 0.f;
+            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Rendering/Materials/BSDFs/StandardBSDF.slang(178): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        pSpecularReflection = (activeLobes & ((uint)LobeType::SpecularReflection | (uint)LobeType::DeltaReflection))
+                              ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Rendering/Materials/BSDFs/StandardBSDF.slang(181): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        pSpecularTransmission = (activeLobes & ((uint)LobeType::SpecularReflection | (uint)LobeType::DeltaReflection |
+                                ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Rendering\Materials\StandardMaterial.slang(130): warning 30081: implicit conversion from 'bool' to 'float' is not recommended
+        d.hasSigmaSGreaterZero = (any(data.volumeScattering) > 0.f);
+                                     ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(170): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        return lookupIndex(worldToIndexPos(pos), accessor);
+                                          ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(224): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        const int3 i = floor(indexOffset);
+                            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(242): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        const int3 i = floor(indexOffset);
+                            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(272): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        return lookupIndex(floor(index + (u - 0.5f)), accessor);
+                                ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(282): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        return lookupIndexTex(index + (u - 0.5f));
+                                    ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Displacement/DisplacementMapping.slang(432): warning 30081: implicit conversion from 'float' to 'int' is not recommended
+    int maxCount = ceil(abs(viewDirection.x)) + ceil(abs(viewDirection.y)) + 2;
+                                                                           ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Scene.slang(318): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        uint3 vtxIndices = getLocalIndices(mesh.ibOffset, triangleIndex, mesh.flags & uint(MeshFlags::Use16BitIndices));
+                                                                                    ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Scene.slang(331): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        uint3 vtxIndices = getLocalIndices(instance.ibOffset, triangleIndex, instance.flags & uint(GeometryInstanceFlags::Use16BitIndices));
+                                                                                            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Scene.slang(615): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        uint3 vtxIndices = getLocalIndices(instance.ibOffset, triangleIndex, instance.flags & uint(GeometryInstanceFlags::Use16BitIndices));
+                                                                                            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Scene.slang(660): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        uint3 vtxIndices = getLocalIndices(instance.ibOffset, hit.primitiveIndex, instance.flags & uint(GeometryInstanceFlags::Use16BitIndices));
+                                                                                                 ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Sampling/Pseudorandom/Xoshiro.slang(87): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+            if (JUMP[i] & (1u << b))
+                        ^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+
+(Info) Initiating BLAS build for 1 mesh groups
+(Info) BLAS build split into 1 groups
+(Info) BLAS build result buffer size: 161.62 MB
+(Info) BLAS build scratch buffer size: 126.18 MB
+(Info) BLAS group 0 final size: 60.00 MB
+(Warning) Warnings in program:
+Rendering/Materials/StandardMaterial.slang RenderPasses/PathTracer/TracePass.rt.slang (rayGen, scatterMiss, scatterTriangleClosestHitStandard, scatterTriangleAnyHitStandard)
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(140): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isDoubleSided() CONST_FUNCTION { return packedData.x & (1u << kDoubleSidedFlagOffset); }
+                                                              ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(148): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isThinSurface() CONST_FUNCTION { return packedData.x & (1u << kThinSurfaceFlagOffset); }
+                                                              ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(156): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isEmissive() CONST_FUNCTION { return packedData.x & (1u << kEmissiveFlagOffset); }
+                                                           ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(164): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isBasicMaterial() CONST_FUNCTION { return packedData.x & (1u << kIsBasicMaterialFlagOffset); }
+                                                                ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(172): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isLightProfileEnabled() CONST_FUNCTION { return packedData.y & (1u << kEnableLightProfileOffset); }
+                                                                      ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(180): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isDeltaSpecular() CONST_FUNCTION { return packedData.y & (1u << kDeltaSpecularFlagOffset); }
+                                                                ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(195): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                     ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(195): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                                                      ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(195): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                                                                                       ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(206): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                     ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(206): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                                                      ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(206): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                                                                                       ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Math/FormatConversion.slang(393): warning 30081: implicit conversion from 'uint64_t' to 'uint' is not recommended
+    return uint2(v & 0xffffffff, v >> 32);
+                   ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Math/FormatConversion.slang(393): warning 30081: implicit conversion from 'uint64_t' to 'uint' is not recommended
+    return uint2(v & 0xffffffff, v >> 32);
+                                   ^~
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Rendering/Materials/BSDFs/StandardBSDF.slang(175): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+            (activeLobes & (uint)LobeType::DiffuseReflection) ? detach(diffuseWeight * dielectricBSDF * (1.f - diffTrans)) : 0.f;
+            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Rendering/Materials/BSDFs/StandardBSDF.slang(177): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+            (activeLobes & (uint)LobeType::DiffuseTransmission) ? detach(diffuseWeight * dielectricBSDF * diffTrans) : 0.f;
+            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Rendering/Materials/BSDFs/StandardBSDF.slang(178): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        pSpecularReflection = (activeLobes & ((uint)LobeType::SpecularReflection | (uint)LobeType::DeltaReflection))
+                              ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Rendering/Materials/BSDFs/StandardBSDF.slang(181): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        pSpecularTransmission = (activeLobes & ((uint)LobeType::SpecularReflection | (uint)LobeType::DeltaReflection |
+                                ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Rendering\Materials\StandardMaterial.slang(130): warning 30081: implicit conversion from 'bool' to 'float' is not recommended
+        d.hasSigmaSGreaterZero = (any(data.volumeScattering) > 0.f);
+                                     ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(170): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        return lookupIndex(worldToIndexPos(pos), accessor);
+                                          ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(224): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        const int3 i = floor(indexOffset);
+                            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(242): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        const int3 i = floor(indexOffset);
+                            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(272): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        return lookupIndex(floor(index + (u - 0.5f)), accessor);
+                                ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(282): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        return lookupIndexTex(index + (u - 0.5f));
+                                    ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Displacement/DisplacementMapping.slang(432): warning 30081: implicit conversion from 'float' to 'int' is not recommended
+    int maxCount = ceil(abs(viewDirection.x)) + ceil(abs(viewDirection.y)) + 2;
+                                                                           ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Scene.slang(318): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        uint3 vtxIndices = getLocalIndices(mesh.ibOffset, triangleIndex, mesh.flags & uint(MeshFlags::Use16BitIndices));
+                                                                                    ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Scene.slang(331): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        uint3 vtxIndices = getLocalIndices(instance.ibOffset, triangleIndex, instance.flags & uint(GeometryInstanceFlags::Use16BitIndices));
+                                                                                            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Scene.slang(615): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        uint3 vtxIndices = getLocalIndices(instance.ibOffset, triangleIndex, instance.flags & uint(GeometryInstanceFlags::Use16BitIndices));
+                                                                                            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Scene.slang(660): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        uint3 vtxIndices = getLocalIndices(instance.ibOffset, hit.primitiveIndex, instance.flags & uint(GeometryInstanceFlags::Use16BitIndices));
+                                                                                                 ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/RaytracingInline.slang(232): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+    if (UseAlphaTest)
+        ^~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/RaytracingInline.slang(329): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+    if (UseAlphaTest)
+        ^~~~~~~~~~~~
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathState.slang(119): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        return flagsAndVertexIndex & bits;
+                                   ^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(288): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        if (kUseViewDir) cameraRay.dir = -viewDir[pixel];
+            ^~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(423): warning 41016: use of uninitialized variable 'result'
+                    if (result.isLobe(LobeType::DeltaReflection) && !isDeltaReflectionAllowedAlongDeltaTransmissionPath(sd))
+                                     ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(413): warning 41016: use of uninitialized variable 'result'
+                    path.setDeltaTransmissionPath(result.isLobe(LobeType::DeltaTransmission));
+                                                               ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(412): warning 41016: use of uninitialized variable 'result'
+                    path.setDeltaReflectionPrimaryHit(result.isLobe(LobeType::DeltaReflection));
+                                                                   ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(410): warning 41016: use of uninitialized variable 'result'
+                    path.setDeltaOnlyPath(result.isLobe(LobeType::DeltaReflection) || result.isLobe(LobeType::DeltaTransmission));
+                                                                                                   ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(410): warning 41016: use of uninitialized variable 'result'
+                    path.setDeltaOnlyPath(result.isLobe(LobeType::DeltaReflection) || result.isLobe(LobeType::DeltaTransmission));
+                                                       ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(405): warning 41016: use of uninitialized variable 'result'
+                path.setSpecularPrimaryHit(result.isLobe(LobeType::Specular));
+                                                        ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(404): warning 41016: use of uninitialized variable 'result'
+                path.setDiffusePrimaryHit(result.isLobe(LobeType::Diffuse));
+                                                       ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(393): warning 41016: use of uninitialized variable 'result'
+        if (valid) valid = generateScatterRay(result, sd, mi, path);
+                                             ^
+
+(Warning) Warnings in program:
+Rendering/Materials/StandardMaterial.slang RenderPasses/PathTracer/GeneratePaths.cs.slang (main)
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(140): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isDoubleSided() CONST_FUNCTION { return packedData.x & (1u << kDoubleSidedFlagOffset); }
+                                                              ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(148): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isThinSurface() CONST_FUNCTION { return packedData.x & (1u << kThinSurfaceFlagOffset); }
+                                                              ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(156): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isEmissive() CONST_FUNCTION { return packedData.x & (1u << kEmissiveFlagOffset); }
+                                                           ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(164): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isBasicMaterial() CONST_FUNCTION { return packedData.x & (1u << kIsBasicMaterialFlagOffset); }
+                                                                ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(172): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isLightProfileEnabled() CONST_FUNCTION { return packedData.y & (1u << kEnableLightProfileOffset); }
+                                                                      ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(180): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isDeltaSpecular() CONST_FUNCTION { return packedData.y & (1u << kDeltaSpecularFlagOffset); }
+                                                                ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(195): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                     ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(195): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                                                      ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(195): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                                                                                       ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(206): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                     ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(206): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                                                      ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(206): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                                                                                       ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Math/FormatConversion.slang(393): warning 30081: implicit conversion from 'uint64_t' to 'uint' is not recommended
+    return uint2(v & 0xffffffff, v >> 32);
+                   ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Math/FormatConversion.slang(393): warning 30081: implicit conversion from 'uint64_t' to 'uint' is not recommended
+    return uint2(v & 0xffffffff, v >> 32);
+                                   ^~
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Rendering/Materials/BSDFs/StandardBSDF.slang(175): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+            (activeLobes & (uint)LobeType::DiffuseReflection) ? detach(diffuseWeight * dielectricBSDF * (1.f - diffTrans)) : 0.f;
+            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Rendering/Materials/BSDFs/StandardBSDF.slang(177): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+            (activeLobes & (uint)LobeType::DiffuseTransmission) ? detach(diffuseWeight * dielectricBSDF * diffTrans) : 0.f;
+            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Rendering/Materials/BSDFs/StandardBSDF.slang(178): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        pSpecularReflection = (activeLobes & ((uint)LobeType::SpecularReflection | (uint)LobeType::DeltaReflection))
+                              ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Rendering/Materials/BSDFs/StandardBSDF.slang(181): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        pSpecularTransmission = (activeLobes & ((uint)LobeType::SpecularReflection | (uint)LobeType::DeltaReflection |
+                                ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Rendering\Materials\StandardMaterial.slang(130): warning 30081: implicit conversion from 'bool' to 'float' is not recommended
+        d.hasSigmaSGreaterZero = (any(data.volumeScattering) > 0.f);
+                                     ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(170): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        return lookupIndex(worldToIndexPos(pos), accessor);
+                                          ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(224): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        const int3 i = floor(indexOffset);
+                            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(242): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        const int3 i = floor(indexOffset);
+                            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(272): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        return lookupIndex(floor(index + (u - 0.5f)), accessor);
+                                ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(282): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        return lookupIndexTex(index + (u - 0.5f));
+                                    ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Displacement/DisplacementMapping.slang(432): warning 30081: implicit conversion from 'float' to 'int' is not recommended
+    int maxCount = ceil(abs(viewDirection.x)) + ceil(abs(viewDirection.y)) + 2;
+                                                                           ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Scene.slang(318): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        uint3 vtxIndices = getLocalIndices(mesh.ibOffset, triangleIndex, mesh.flags & uint(MeshFlags::Use16BitIndices));
+                                                                                    ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Scene.slang(331): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        uint3 vtxIndices = getLocalIndices(instance.ibOffset, triangleIndex, instance.flags & uint(GeometryInstanceFlags::Use16BitIndices));
+                                                                                            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Scene.slang(615): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        uint3 vtxIndices = getLocalIndices(instance.ibOffset, triangleIndex, instance.flags & uint(GeometryInstanceFlags::Use16BitIndices));
+                                                                                            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Scene.slang(660): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        uint3 vtxIndices = getLocalIndices(instance.ibOffset, hit.primitiveIndex, instance.flags & uint(GeometryInstanceFlags::Use16BitIndices));
+                                                                                                 ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/RaytracingInline.slang(232): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+    if (UseAlphaTest)
+        ^~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/RaytracingInline.slang(329): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+    if (UseAlphaTest)
+        ^~~~~~~~~~~~
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathState.slang(119): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        return flagsAndVertexIndex & bits;
+                                   ^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(288): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        if (kUseViewDir) cameraRay.dir = -viewDir[pixel];
+            ^~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(423): warning 41016: use of uninitialized variable 'result'
+                    if (result.isLobe(LobeType::DeltaReflection) && !isDeltaReflectionAllowedAlongDeltaTransmissionPath(sd))
+                                     ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(413): warning 41016: use of uninitialized variable 'result'
+                    path.setDeltaTransmissionPath(result.isLobe(LobeType::DeltaTransmission));
+                                                               ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(412): warning 41016: use of uninitialized variable 'result'
+                    path.setDeltaReflectionPrimaryHit(result.isLobe(LobeType::DeltaReflection));
+                                                                   ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(410): warning 41016: use of uninitialized variable 'result'
+                    path.setDeltaOnlyPath(result.isLobe(LobeType::DeltaReflection) || result.isLobe(LobeType::DeltaTransmission));
+                                                                                                   ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(410): warning 41016: use of uninitialized variable 'result'
+                    path.setDeltaOnlyPath(result.isLobe(LobeType::DeltaReflection) || result.isLobe(LobeType::DeltaTransmission));
+                                                       ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(405): warning 41016: use of uninitialized variable 'result'
+                path.setSpecularPrimaryHit(result.isLobe(LobeType::Specular));
+                                                        ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(404): warning 41016: use of uninitialized variable 'result'
+                path.setDiffusePrimaryHit(result.isLobe(LobeType::Diffuse));
+                                                       ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(393): warning 41016: use of uninitialized variable 'result'
+        if (valid) valid = generateScatterRay(result, sd, mi, path);
+                                             ^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\GeneratePaths.cs.slang(116): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+            if (kUseViewDir) cameraRay.dir = -viewDir[pixel];
+                ^~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\GeneratePaths.cs.slang(70): warning 41021: default initializer for 'PathGenerator' will not initialize field 'vbuffer'
+    Texture2D<PackedHitInfo> vbuffer;               ///< Fullscreen V-buffer for the primary hits.
+                             ^~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\GeneratePaths.cs.slang(71): warning 41021: default initializer for 'PathGenerator' will not initialize field 'viewDir'
+    Texture2D<float3> viewDir;                      ///< Optional view direction. Only valid when kUseViewDir == true.
+                      ^~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\GeneratePaths.cs.slang(72): warning 41021: default initializer for 'PathGenerator' will not initialize field 'sampleCount'
+    Texture2D<uint> sampleCount;                    ///< Optional input sample count buffer. Only valid when kSamplesPerPixel == 0.
+                    ^~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\GeneratePaths.cs.slang(73): warning 41021: default initializer for 'PathGenerator' will not initialize field 'sampleOffset'
+    RWTexture2D<uint> sampleOffset;                 ///< Output offset into per-sample buffers. Only valid when kSamplesPerPixel == 0.
+                      ^~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\GeneratePaths.cs.slang(75): warning 41021: default initializer for 'PathGenerator' will not initialize field 'sampleColor'
+    RWStructuredBuffer<ColorType> sampleColor;      ///< Output per-sample color if kSamplesPerPixel != 1.
+                                  ^~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\GeneratePaths.cs.slang(76): warning 41021: default initializer for 'PathGenerator' will not initialize field 'sampleGuideData'
+    RWStructuredBuffer<GuideData> sampleGuideData;  ///< Output per-sample guide data.
+                                  ^~~~~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\GeneratePaths.cs.slang(77): warning 41021: default initializer for 'PathGenerator' will not initialize field 'outputNRD'
+    NRDBuffers outputNRD;                           ///< Output NRD data.
+               ^~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\GeneratePaths.cs.slang(79): warning 41021: default initializer for 'PathGenerator' will not initialize field 'outputColor'
+    RWTexture2D<float4> outputColor;                ///< Output color buffer if kSamplesPerPixel == 1.
+                        ^~~~~~~~~~~
+
+(Warning) Warnings in program:
+RenderPasses/PathTracer/ResolvePass.cs.slang (main)
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Math/FormatConversion.slang(393): warning 30081: implicit conversion from 'uint64_t' to 'uint' is not recommended
+    return uint2(v & 0xffffffff, v >> 32);
+                   ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Math/FormatConversion.slang(393): warning 30081: implicit conversion from 'uint64_t' to 'uint' is not recommended
+    return uint2(v & 0xffffffff, v >> 32);
+                                   ^~
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(45): warning 41021: default initializer for 'ResolvePass' will not initialize field 'sampleColor'
+    StructuredBuffer<ColorType>   sampleColor;              ///< Input per-sample color if kSamplesPerPixel != 1.
+                                  ^~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(46): warning 41021: default initializer for 'ResolvePass' will not initialize field 'sampleGuideData'
+    StructuredBuffer<GuideData>   sampleGuideData;          ///< Input per-sample guide data. Only valid if kOutputGuideData == true.
+                                  ^~~~~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(47): warning 41021: default initializer for 'ResolvePass' will not initialize field 'sampleNRDRadiance'
+    StructuredBuffer<NRDRadiance> sampleNRDRadiance;        ///< Input per-sample NRD radiance data. Only valid if kOutputNRDData == true.
+                                  ^~~~~~~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(48): warning 41021: default initializer for 'ResolvePass' will not initialize field 'sampleNRDHitDist'
+    StructuredBuffer<float>       sampleNRDHitDist;         ///< Input per-sample NRD hit distance data. Only valid if kOutputNRDData == true.
+                                  ^~~~~~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(49): warning 41021: default initializer for 'ResolvePass' will not initialize field 'sampleNRDEmission'
+    StructuredBuffer<float4>      sampleNRDEmission;        ///< Input per-sample NRD emission data. Only valid if kOutputNRDData == true.
+                                  ^~~~~~~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(50): warning 41021: default initializer for 'ResolvePass' will not initialize field 'sampleNRDReflectance'
+    StructuredBuffer<float4>      sampleNRDReflectance;     ///< Input per-sample NRD reflectance data. Only valid if kOutputNRDData == true.
+                                  ^~~~~~~~~~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(52): warning 41021: default initializer for 'ResolvePass' will not initialize field 'sampleNRDPrimaryHitNeeOnDelta'
+    StructuredBuffer<float4> sampleNRDPrimaryHitNeeOnDelta; ///< Output per-sample NEE on paths classified as delta, from delta+diffuse materials. Only valid if kOutputNRDData == true.
+                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(53): warning 41021: default initializer for 'ResolvePass' will not initialize field 'primaryHitDiffuseReflectance'
+    Texture2D<float4> primaryHitDiffuseReflectance;         ///< Output per-pixel primary hit diffuse reflectance. Only valid if kOutputNRDData == true.
+                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(55): warning 41021: default initializer for 'ResolvePass' will not initialize field 'sampleCount'
+    Texture2D<uint> sampleCount;                            ///< Optional input sample count buffer. Only valid when kSamplesPerPixel == 0.
+                    ^~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(56): warning 41021: default initializer for 'ResolvePass' will not initialize field 'sampleOffset'
+    Texture2D<uint> sampleOffset;                           ///< Output offset into per-sample buffers. Only valid when kSamplesPerPixel == 0.
+                    ^~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(58): warning 41021: default initializer for 'ResolvePass' will not initialize field 'outputColor'
+    RWTexture2D<float4> outputColor;                        ///< Output resolved color.
+                        ^~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(59): warning 41021: default initializer for 'ResolvePass' will not initialize field 'outputAlbedo'
+    RWTexture2D<float4> outputAlbedo;                       ///< Output resolved albedo. Only valid if kOutputGuideData == true.
+                        ^~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(60): warning 41021: default initializer for 'ResolvePass' will not initialize field 'outputSpecularAlbedo'
+    RWTexture2D<float4> outputSpecularAlbedo;               ///< Output resolved specular albedo. Only valid if kOutputGuideData == true.
+                        ^~~~~~~~~~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(61): warning 41021: default initializer for 'ResolvePass' will not initialize field 'outputIndirectAlbedo'
+    RWTexture2D<float4> outputIndirectAlbedo;               ///< Output resolved indirect albedo. Only valid if kOutputGuideData == true.
+                        ^~~~~~~~~~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(62): warning 41021: default initializer for 'ResolvePass' will not initialize field 'outputGuideNormal'
+    RWTexture2D<float4> outputGuideNormal;                  ///< Output resolved guide normal. Only valid if kOutputGuideData == true.
+                        ^~~~~~~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(63): warning 41021: default initializer for 'ResolvePass' will not initialize field 'outputReflectionPosW'
+    RWTexture2D<float4> outputReflectionPosW;               ///< Output resolved reflection pos. Only valid if kOutputGuideData == true.
+                        ^~~~~~~~~~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(65): warning 41021: default initializer for 'ResolvePass' will not initialize field 'outputNRDDiffuseRadianceHitDist'
+    RWTexture2D<float4> outputNRDDiffuseRadianceHitDist;            ///< Output resolved diffuse radiance in .rgb and hit distance in .a for NRD. Only valid if kOutputNRDData == true.
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(66): warning 41021: default initializer for 'ResolvePass' will not initialize field 'outputNRDSpecularRadianceHitDist'
+    RWTexture2D<float4> outputNRDSpecularRadianceHitDist;           ///< Output resolved specular radiance in .rgb and hit distance in .a for NRD. Only valid if kOutputNRDData == true.
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(67): warning 41021: default initializer for 'ResolvePass' will not initialize field 'outputNRDDeltaReflectionRadianceHitDist'
+    RWTexture2D<float4> outputNRDDeltaReflectionRadianceHitDist;    ///< Output resolved delta reflection radiance in .rgb and hit distance in .a for NRD. Only valid if kOutputNRDData == true.
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(68): warning 41021: default initializer for 'ResolvePass' will not initialize field 'outputNRDDeltaTransmissionRadianceHitDist'
+    RWTexture2D<float4> outputNRDDeltaTransmissionRadianceHitDist;  ///< Output resolved delta transmission radiance in .rgb and hit distance in .a for NRD. Only valid if kOutputNRDData == true.
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\ResolvePass.cs.slang(69): warning 41021: default initializer for 'ResolvePass' will not initialize field 'outputNRDResidualRadianceHitDist'
+    RWTexture2D<float4> outputNRDResidualRadianceHitDist;           ///< Output resolved residual radiance in .rgb and hit distance in .a for NRD. Only valid if kOutputNRDData == true.
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+(Warning) Warnings in program:
+Rendering/Materials/StandardMaterial.slang RenderPasses/PathTracer/ReflectTypes.cs.slang (main)
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(140): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isDoubleSided() CONST_FUNCTION { return packedData.x & (1u << kDoubleSidedFlagOffset); }
+                                                              ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(148): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isThinSurface() CONST_FUNCTION { return packedData.x & (1u << kThinSurfaceFlagOffset); }
+                                                              ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(156): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isEmissive() CONST_FUNCTION { return packedData.x & (1u << kEmissiveFlagOffset); }
+                                                           ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(164): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isBasicMaterial() CONST_FUNCTION { return packedData.x & (1u << kIsBasicMaterialFlagOffset); }
+                                                                ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(172): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isLightProfileEnabled() CONST_FUNCTION { return packedData.y & (1u << kEnableLightProfileOffset); }
+                                                                      ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Material/MaterialData.slang(180): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+    bool isDeltaSpecular() CONST_FUNCTION { return packedData.y & (1u << kDeltaSpecularFlagOffset); }
+                                                                ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(195): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                     ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(195): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                                                      ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(195): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                                                                                       ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(206): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                     ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(206): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                                                      ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Geometry/GeometryHelpers.slang(206): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+        const float3 corner = float3((i & 1) ? aabbMin.x : aabbMax.x, (i & 2) ? aabbMin.y : aabbMax.y, (i & 4) ? aabbMin.z : aabbMax.z);
+                                                                                                       ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Math/FormatConversion.slang(393): warning 30081: implicit conversion from 'uint64_t' to 'uint' is not recommended
+    return uint2(v & 0xffffffff, v >> 32);
+                   ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Utils/Math/FormatConversion.slang(393): warning 30081: implicit conversion from 'uint64_t' to 'uint' is not recommended
+    return uint2(v & 0xffffffff, v >> 32);
+                                   ^~
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Rendering/Materials/BSDFs/StandardBSDF.slang(175): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+            (activeLobes & (uint)LobeType::DiffuseReflection) ? detach(diffuseWeight * dielectricBSDF * (1.f - diffTrans)) : 0.f;
+            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Rendering/Materials/BSDFs/StandardBSDF.slang(177): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+            (activeLobes & (uint)LobeType::DiffuseTransmission) ? detach(diffuseWeight * dielectricBSDF * diffTrans) : 0.f;
+            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Rendering/Materials/BSDFs/StandardBSDF.slang(178): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        pSpecularReflection = (activeLobes & ((uint)LobeType::SpecularReflection | (uint)LobeType::DeltaReflection))
+                              ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Rendering/Materials/BSDFs/StandardBSDF.slang(181): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        pSpecularTransmission = (activeLobes & ((uint)LobeType::SpecularReflection | (uint)LobeType::DeltaReflection |
+                                ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Rendering\Materials\StandardMaterial.slang(130): warning 30081: implicit conversion from 'bool' to 'float' is not recommended
+        d.hasSigmaSGreaterZero = (any(data.volumeScattering) > 0.f);
+                                     ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(170): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        return lookupIndex(worldToIndexPos(pos), accessor);
+                                          ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(224): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        const int3 i = floor(indexOffset);
+                            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(242): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        const int3 i = floor(indexOffset);
+                            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(272): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        return lookupIndex(floor(index + (u - 0.5f)), accessor);
+                                ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Volume\Grid.slang(282): warning 30081: implicit conversion from 'vector<float,3>' to 'vector<int,3>' is not recommended
+        return lookupIndexTex(index + (u - 0.5f));
+                                    ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Displacement/DisplacementMapping.slang(432): warning 30081: implicit conversion from 'float' to 'int' is not recommended
+    int maxCount = ceil(abs(viewDirection.x)) + ceil(abs(viewDirection.y)) + 2;
+                                                                           ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Scene.slang(318): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        uint3 vtxIndices = getLocalIndices(mesh.ibOffset, triangleIndex, mesh.flags & uint(MeshFlags::Use16BitIndices));
+                                                                                    ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Scene.slang(331): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        uint3 vtxIndices = getLocalIndices(instance.ibOffset, triangleIndex, instance.flags & uint(GeometryInstanceFlags::Use16BitIndices));
+                                                                                            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Scene.slang(615): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        uint3 vtxIndices = getLocalIndices(instance.ibOffset, triangleIndex, instance.flags & uint(GeometryInstanceFlags::Use16BitIndices));
+                                                                                            ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/Scene.slang(660): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        uint3 vtxIndices = getLocalIndices(instance.ibOffset, hit.primitiveIndex, instance.flags & uint(GeometryInstanceFlags::Use16BitIndices));
+                                                                                                 ^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathState.slang(119): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        return flagsAndVertexIndex & bits;
+                                   ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/RaytracingInline.slang(232): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+    if (UseAlphaTest)
+        ^~~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\Scene/RaytracingInline.slang(329): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+    if (UseAlphaTest)
+        ^~~~~~~~~~~~
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+1
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+command line(1): warning 30081: implicit conversion from 'int' to 'bool' is not recommended
+0
+^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(288): warning 30081: implicit conversion from 'uint' to 'bool' is not recommended
+        if (kUseViewDir) cameraRay.dir = -viewDir[pixel];
+            ^~~~~~~~~~~
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(423): warning 41016: use of uninitialized variable 'result'
+                    if (result.isLobe(LobeType::DeltaReflection) && !isDeltaReflectionAllowedAlongDeltaTransmissionPath(sd))
+                                     ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(413): warning 41016: use of uninitialized variable 'result'
+                    path.setDeltaTransmissionPath(result.isLobe(LobeType::DeltaTransmission));
+                                                               ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(412): warning 41016: use of uninitialized variable 'result'
+                    path.setDeltaReflectionPrimaryHit(result.isLobe(LobeType::DeltaReflection));
+                                                                   ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(410): warning 41016: use of uninitialized variable 'result'
+                    path.setDeltaOnlyPath(result.isLobe(LobeType::DeltaReflection) || result.isLobe(LobeType::DeltaTransmission));
+                                                                                                   ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(410): warning 41016: use of uninitialized variable 'result'
+                    path.setDeltaOnlyPath(result.isLobe(LobeType::DeltaReflection) || result.isLobe(LobeType::DeltaTransmission));
+                                                       ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(405): warning 41016: use of uninitialized variable 'result'
+                path.setSpecularPrimaryHit(result.isLobe(LobeType::Specular));
+                                                        ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(404): warning 41016: use of uninitialized variable 'result'
+                path.setDiffusePrimaryHit(result.isLobe(LobeType::Diffuse));
+                                                       ^
+C:\Users\Jose\Desktop\Falcor\build\windows-vs2022\bin\Release\shaders\RenderPasses\PathTracer\PathTracer.slang(393): warning 41016: use of uninitialized variable 'result'
+        if (valid) valid = generateScatterRay(result, sd, mi, path);
+                                             ^
+
+(Info) Bitmap::createFromFile via CustomRGBE-LUT-MT: 7 samples over 8.6s - avg 7.264 ms, min 6.127 ms, max 7.849 ms
+(Info) QuadLightVideoPlayer decode (CustomRGBE-LUT-MT): 5 samples over 8.5s - avg 2.116 ms, min 2.074 ms, max 2.163 ms
+(Info) QuadLightVideoPlayer decode conversion: 5 samples over 8.5s - avg 4.470 ms, min 3.997 ms, max 4.863 ms
+(Info) QuadLightVideoPlayer decode open+detect: 5 samples over 8.5s - avg 0.040 ms, min 0.029 ms, max 0.046 ms
+(Info) QuadLightVideoPlayer decode raw-bits copy: 5 samples over 8.5s - avg 0.000 ms, min 0.000 ms, max 0.000 ms
+(Info) QuadLightVideoPlayer decode total: 6 samples over 8.5s - avg 7.462 ms, min 6.917 ms, max 7.852 ms
+(Info) QuadLightCdfSampler: build time 14.279 ms (grid 1920x1080)
+(Info) QuadLightVideoPlayer GPU build (main thread: texture+sampler): 6 samples over 8.7s - avg 11.052 ms, min 8.341 ms, max 20.248 ms
+(Info) QuadLightCdfSampler: build time 6.910 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.596 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 8.181 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.996 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.608 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 7.619 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.842 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.085 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 32.851 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.579 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.065 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.411 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.983 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.166 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 7.107 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.972 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.115 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.760 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.406 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.888 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.139 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.104 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.232 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.454 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.737 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.399 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.246 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.024 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 7.687 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 7.006 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.527 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.631 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.518 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 7.237 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.674 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 7.318 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 7.412 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 7.068 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 7.205 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.755 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.364 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.110 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 7.193 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.575 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.609 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 7.069 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.663 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.770 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.979 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.931 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.683 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.010 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.556 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.074 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.752 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 7.267 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 7.223 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.873 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.843 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 7.410 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.086 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.195 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.653 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.667 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.192 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.690 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.482 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.534 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.996 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.707 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.456 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.362 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.369 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.310 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.789 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 7.638 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.687 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.303 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.617 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.611 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 7.209 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 7.241 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.081 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.865 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.268 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.026 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.460 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.406 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.146 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.612 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.194 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.322 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.522 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.871 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.964 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.324 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.568 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.369 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.598 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.428 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.716 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.729 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 4.956 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.239 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.010 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.321 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.704 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.239 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.160 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.973 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 4.835 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.341 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.947 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.769 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.390 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.245 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.659 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.079 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.164 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.756 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.183 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.572 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.589 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 4.971 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.590 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.667 ms (grid 1920x1080)
+(Info) Bitmap::createFromFile via CustomRGBE-LUT-MT: 127 samples over 5.0s - avg 8.421 ms, min 6.775 ms, max 16.322 ms
+(Info) QuadLightVideoPlayer decode (CustomRGBE-LUT-MT): 127 samples over 5.0s - avg 2.373 ms, min 2.018 ms, max 3.909 ms
+(Info) QuadLightVideoPlayer decode conversion: 127 samples over 5.0s - avg 4.830 ms, min 3.825 ms, max 7.532 ms
+(Info) QuadLightVideoPlayer decode open+detect: 127 samples over 5.0s - avg 0.113 ms, min 0.033 ms, max 6.559 ms
+(Info) QuadLightVideoPlayer decode raw-bits copy: 127 samples over 5.0s - avg 0.000 ms, min 0.000 ms, max 0.000 ms
+(Info) QuadLightVideoPlayer decode total: 127 samples over 5.0s - avg 8.424 ms, min 6.778 ms, max 16.324 ms
+(Info) QuadLightCdfSampler: build time 5.264 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.102 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.128 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.270 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.893 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.108 ms (grid 1920x1080)
+(Info) QuadLightVideoPlayer GPU build (main thread: texture+sampler): 132 samples over 5.0s - avg 9.550 ms, min 7.776 ms, max 35.665 ms
+(Info) QuadLightCdfSampler: build time 4.981 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.834 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.520 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 4.904 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.503 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.138 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.146 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.289 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.081 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 4.918 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.491 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.183 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.481 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.055 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.300 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.325 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.996 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.054 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.084 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.600 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.516 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.351 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.793 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.496 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.241 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.518 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 4.887 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.696 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.480 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.723 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.270 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.120 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.307 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.649 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.559 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 7.571 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.356 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.519 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.802 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.521 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.837 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.058 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.004 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.703 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.649 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.389 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.398 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.263 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.177 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.410 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.469 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.882 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 4.990 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.224 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.587 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.014 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.422 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.384 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.337 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.034 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.684 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.050 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 7.172 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.506 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 7.510 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.192 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.011 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.310 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.484 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 4.869 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.075 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.292 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.163 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.223 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.454 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.517 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.425 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.046 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.072 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.499 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.482 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.293 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 4.933 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.597 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.311 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.516 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.239 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.470 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.048 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.521 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.007 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.272 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.205 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.840 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.233 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 4.988 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.114 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.303 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 4.939 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.397 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.324 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.199 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.255 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.166 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.552 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.041 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.509 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.862 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.584 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.170 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.707 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 5.512 ms (grid 1920x1080)
+(Info) QuadLightCdfSampler: build time 6.179 ms (grid 1920x1080)
+rover.pyscene: skipped 1 mesh(es) that failed to load (corrupted source .ply):
+  - Rover_Seat_011-Yellow.ply
