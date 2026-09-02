@@ -256,7 +256,7 @@ sceneBuilder.cameraSpeed = 15.0
 
 _SHAPES = [
     ('Rover_body_internal_001-Material.022.ply', 'empty-emitter-bsdf'),
-    ('Rover-body-glass.ply', 'mat-glass'),
+    # ('Rover-body-glass.ply', 'mat-glass'),  # removed - main cabin windshield/window glass, causing slow-converging noise inside the car
     ('Rover-body- Bronzish.ply', 'mat- Bronzish'),
     ('Rover-body-SAFETY STRIPE.ply', 'mat-SAFETY STRIPE'),
     ('Rover-body-sheet metal.ply', 'mat-sheet metal'),
