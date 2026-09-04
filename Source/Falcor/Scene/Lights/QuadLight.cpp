@@ -388,6 +388,7 @@ namespace Falcor
             [](QuadLight& light, uint32_t id) { light.setMaterialID(MaterialID{id}); }
         );
         quadLight.def_property("doubleSided", &QuadLight::getDoubleSided, &QuadLight::setDoubleSided);
+        pybind11::falcor_enum<QuadLightSamplerType>(m, "QuadLightSamplerType");
         quadLight.def_property("samplerType", &QuadLight::getSamplerType, &QuadLight::setSamplerType);
         quadLight.def_property("lightSamplesPerVertex", &QuadLight::getLightSamplesPerVertex, &QuadLight::setLightSamplesPerVertex);
         quadLight.def_property("maxBsdfHitContribution", &QuadLight::getMaxBsdfHitContribution, &QuadLight::setMaxBsdfHitContribution);
