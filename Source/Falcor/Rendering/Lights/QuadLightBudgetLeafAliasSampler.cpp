@@ -161,6 +161,8 @@ namespace Falcor
     QuadLightBudgetLeafAliasSampler::QuadLightBudgetLeafAliasSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight)
         : QuadLightSampler(QuadLightSamplerType::BudgetLeafAlias, pDevice, pQuadLight)
     {
+        mLeafBudget = pQuadLight->getBudgetLeafAliasLeafBudget();
+
         auto luminanceStart = CpuTimer::getCurrentTimePoint();
 
         uint32_t w = 0, h = 0;
@@ -180,6 +182,7 @@ namespace Falcor
     )
         : QuadLightSampler(QuadLightSamplerType::BudgetLeafAlias, pDevice, pQuadLight)
     {
+        mLeafBudget = pQuadLight->getBudgetLeafAliasLeafBudget();
         build(width, height, luminance);
     }
 

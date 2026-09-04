@@ -212,6 +212,20 @@ namespace Falcor
         */
         QuadLightSamplerType getSamplerType() const { return mSamplerType; }
 
+        /** Set the leaf budget QuadLightBudgetLeafAliasSampler should target when it next
+            (re)builds (see QuadLightBudgetLeafAliasSampler::mLeafBudget / kDefaultLeafBudget/
+            kMinLeafBudget/kMaxLeafBudget). Scriptable equivalent of that sampler's own
+            "Leaf budget" UI slider - added so benchmark scripts can select a specific leaf
+            count (e.g. for a fixed-structure-size comparison) without going through the UI.
+            Only takes effect on the next sampler (re)build (e.g. after changing samplerType,
+            or the next full rebuild), same timing as every other sampler-affecting property.
+        */
+        void setBudgetLeafAliasLeafBudget(uint32_t leafBudget) { mBudgetLeafAliasLeafBudget = leafBudget; }
+
+        /** Get the leaf budget QuadLightBudgetLeafAliasSampler targets on (re)build.
+        */
+        uint32_t getBudgetLeafAliasLeafBudget() const { return mBudgetLeafAliasLeafBudget; }
+
         /** Get the file path of the light's texture.
         */
         const std::filesystem::path& getPath() const { return mpTexture->getSourcePath(); }
@@ -307,6 +321,8 @@ namespace Falcor
 
         QuadLightSamplerType    mSamplerType = QuadLightSamplerType::Cdf2D;     ///< Host-only; not part of the GPU-visible QuadLightData blob (selected via shader define, not read as data).
         QuadLightSamplerType    mPrevSamplerType = QuadLightSamplerType::Cdf2D;
+
+        uint32_t                mBudgetLeafAliasLeafBudget = 4096; ///< Mirrors QuadLightBudgetLeafAliasSampler::kDefaultLeafBudget - kept as a plain default here rather than including that header.
 
         bool                     mTextureChanged = false;   ///< Set by loadTextureFromFile(), consumed (and cleared) by beginFrame().
 

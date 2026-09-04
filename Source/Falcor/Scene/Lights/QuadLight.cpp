@@ -391,6 +391,9 @@ namespace Falcor
         pybind11::falcor_enum<QuadLightSamplerType>(m, "QuadLightSamplerType");
         quadLight.def_property("samplerType", &QuadLight::getSamplerType, &QuadLight::setSamplerType);
         quadLight.def_property("lightSamplesPerVertex", &QuadLight::getLightSamplesPerVertex, &QuadLight::setLightSamplesPerVertex);
+        quadLight.def_property(
+            "budgetLeafAliasLeafBudget", &QuadLight::getBudgetLeafAliasLeafBudget, &QuadLight::setBudgetLeafAliasLeafBudget
+        );
         quadLight.def_property("maxBsdfHitContribution", &QuadLight::getMaxBsdfHitContribution, &QuadLight::setMaxBsdfHitContribution);
         quadLight.def_property(
             "useAvgEmissionOnDiffuseBsdfHit", &QuadLight::getUseAvgEmissionOnDiffuseBsdfHit, &QuadLight::setUseAvgEmissionOnDiffuseBsdfHit

@@ -14,12 +14,75 @@
 #   (the pattern every other paperscenes/ scene uses), this one places one huge QuadLight
 #   further back along +Z, outside the room, facing -Z into the open front - it lights the
 #   room through that opening the way an environment map would (hence "very large ... as
-#   if it was an env map"), while sitting behind the camera (position.z=8) and so out of
-#   its view frustum - the room's objects are lit by it but the panel itself is never seen,
-#   same effect as an EnvMap without needing per-pixel environment sampling.
+#   if it was an env map"), sitting far enough back to be well outside the camera's normal
+#   forward-facing framing.
+#
+# IMPORTANT (materialID staleness bug worked around here - see SceneBuilder.cpp): a
+# QuadLight's placeholder mesh is meant to be directly visible when the camera looks
+# straight at it (PathTracer.slang matches sd.materialID against gScene.quadLight.data.
+# materialID on a direct hit and shows the light's own texture, bypassing the placeholder's
+# own near-black material). But SceneBuilder::removeDuplicateMaterials() - which runs once
+# at the end of scene build and merges any materials with identical properties - reassigns
+# every mesh/curve/SDF instance's materialId through its remap table, but NEVER reassigns
+# mSceneData.pQuadLight's stored materialID. So if ANY material earlier in the materials
+# list gets removed as a duplicate of another (which the room here does: Ceiling and Back
+# Wall are byte-identical to Floor and get merged), every material index after that point
+# silently shifts down - except the QuadLight's remembered materialID, which doesn't, and
+# the direct-view match permanently fails (the placeholder mesh's real material differs
+# from what the light thinks it owns) even though NEE lighting of the rest of the scene is
+# completely unaffected (that path never compares materialIDs at all). Confirmed by reading
+# MaterialSystem::removeDuplicateMaterials(): unique materials keep the ID of their first
+# occurrence scan order, so a material added/registered before every other material in the
+# scene always keeps materialID 0 no matter what gets deduplicated afterward. Reflects a
+# real engine gap (removeDuplicateMaterials() ought to remap mSceneData.pQuadLight's
+# materialID the same way it does mesh/curve/SDF instances) rather than anything wrong with
+# this scene's construction - worth an actual engine-side fix if this comes up again, but
+# out of scope for a scene-only change. Worked around here by registering the QuadLight's
+# placeholder material and mesh FIRST, before any other material in the file - guaranteeing
+# materialID 0 and making it immune to whatever gets merged later.
 
 quadMesh = TriangleMesh.createQuad()
 sphereMesh = TriangleMesh.createSphere(radius = 0.5)
+
+roomSize = float3(8, 4, 4)
+roomHalfSize = roomSize / 2
+
+# ---------------------------------------------------------------------------
+# The "env map" QuadLight: registered FIRST (see materialID note above) - a single huge
+# panel outside the room's open front (+Z), facing -Z into the room. Non-emissive
+# placeholder quad + QuadLight sharing one transform, same construction used throughout
+# paperscenes/.
+#
+# Uses the same "swapped" Transform(position=, target=, up=) trick as
+# fireplace_room.pyscene's firebox: target = position - world-up (not position - normal)
+# forces the resulting local Y to come out exactly equal to the 'up' parameter, which is
+# handed the actual desired light normal - see that file's NOTE for the full derivation.
+# That makes local X = cross(normal, worldUp) (horizontal, pairs with size.x) and
+# local Z = worldUp (vertical, pairs with size.y).
+# ---------------------------------------------------------------------------
+
+envQuadNormal = float3(0, 0, -1)  # points from outside (+Z) back into the room (-Z)
+envQuadDistance = 40.0  # well outside the room (front opening is around z=+2)
+envQuadSize = float2(200.0, 200.0)  # very large relative to the room (8x4x4) to approximate env-map-like illumination over the whole open face
+
+envQuadCenter = float3(0, roomSize.y / 2, envQuadDistance)
+envQuadTransform = Transform(position=envQuadCenter, target=envQuadCenter - float3(0, 1, 0), up=envQuadNormal)
+envQuadNode = sceneBuilder.addNode('EnvQuadLightPanel', envQuadTransform)
+
+envQuadMat = StandardMaterial('EnvQuadLightPanel')  # non-emissive placeholder - QuadLight itself provides the radiance
+envQuadMat.baseColor = float4(0.0, 0.0, 0.0, 1.0)
+envQuadMat.roughness = 1.0
+envQuadMatID = sceneBuilder.addMaterial(envQuadMat)  # first addMaterial() call in the script - guarantees materialID 0
+
+sceneBuilder.addMeshInstance(envQuadNode, sceneBuilder.addTriangleMesh(TriangleMesh.createQuad(envQuadSize), envQuadMat))
+
+QUAD_TEXTURE = '../../quadlight/hdr/frame_00083.hdr'
+envQuadLight = QuadLight.createFromFile(QUAD_TEXTURE)
+envQuadLight.materialID = envQuadMatID
+envQuadLight.transform = envQuadTransform.matrix
+envQuadLight.size = envQuadSize
+envQuadLight.intensity = 1.0  # starting point - adjust live via the UI's Intensity slider
+sceneBuilder.quadLight = envQuadLight
 
 # ---------------------------------------------------------------------------
 # Room (unchanged from convergence_test.pyscene - floor/ceiling/back/left/right wall,
@@ -45,9 +108,6 @@ leftWallMat.roughness = 0.5
 rightWallMat = StandardMaterial('Right Wall')
 rightWallMat.baseColor = float4(0.14, 0.45, 0.091, 1.0)
 rightWallMat.roughness = 0.5
-
-roomSize = float3(8, 4, 4)
-roomHalfSize = roomSize / 2
 
 sceneBuilder.addMeshInstance(
     sceneBuilder.addNode('Floor', Transform(scaling=roomSize)),
@@ -77,7 +137,7 @@ sceneBuilder.addMeshInstance(
 # NOTE: the original's White/Red/Green/Blue emissive "Light" quads (ceiling + 3 stacked
 # strips on the back wall) are intentionally omitted here - they're the room's actual
 # light sources in convergence_test.pyscene, and this scene lights everything with the
-# single outdoor QuadLight below instead.
+# single outdoor QuadLight above instead.
 
 # ---------------------------------------------------------------------------
 # Material objects (unchanged from convergence_test.pyscene) - 5 columns x 3 rows:
@@ -270,56 +330,16 @@ sceneBuilder.addMeshInstance(
 )
 
 # ---------------------------------------------------------------------------
-# The "env map" QuadLight: a single huge panel outside the room's open front (+Z, beyond
-# the camera), facing -Z into the room. Non-emissive placeholder quad + QuadLight sharing
-# one transform, same construction used throughout paperscenes/.
-#
-# Uses the same "swapped" Transform(position=, target=, up=) trick as
-# fireplace_room.pyscene's firebox: target = position - world-up (not position - normal)
-# forces the resulting local Y to come out exactly equal to the 'up' parameter, which is
-# handed the actual desired light normal - see that file's NOTE for the full derivation.
-# That makes local X = cross(normal, worldUp) (horizontal, pairs with size.x) and
-# local Z = worldUp (vertical, pairs with size.y).
-# ---------------------------------------------------------------------------
-
-envQuadNormal = float3(0, 0, 1)  # TEMP diagnostic - flipped
-envQuadDistance = 15.0  # TEMP diagnostic - much closer
-envQuadSize = float2(4.0, 4.0)  # TEMP diagnostic - small, centered this time
-
-envQuadCenter = float3(2, roomSize.y / 2, envQuadDistance)  # TEMP diagnostic - small offset
-envQuadTransform = Transform(position=envQuadCenter, target=envQuadCenter - float3(0, 1, 0), up=envQuadNormal)
-envQuadNode = sceneBuilder.addNode('EnvQuadLightPanel', envQuadTransform)
-
-envQuadMat = StandardMaterial('EnvQuadLightPanel')  # non-emissive placeholder - QuadLight itself provides the radiance
-envQuadMat.baseColor = float4(1.0, 0.0, 0.0, 1.0)
-envQuadMat.emissiveColor = float3(1.0, 0.0, 0.0)
-envQuadMat.emissiveFactor = 5.0
-envQuadMat.roughness = 1.0
-envQuadMat.doubleSided = True  # TEMP diagnostic
-envQuadMatID = sceneBuilder.addMaterial(envQuadMat)
-
-sceneBuilder.addMeshInstance(envQuadNode, sceneBuilder.addTriangleMesh(TriangleMesh.createQuad(envQuadSize), envQuadMat))
-
-QUAD_TEXTURE = '../../quadlight/hdr/frame_00083.hdr'
-envQuadLight = QuadLight.createFromFile(QUAD_TEXTURE)
-envQuadLight.materialID = envQuadMatID
-envQuadLight.transform = envQuadTransform.matrix
-envQuadLight.size = envQuadSize
-envQuadLight.intensity = 1.0  # starting point - adjust live via the UI's Intensity slider
-envQuadLight.doubleSided = True  # TEMP diagnostic
-sceneBuilder.quadLight = envQuadLight
-
-# ---------------------------------------------------------------------------
 # Camera (unchanged from convergence_test.pyscene).
 # ---------------------------------------------------------------------------
 
 camera = Camera()
 camera.position = float3(0, roomSize.y / 2, 8)
-camera.target = float3(0, roomSize.y / 2, 20)  # TEMP diagnostic - looking backward toward the outdoor panel
+camera.target = float3(0, roomSize.y / 2, 0)
 camera.up = float3(0, 1, 0)
 camera.focalLength = 35.0
 sceneBuilder.addCamera(camera)
 
 # Only the outdoor QuadLight lights the scene - the room's own emissive "Light" quads,
 # the original EnvMap, and its DistantLight are all gone (see notes above).
-sceneBuilder.renderSettings = SceneRenderSettings(useEnvLight=False, useAnalyticLights=False, useEmissiveLights=True, useQuadLight=True)
+sceneBuilder.renderSettings = SceneRenderSettings(useEnvLight=False, useAnalyticLights=False, useEmissiveLights=False, useQuadLight=True)
