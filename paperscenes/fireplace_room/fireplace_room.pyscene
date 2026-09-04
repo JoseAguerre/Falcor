@@ -1,0 +1,222 @@
+# Fireplace room scene.
+# Based on tv_room_test.pyscene, with the wall-mounted TV replaced by a floor-standing
+# fireplace: a procedural stone/plaster surround (grey_and_white_room.fbx has no
+# fireplace of its own - confirmed by its material list, which is Glass/Mirror/
+# MattePaint/Leaves/Painting/Sofa/Paneling/Walls/PlantPot and nothing fireplace-shaped)
+# around a firebox opening lit by a QuadLight, on the SAME wall the TV used - TV-above-
+# fireplace is exactly how that wall is normally furnished in a real living room, so the
+# mirror that already hangs there is left as an actual mirror this time (tv_room_test
+# neutralized it because the TV physically occupied the same spot; the fireplace sits
+# lower, on the floor, so it doesn't compete with the mirror).
+#
+# The firebox QuadLight is pointed at the real fire video (quadlight/fireplace/4k/,
+# 300 frames, already run through the same video->hdrplaylist pipeline the existing
+# quadlight/hdr/ and quadlight/road/ content uses - see QuadLight.createFromFile, which
+# auto-detects a .hdrplaylist vs. a plain static image from the file extension). A 1080p
+# version of the same content also exists at quadlight/fireplace/1080p/fireplace.hdrplaylist
+# if the 4k source proves too heavy.
+
+FIRE_TEXTURE = '../../quadlight/fireplace/4k/frame_00082.hdr'
+FIRE_INTENSITY = 500.0
+
+# Same wall position/orientation tv_room_test.pyscene derived (see that file's NOTE for
+# why this is hand-measured rather than queried): the horizontal (X/Z) position and
+# facing direction of the wall the TV/mirror hang on. Only reused for direction here -
+# the fireplace's own height is measured up from the floor separately below, not from
+# the TV's mounted position.
+WALL_POSITION = float3(1.642, 1.192, -0.552)
+WALL_TARGET = float3(1.583, 1.351, -1.538)
+WALL_UP = float3(0.0, 1.0, 0.0)
+WALL_DEPTH_OFFSET = 0.35  # same push-back tv_room_test used so the surround sits flush against the actual wall
+WALL_HORIZONTAL_OFFSET = 0.2  # same empirical along-wall shift tv_room_test used
+
+def _sub(a, b):
+    return float3(a.x - b.x, a.y - b.y, a.z - b.z)
+
+def _add(a, b):
+    return float3(a.x + b.x, a.y + b.y, a.z + b.z)
+
+def _scale(a, s):
+    return float3(a.x * s, a.y * s, a.z * s)
+
+def _cross(a, b):
+    return float3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x)
+
+def _normalize(a):
+    l = (a.x * a.x + a.y * a.y + a.z * a.z) ** 0.5
+    return float3(a.x / l, a.y / l, a.z / l)
+
+# Flatten the raw camera-derived normal to purely horizontal, exactly as tv_room_test
+# does - a wall's outward normal has no business tilting up/down, and leaving it tilted
+# is what made that scene's TV lean back like a lectern before it was corrected.
+_rawNormal = _sub(WALL_TARGET, WALL_POSITION)
+_wallNormal = _normalize(float3(_rawNormal.x, 0.0, _rawNormal.z))
+_wallRight = _normalize(_cross(_wallNormal, WALL_UP))  # horizontal, along the wall
+
+# Because _wallNormal is purely horizontal and WALL_UP is world up, cross(_wallRight,
+# _wallNormal) - the same "screen up" tv_room_test builds for its flat quad - works out
+# to (0, +/-1, 0), i.e. world up. So the surround's boxes (which, unlike a flat quad,
+# have a real vertical extent along their OWN local Y) can just use world up directly
+# instead of re-deriving it.
+_wallBaseXZ = _add(WALL_POSITION, _scale(_wallNormal, -WALL_DEPTH_OFFSET))
+_wallBaseXZ = _add(_wallBaseXZ, _scale(_wallRight, WALL_HORIZONTAL_OFFSET))
+# _scale/_add above only ever touch X/Z (both _wallNormal and _wallRight are flat, y=0),
+# so _wallBaseXZ.y is still WALL_POSITION.y - the TV's eye-mounted height, not the
+# floor. Everything below measures the fireplace's height up from y=0, so pin this back
+# to the actual floor level or the whole surround ends up floating near the ceiling
+# (exactly what the first render of this scene showed).
+_wallBaseXZ = float3(_wallBaseXZ.x, 0.0, _wallBaseXZ.z)
+
+# ---------------------------------------------------------------------------
+# Load scene (unchanged from tv_room_test.pyscene apart from the mirror tweak below).
+# ---------------------------------------------------------------------------
+
+sceneBuilder.importScene('C:/packman-repo/chk/falcor_media/7acdf8b0/test_scenes/grey_and_white_room/grey_and_white_room.fbx')
+
+for camera in sceneBuilder.cameras:
+    camera.animated = False
+
+for light in list(sceneBuilder.lights):
+    sceneBuilder.removeLight(light)
+
+glass = sceneBuilder.getMaterial('grey_and_white_room:Glass')
+glass.roughness = 0
+glass.metallic = 0
+glass.indexOfRefraction = 1.55
+glass.specularTransmission = 1
+glass.doubleSided = True
+glass.nestedPriority = 1
+
+# Left as a REAL mirror this time (unlike tv_room_test.pyscene) - nothing here occupies
+# its spot, it just hangs above the new fireplace the way a mantel mirror would.
+mirror = sceneBuilder.getMaterial('grey_and_white_room:Mirror')
+mirror.baseColor = float4(0.6, 0.7, 0.7, 1.0)
+mirror.roughness = 0.0
+mirror.metallic = 1.0
+
+m = sceneBuilder.getMaterial('grey_and_white_room:MattePaint')
+m.roughness = 0.5
+
+m = sceneBuilder.getMaterial('grey_and_white_room:Leaves.doublesided')
+m.roughness = 0.5
+
+m = sceneBuilder.getMaterial('grey_and_white_room:Painting')
+m.roughness = 0.2
+
+m = sceneBuilder.getMaterial('grey_and_white_room:Sofa')
+m.roughness = 0.5
+
+m = sceneBuilder.getMaterial('grey_and_white_room:Paneling')
+m.roughness = 0.5
+
+m = sceneBuilder.getMaterial('grey_and_white_room:Walls')
+m.baseColor = float4(0.3, 0.3, 0.3, 1.0)
+m.roughness = 0.5
+
+m = sceneBuilder.getMaterial('grey_and_white_room:PlantPot')
+m.roughness = 0.2
+
+# ---------------------------------------------------------------------------
+# Fireplace surround: a mantel built from 3 plain boxes (two pilasters + a lintel) around
+# a rectangular firebox opening, standing on the floor. No single-box-with-a-hole exists
+# in TriangleMesh, so the opening is just the gap left between the boxes - the same
+# "build the frame, not a hole" approach a picture frame or box_quadlight.pyscene's room
+# walls use.
+#
+# Each box's local (width, height, depth) axes are aligned to world (_wallRight, world
+# up, _wallNormal) via Transform(position=, target=, up=) - the same position/target/up
+# construction tv_room_test.pyscene uses for its TV quad, just handing it a full 3D box
+# instead of a flat quad. A plain rectangular box has no distinguishing front/back, so
+# unlike the quad case the exact sign of "target" (+/- normal) doesn't matter here.
+# ---------------------------------------------------------------------------
+
+openingWidth = 1.4
+openingHeight = openingWidth * 9.0 / 16.0  # 16:9, matching the fire video's own aspect ratio
+pilasterWidth = 0.28
+lintelHeight = 0.22
+mantelHeight = openingHeight + lintelHeight  # floor to mantel top
+surroundDepth = 0.22
+
+surroundMat = StandardMaterial('FireplaceSurround')
+surroundMat.baseColor = float4(0.55, 0.53, 0.5, 1.0)  # plastered/painted stone, matching the room's neutral palette
+surroundMat.roughness = 0.6
+
+def addSurroundBox(name, size, rightOffset, upCenter):
+    # rightOffset/upCenter are measured in the wall's own local (right, up) axes from
+    # _wallBaseXZ/floor level; depth is pushed out from the wall by half the box's own
+    # depth so its BACK face sits flush against the wall instead of poking through it.
+    center = _add(_wallBaseXZ, _scale(_wallRight, rightOffset))
+    center = _add(center, float3(0, upCenter, 0))
+    center = _add(center, _scale(_wallNormal, size.z / 2.0))
+    boxTransform = Transform(position=center, target=_add(center, _wallNormal), up=float3(0, 1, 0))
+    sceneBuilder.addMeshInstance(
+        sceneBuilder.addNode(name, boxTransform),
+        sceneBuilder.addTriangleMesh(TriangleMesh.createCube(size), surroundMat)  # same surroundMat instance every call -> Falcor dedupes it to one material internally
+    )
+
+halfSpan = openingWidth / 2.0 + pilasterWidth / 2.0
+addSurroundBox('FireplacePilasterLeft', float3(pilasterWidth, mantelHeight, surroundDepth), -halfSpan, mantelHeight / 2.0)
+addSurroundBox('FireplacePilasterRight', float3(pilasterWidth, mantelHeight, surroundDepth), halfSpan, mantelHeight / 2.0)
+addSurroundBox('FireplaceLintel', float3(openingWidth + 2.0 * pilasterWidth, lintelHeight, surroundDepth), 0.0, mantelHeight - lintelHeight / 2.0)
+
+# ---------------------------------------------------------------------------
+# Firebox: a non-emissive placeholder quad + QuadLight sharing one transform, same
+# pattern as tv_room_test.pyscene's TV. Sits flush with the surround's front face,
+# facing into the room along _wallNormal.
+# ---------------------------------------------------------------------------
+
+fireCenter = _add(_wallBaseXZ, float3(0, openingHeight / 2.0, 0))
+fireCenter = _add(fireCenter, _scale(_wallNormal, surroundDepth))
+# NOTE: this is a QUAD, not a box - createQuad's local Y IS its normal (see the
+# addSurroundBox comment above for the box case, which is different). That means this
+# needs tv_room_test.pyscene's SWAPPED target/up construction (up=normal, target=
+# position-worldUp), not the boxes' (up=worldUp, target=position+normal) - using the box
+# convention here was exactly the bug the first two renders of this scene showed: the
+# firebox quad came out lying flat, glowing like a lit shelf instead of standing upright
+# in the opening.
+fireTransform = Transform(position=fireCenter, target=_sub(fireCenter, float3(0, 1, 0)), up=_wallNormal)
+
+fireMat = StandardMaterial('Firebox')  # non-emissive placeholder - QuadLight itself provides the radiance
+fireMat.baseColor = float4(0.02, 0.01, 0.01, 1.0)
+fireMat.roughness = 1.0
+fireMatID = sceneBuilder.addMaterial(fireMat)
+
+sceneBuilder.addMeshInstance(
+    sceneBuilder.addNode('Firebox', fireTransform),
+    sceneBuilder.addTriangleMesh(TriangleMesh.createQuad(float2(openingWidth, openingHeight)), fireMat)
+)
+
+fireLight = QuadLight.createFromFile(FIRE_TEXTURE)
+fireLight.materialID = fireMatID
+fireLight.transform = fireTransform.matrix
+fireLight.size = float2(openingWidth, openingHeight)
+fireLight.intensity = FIRE_INTENSITY  # starting point - adjust live via the UI's Intensity slider
+sceneBuilder.quadLight = fireLight
+
+# ---------------------------------------------------------------------------
+# Camera - unlike tv_room_test.pyscene, this scene adds an explicit camera rather than
+# relying on the FBX's embedded one: that camera's default (frozen, per the
+# animated=False loop above) position looks at a side table elsewhere in the room, not
+# at this new fireplace. Framed straight on, a few metres back into the room, at a
+# seated eye height - close to how tv_room_test's TV_POSITION was itself derived (flying
+# to a similar vantage and reading off position/target), just pointed at the fireplace's
+# actual center instead.
+# ---------------------------------------------------------------------------
+
+# Hand-framed in Mogwai and pinned here as the default (overrides the procedural
+# derivation above, which is still there/left intact as the reasoning for where this
+# started from).
+cameraPosition = float3(4.4270, 1.2874, -0.8990)
+cameraTarget = float3(3.5049, 1.0724, -1.2200)
+
+camera = Camera()
+camera.position = cameraPosition
+camera.target = cameraTarget
+camera.up = float3(0, 1, 0)
+camera.focalLength = 24.0
+sceneBuilder.addCamera(camera)
+sceneBuilder.selectedCamera = camera  # the FBX's own embedded camera is still in the scene (looking at a side table) - make sure THIS one is what actually renders by default
+
+# Only the fire lights the scene - same "one QuadLight, no other lights" setup as
+# tv_room_test.pyscene, so the fire's contribution is easy to judge on its own.
+sceneBuilder.renderSettings = SceneRenderSettings(useEnvLight=False, useAnalyticLights=False, useEmissiveLights=False, useQuadLight=True)

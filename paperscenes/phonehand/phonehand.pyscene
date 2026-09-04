@@ -1,0 +1,175 @@
+# Phone-hand scene: a hand holding a cellphone (cellphone.glb), its screen a QuadLight,
+# with a second hand (hand.glb) reaching in from the side as if about to touch the screen.
+# Lit purely by the phone screen.
+#
+# cellphone.glb is imported as-is via sceneBuilder.importScene() and kept at its native
+# transform as the scene's anchor - it has 2 materials (lambert1 = phone body,
+# Std_Skin_Arm = the holding hand/arm) that importScene() preserves correctly.
+#
+# hand.glb is loaded differently: importScene() has no parameter to reposition an
+# imported scene as a unit (same limitation noted in led_wall_bust.pyscene's comment for
+# glTF assets generally), and unlike that case there's no plaintext .gltf JSON here to
+# hand-edit (this is a binary .glb). Since hand.glb has exactly one material, nothing is
+# lost by instead loading it via TriangleMesh.createFromFile() (which flattens the whole
+# node hierarchy into one static mesh, in native coordinates) and placing it explicitly
+# via addNode(transform) - the same pattern used for every procedural mesh in paperscenes/.
+# Reuses cellphone.glb's own Std_Skin_Arm material so both hands match in color/roughness.
+#
+# Geometry was derived by importing each model alone into a scratch scene, reading
+# scene.bounds, and rendering exploratory views (cellphone.glb: front/back/top; hand.glb:
+# a pulled-back view, since its bounds are ~2 native units - not real-world meters like
+# cellphone.glb's ~0.2m scale, hence the explicit HAND2_SCALE below). The phone screen's
+# transform was triangulated from a top-down reference render (the screen faces
+# world +Y - the phone lies nearly flat in the palm, not held up vertically) by
+# back-projecting its corners through the camera's ray geometry, same technique used for
+# the cinema scene's screen. See chat history for the full derivation; treat these as good
+# starting estimates verified by render, not exact CAD measurements from a small prop.
+
+sceneBuilder.importScene('cellphone.glb')
+
+# cellphone.glb's textures are embedded in the .glb, referenced via Assimp's internal
+# "*N" convention (an index into its own embedded-texture array) rather than a real file
+# path - AssimpImporter.cpp doesn't resolve that convention (treats it as a literal
+# relative path, which never exists, logged as "Failed to resolve path '...\*0'" etc. -
+# a real gap in Falcor's importer, not specific to this scene), so both materials
+# silently fell back to a flat white baseColor with no texture at all. Worked around here
+# by extracting the embedded PNGs once (paperscenes/phonehand/textures/, via a one-off
+# script reading the .glb's JSON chunk + bufferViews - see chat history) and loading them
+# back onto the materials explicitly.
+sceneBuilder.loadMaterialTexture(sceneBuilder.getMaterial('lambert1'), MaterialTextureSlot.BaseColor, 'textures/image_0.png')
+sceneBuilder.loadMaterialTexture(sceneBuilder.getMaterial('Std_Skin_Arm'), MaterialTextureSlot.BaseColor, 'textures/image_3.png')
+sceneBuilder.waitForMaterialTextureLoading()
+
+# ---------------------------------------------------------------------------
+# The phone screen: non-emissive placeholder quad + QuadLight sharing one transform, same
+# construction used throughout paperscenes/.
+#
+# Three prior attempts all got the normal wrong by hand-measuring/guessing from rendered
+# views (see git history / chat log for the full trail). Resolved for real once the user
+# provided a readable cellphone.obj export: parsed it directly (paperscenes/phonehand/
+# cellphone.obj, object 'mobilePhone_lambert1_0') and clustered its ~5200 vertex normals
+# by rounding to 1 decimal - two dominant, nearly-opposite clusters emerged (front/back of
+# the flat phone body): (0.52,0.76,0.39) with 4560 vertices vs (-0.52,-0.76,-0.39) with
+# only 2562 - the higher-vertex-count side (more geometric detail: bezel/button/notch
+# modeling) is the screen. This also revealed every prior guess's core mistake: the true
+# normal has a *substantial* Z component (~0.39) - every earlier attempt assumed Z was
+# near-zero, which was simply wrong, not a sign or axis-order error.
+#
+# From there, computed the exact in-plane width/height axes and extents via a 2D
+# covariance/PCA-style analysis of the screen cluster's vertices projected into the plane
+# perpendicular to the normal, and the true center via that same projection's bounding-box
+# midpoint (not a simple vertex average, which was skewed off-center by uneven vertex
+# density from the button/notch detail).
+#
+# Using the look-at-style Transform(position=, target=, up=) construction (same "swapped"
+# convention as tv_room_test.pyscene/fireplace_room.pyscene: up=the desired normal, since
+# createQuad's local Y is its normal) - Euler angles turned out ambiguous to compose by
+# hand here (same lesson as the earlier corner-fold QuadLight work). Per quatFromLookAt's
+# actual construction (QuaternionMath.h): local Z = -dir = screenRollRef, local X =
+# cross(up, -dir) = the second in-plane axis - so screenWidth (local X) pairs with the
+# *second* PCA axis and screenDepth (local Z) with screenRollRef's own axis, not the
+# other way around.
+screenNormal = float3(0.5202, 0.7582, 0.3931)     # averaged screen-cluster vertex normal
+# screenRollRef sets local Z (createQuad/QuadLight's V axis, the image's height
+# direction) - was the phone's own long physical edge (0.8247,-0.5658,0), which is
+# correct for the *phone's* portrait shape but means a 16:9 (landscape) image/video
+# loaded as SCREEN_TEXTURE gets its wide dimension squeezed into the screen's narrow
+# physical axis, distorting it. Swapped to the *other* in-plane axis - t2 =
+# cross(screenNormal, the old roll ref) = (0.2224,0.3242,-0.9196) - which rotates the
+# UV mapping 90 degrees while leaving the quad's physical footprint (world-space
+# rectangle) completely unchanged, since screenWidth/screenDepth below are swapped to
+# match: local Z is now the screen's physically *narrow* axis, so a landscape image's
+# short (height) dimension lands there and its wide dimension lands on local X (the
+# physically *long* axis) - the image reads as landscape, just displayed sideways
+# relative to the phone's own portrait orientation, the same way you'd rotate a phone
+# 90 degrees to watch a landscape video full-screen.
+screenRollRef = float3(0.2224, 0.3242, -0.9196)
+# PCA bounding-box center, from cellphone.obj, nudged a hair along the normal (away from
+# the phone body) to stop z-fighting with the real screen mesh at nearly the same depth.
+screenCenter = float3(0.0299, 0.1031, 0.0318) + screenNormal * 0.0015
+# Shrunk ~10% from the exact PCA extents so the light sits inside the screen's bezel
+# instead of exactly on its outer edge (which poked out past the rounded corners). Swapped
+# vs. the original width/depth (see screenRollRef note above) to match the UV rotation:
+# local X (screenWidth) now pairs with the screen's physically long axis, local Z
+# (screenDepth) with its physically narrow axis.
+screenWidth = 0.1838 * 0.9    # local X - extent along the phone's physically long axis
+screenDepth = 0.0802 * 0.9    # local Z - extent along the phone's physically narrow axis
+
+screenTransform = Transform(position=screenCenter, target=screenCenter - screenRollRef, up=screenNormal)
+screenNode = sceneBuilder.addNode('PhoneScreen', screenTransform)
+
+screenMat = StandardMaterial('PhoneScreen')  # non-emissive placeholder - QuadLight itself provides the radiance
+screenMat.baseColor = float4(0.0, 0.0, 0.0, 1.0)
+screenMat.roughness = 0.3  # phone screens are glossier than a diffuse placeholder
+screenMatID = sceneBuilder.addMaterial(screenMat)
+
+sceneBuilder.addMeshInstance(screenNode, sceneBuilder.addTriangleMesh(TriangleMesh.createQuad(float2(screenWidth, screenDepth)), screenMat))
+
+SCREEN_TEXTURE = '../../quadlight/colors/frame_00987.hdr'
+screenLight = QuadLight.createFromFile(SCREEN_TEXTURE)
+screenLight.materialID = screenMatID
+screenLight.transform = screenTransform.matrix
+screenLight.size = float2(screenWidth, screenDepth)
+screenLight.intensity = 200.0  # starting point - adjust live via the UI's Intensity slider
+sceneBuilder.quadLight = screenLight
+
+# ---------------------------------------------------------------------------
+# Second hand: reaching in from the side, fingers toward the screen as if about to touch
+# it. hand.glb's native pose has the forearm at local +Y and fingers at local -Y (its
+# longest axis, ~2.0 native units end to end); HAND2_ROTATION maps local -Y (fingers) to
+# world -X, so the hand reaches horizontally toward the phone from the +X side, with a
+# slight downward tilt onto the screen added on top.
+#
+# hand.glb is the same (left) hand as the one holding the phone in cellphone.glb - mirror
+# it via a negative X scale (X being the hand's width/thumb-to-pinky axis, its narrower
+# horizontal extent - 1.358 vs Z's 1.144 native units - the usual "flip this axis to swap
+# handedness" choice for a hand mesh, since palm/back thickness is normally the smallest
+# dimension of the three) so it reads as the other hand instead of a second copy of the
+# same one.
+#
+# Originally reused cellphone.glb's Std_Skin_Arm material here, on the assumption it'd
+# look consistent - wrong: that material's texture is UV-mapped for cellphone.glb's own
+# mesh, not hand.glb's (a different model with its own, unrelated UV layout), so almost
+# all of hand.glb's surface sampled into one flat-colored region of that atlas instead of
+# actual skin detail. hand.glb has its own embedded baseColor texture (extracted the same
+# way as cellphone.glb's - see the note above sceneBuilder.loadMaterialTexture() below -
+# saved to textures/hand2_skin.jpg, a real 4096x4096 photographic skin texture) that
+# actually matches its own UVs, so it gets its own material instead of sharing one.
+# ---------------------------------------------------------------------------
+
+HAND2_SCALE = float3(-0.13, 0.13, 0.13)  # negative X mirrors left hand -> right hand
+HAND2_ROTATION = float3(-15, 270, -90)  # slight downward tilt (X) + roll about the bone/forearm axis (Y) + fingers-toward -X (Z)
+HAND2_POSITION = float3(0.24, 0.16, 0.02)  # hand center - fingertips land near the screen after the above rotation/scale
+
+hand2Mesh = TriangleMesh.createFromFile('hand.glb')
+hand2Mat = StandardMaterial('ReachingHandSkin')
+hand2Mat.roughness = 0.85
+sceneBuilder.loadMaterialTexture(hand2Mat, MaterialTextureSlot.BaseColor, 'textures/hand2_skin.jpg')
+sceneBuilder.waitForMaterialTextureLoading()
+hand2Transform = Transform(translation=HAND2_POSITION, rotationEulerDeg=HAND2_ROTATION, scaling=HAND2_SCALE)
+hand2Node = sceneBuilder.addNode('ReachingHand', hand2Transform)
+sceneBuilder.addMeshInstance(hand2Node, sceneBuilder.addTriangleMesh(hand2Mesh, hand2Mat))
+
+# ---------------------------------------------------------------------------
+# Camera - hand-framed live in Mogwai by the user, showing both hands and the screen.
+# ---------------------------------------------------------------------------
+
+camera = Camera()
+camera.position = float3(0.1260, 0.1413, 0.3802)
+camera.target = float3(0.0303, 0.0992, -0.614)
+camera.up = float3(0, 1, 0)
+camera.focalLength = 35.0
+sceneBuilder.addCamera(camera)
+
+# The phone screen is still the only *directional* light, but a very low, flat-white
+# constant environment (same synthetic constant_white.hdr trick as paperscenes/rover/)
+# adds gentle fill so geometry facing away from the screen doesn't go pure black - the
+# closest thing to a fixed "ambient" term in a path tracer, since there isn't a literal
+# ambient slider here. Keep AMBIENT_INTENSITY well below the screen's own intensity so it
+# reads as fill, not a second key light.
+AMBIENT_INTENSITY = 0.3
+ambientEnvMap = EnvMap('constant_white.hdr')
+ambientEnvMap.intensity = AMBIENT_INTENSITY
+sceneBuilder.envMap = ambientEnvMap
+
+sceneBuilder.renderSettings = SceneRenderSettings(useEnvLight=True, useAnalyticLights=False, useEmissiveLights=False, useQuadLight=True)

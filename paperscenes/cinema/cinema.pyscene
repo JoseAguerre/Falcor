@@ -1,0 +1,86 @@
+# Cinema scene: a real modeled theater auditorium (cinemamodel/source/cinema_of_boredom.glb),
+# lit purely by its own screen - a QuadLight, same construction as every other paperscenes/
+# scene (non-emissive placeholder mesh + QuadLight sharing one transform).
+#
+# Superseded the earlier fully-procedural room+seats version (box-proxy walls/seats) once a
+# real 3D cinema model was dropped into cinemamodel/ - see git history for that version if
+# the procedural approach is ever wanted back.
+#
+# Screen transform/size were derived by importing the model alone into a scratch scene,
+# querying scene.bounds (min=[-2.283, -0.976, -11.517], max=[10.283, 5.583, 5.196] - a
+# ~12.6 x 6.6 x 16.7m auditorium) and rendering a few exploratory views to find which end
+# has the screen vs. the entrance doors (the -Z end is the back/entrance wall with two
+# doors; seats rake up toward -Z; the screen is on the +Z wall). The screen's exact
+# position/size was then triangulated by rendering one clean, level, on-axis reference
+# shot (known camera position/target/focalLength) and back-projecting the screen's 4
+# corner pixels through the camera's ray basis onto the assumed screen plane Z=5.15 (a
+# few cm in front of the bounds-max wall, matching every other paperscenes/ scene's
+# wall-offset convention) - see chat history for the full derivation. Result: center
+# (4.0, 2.0, 5.15), width 9.0, height 4.85 (~1.85:1, a standard "flat" cinema aspect
+# ratio - a good sign the measurement is close to the real modeled screen, not just
+# approximately right).
+
+sceneBuilder.importScene('cinemamodel/source/cinema_of_boredom.glb')
+
+# The model's wall-sconce/ceiling-downlight fixtures use a 'lights' material that imports
+# as bright white - with useEmissiveLights/useAnalyticLights disabled below they no longer
+# actually emit, but the fixture housings themselves still read as glaring white under the
+# screen's bounce light. Recolor to a neutral gray diffuse so they read as unlit fixtures.
+lightsFixtureMat = sceneBuilder.getMaterial('lights')
+if lightsFixtureMat is not None:
+    lightsFixtureMat.baseColor = float4(0.5, 0.5, 0.5, 1.0)
+    lightsFixtureMat.roughness = 0.8
+    lightsFixtureMat.emissiveColor = float3(0.0, 0.0, 0.0)
+    lightsFixtureMat.emissiveFactor = 0.0
+
+# ---------------------------------------------------------------------------
+# The screen: same non-emissive-placeholder-mesh + QuadLight-with-matching-transform
+# construction used throughout paperscenes/ - see tv_room_test.pyscene for the fullest
+# write-up of why the visible mesh and the light are two separate objects sharing one
+# transform. Faces -Z (toward the seats/audience, which sit at lower Z than the screen).
+# ---------------------------------------------------------------------------
+
+screenCenter = float3(4.0, 2.5, 5.15)
+screenWidth = 11.5   # wall is ~12.57m wide (bounds X range) - close to filling it
+screenHeight = 5.8   # wall is ~6.56m tall (bounds Y range) - close to filling it
+
+screenTransform = Transform(translation=screenCenter, rotationEulerDeg=float3(-90, 0, 0))
+screenNode = sceneBuilder.addNode('Screen', screenTransform)
+
+screenMat = StandardMaterial('Screen')  # non-emissive placeholder - QuadLight itself provides the radiance
+screenMat.baseColor = float4(0.0, 0.0, 0.0, 1.0)
+screenMat.roughness = 1.0
+screenMatID = sceneBuilder.addMaterial(screenMat)
+
+sceneBuilder.addMeshInstance(screenNode, sceneBuilder.addTriangleMesh(TriangleMesh.createQuad(float2(screenWidth, screenHeight)), screenMat))
+
+# Content: a static Poly Haven HDRI (CC0 - no attribution required) rather than a video
+# clip - see images/ and its LICENSE.txt. the_sky_is_on_fire is a dramatic, saturated
+# sunset - the kind of epic wide shot a movie screen would actually be showing, and a
+# useful stress test for the QuadLight samplers (a small, very bright sun disc against a
+# much dimmer sky is exactly the high-dynamic-range, non-uniform case importance
+# sampling is for). Swap SCREEN_TEXTURE for a .hdrplaylist once a real movie clip is
+# wanted - QuadLight.createFromFile auto-detects either from the extension.
+SCREEN_TEXTURE = '../../quadlight/scientist/frame_00050.hdr'
+screenLight = QuadLight.createFromFile(SCREEN_TEXTURE)
+screenLight.materialID = screenMatID
+screenLight.transform = screenTransform.matrix
+screenLight.size = float2(screenWidth, screenHeight)
+screenLight.intensity = 200.0  # starting point - adjust live via the UI's Intensity slider
+sceneBuilder.quadLight = screenLight
+
+# ---------------------------------------------------------------------------
+# Camera - elevated in the aisle behind the seat rows, looking down toward the screen,
+# the same establishing-shot vantage used to find/verify the screen's position.
+# ---------------------------------------------------------------------------
+
+camera = Camera()
+camera.position = float3(-1.618, 3.9420, -6.962)
+camera.target = float3(-0.897, 3.6725, -6.324)
+camera.up = float3(0, 1, 0)
+camera.focalLength = 18.0
+sceneBuilder.addCamera(camera)
+
+# Only the screen lights the scene - disables the model's own baked emissive materials/
+# analytic lights (e.g. the wall-sconce fixtures) too, not just any env light.
+sceneBuilder.renderSettings = SceneRenderSettings(useEnvLight=False, useAnalyticLights=False, useEmissiveLights=False, useQuadLight=True)

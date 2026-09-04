@@ -224,12 +224,12 @@ panelBFoldNode = sceneBuilder.addNode('LedWallFold', Transform(rotationEulerDeg=
 panelBNode = sceneBuilder.addNode('LedWallPanelB', Transform(translation=float3(ledWidthB / 2.0, 0, 0)), panelBFoldNode)
 sceneBuilder.addMeshInstance(panelBNode, sceneBuilder.addTriangleMesh(panelBMesh, ledMat))
 
-ledQuadLight = QuadLight.createFromFile('../../quadlight/road/road.hdrplaylist')
+ledQuadLight = QuadLight.createFromFile('../../quadlight/road/frame_00150.hdr')
 ledQuadLight.materialID = ledMatID
 ledQuadLight.transform = ledRootTransform.matrix
 ledQuadLight.size = ledSize
 ledQuadLight.setFold(ledHingeX, ledFoldAngleDeg)
-ledQuadLight.intensity = 8.0
+ledQuadLight.intensity = 18.0
 sceneBuilder.quadLight = ledQuadLight
 
 
@@ -238,9 +238,9 @@ sceneBuilder.quadLight = ledQuadLight
 # ---------------------------------------------------------------------------
 
 camera = Camera()
-camera.position = float3(-14.036000, 5.300000, 17.576447)
-camera.target = float3(-7.912960, 3.721876, 9.829324)
-camera.up = float3(0.097857, 0.987469, -0.123810)
+camera.position = float3(-56.24, 19.58, -3.550)
+camera.target = float3(-55.28, 19.312, -3.545)
+camera.up = float3(0.0, 1.0, 0.0)
 camera.focalLength = 68.055382  # fovY=20deg @ 24mm frame height, matching fov_axis="smaller" at 860x720
 sceneBuilder.addCamera(camera)
 
@@ -405,8 +405,8 @@ _skipped = []
 # All shapes are children of RoverRoot, scaled up 1.5x about the world origin (which the
 # rover already sits on - its ground-contact points are at world Y=0 - so this grows the
 # rover in place without lifting it off or sinking it into the floor).
-_roverScale = 1.5
-_roverRootNode = sceneBuilder.addNode('RoverRoot', Transform(scaling=_roverScale))
+_roverScale = 1.5 * 1.2
+_roverRootNode = sceneBuilder.addNode('RoverRoot', Transform(scaling=_roverScale, rotationEulerDeg=float3(0, -120, 0)))  # 120 degrees clockwise (viewed from above)
 
 for i, (filename, mat_id) in enumerate(_SHAPES):
     mesh = TriangleMesh.createFromFile('meshes/' + filename)

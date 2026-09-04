@@ -1,0 +1,7 @@
+Asset: images/the_sky_is_on_fire_2k.hdr ("The Sky Is On Fire" HDRI)
+Source: https://polyhaven.com/a/the_sky_is_on_fire
+License: CC0 1.0 Universal (public domain) - https://creativecommons.org/publicdomain/zero/1.0/
+No attribution required. Downloaded at 2k resolution.
+
+All geometry in this scene (room shell + seat rows) is procedural - no other external
+assets are used.
