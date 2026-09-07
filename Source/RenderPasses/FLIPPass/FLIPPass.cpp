@@ -27,6 +27,10 @@
  **************************************************************************/
 #include "FLIPPass.h"
 #include "Utils/Algorithm/ParallelReduction.h"
+#include <fstream>
+#include <limits>
+#include <cmath>
+#include <algorithm>
 
 namespace
 {
@@ -56,6 +60,7 @@ const char kMonitorWidthMeters[] = "monitorWidthMeters";
 const char kMonitorDistance[] = "monitorDistanceMeters";
 const char kComputePooledFLIPValues[] = "computePooledFLIPValues";
 const char kUseRealMonitorInfo[] = "useRealMonitorInfo";
+const char kOutputFilePath[] = "outputFilePath";
 } // namespace
 
 extern "C" FALCOR_API_EXPORT void registerPlugin(Falcor::PluginRegistry& registry)
@@ -113,6 +118,7 @@ Properties FLIPPass::getProperties() const
     props[kMonitorDistance] = mMonitorDistanceMeters;
     props[kComputePooledFLIPValues] = mComputePooledFLIPValues;
     props[kUseRealMonitorInfo] = mUseRealMonitorInfo;
+    props[kOutputFilePath] = mOutputFilePath;
     return props;
 }
 
@@ -149,6 +155,8 @@ void FLIPPass::parseProperties(const Properties& props)
             mComputePooledFLIPValues = value;
         else if (key == kUseRealMonitorInfo)
             mUseRealMonitorInfo = value;
+        else if (key == kOutputFilePath)
+            mOutputFilePath = value.operator std::filesystem::path();
         else
             logWarning("Unknown property '{}' in a FLIPPass properties.", key);
     }
@@ -325,7 +333,7 @@ void FLIPPass::execute(RenderContext* pRenderContext, const RenderData& renderDa
         auto var = rootVar["PerFrameCB"];
         var["gIsHDR"] = mIsHDR;
         var["gUseMagma"] = mUseMagma;
-        var["gClampInput"] = mUseMagma;
+        var["gClampInput"] = mClampInput;
         var["gResolution"] = outputResolution;
         var["gMonitorWidthPixels"] = mMonitorWidthPixels;
         var["gMonitorWidthMeters"] = mMonitorWidthMeters;
@@ -362,18 +370,66 @@ void FLIPPass::execute(RenderContext* pRenderContext, const RenderData& renderDa
     pRenderContext->blit(mpFLIPErrorMapDisplay->getSRV(), pErrorMapDisplayOutput->getRTV());
     pRenderContext->blit(mpExposureMapDisplay->getSRV(), pExposureMapDisplayOutput->getRTV());
 
-    // Compute mean, min, and max using parallel reduction.
+    // Compute mean, min, and max. Originally used ParallelReduction (GPU Sum/MinMax), but that
+    // turned out to propagate corrupted results whenever the raw high-precision errorMap
+    // contained even a single non-finite (NaN/Inf) alpha value - Sum accumulates NaN
+    // unconditionally, and min/max over NaN is implementation-defined per HLSL, producing
+    // wildly wrong (not just slightly off) mean/min/max (confirmed via a real headless
+    // reference-vs-test comparison: averageFLIP came back NaN with min/max in the 1e20+/1e-38
+    // range despite the visual errorMapDisplay looking completely normal - i.e. the per-pixel
+    // FLIP computation itself is fine, only the raw errorMap's occasional non-finite alpha
+    // values were poisoning the GPU reduction). Reading the buffer back and reducing on the
+    // CPU, explicitly skipping non-finite pixels, is slower but immune to that - this pass
+    // isn't a hot per-frame path, so the extra readback cost doesn't matter here.
     if (mComputePooledFLIPValues)
     {
-        float4 FLIPSum, FLIPMinMax[2];
-        mpParallelReduction->execute<float4>(pRenderContext, pErrorMapOutput, ParallelReduction::Type::Sum, &FLIPSum);
-        mpParallelReduction->execute<float4>(pRenderContext, pErrorMapOutput, ParallelReduction::Type::MinMax, &FLIPMinMax[0]);
-        pRenderContext->submit(true);
+        std::vector<uint8_t> raw = pRenderContext->readTextureSubresource(pErrorMapOutput.get(), 0);
+        const float4* pPixels = reinterpret_cast<const float4*>(raw.data());
+        size_t pixelCount = raw.size() / sizeof(float4);
 
-        // Extract metrics from readback values. RGB channels contain magma mapping, and the alpa channel contains FLIP value.
-        mAverageFLIP = FLIPSum.a / (outputResolution.x * outputResolution.y);
-        mMinFLIP = FLIPMinMax[0].a;
-        mMaxFLIP = FLIPMinMax[1].a;
+        double sum = 0.0;
+        float minV = std::numeric_limits<float>::infinity();
+        float maxV = -std::numeric_limits<float>::infinity();
+        size_t validCount = 0;
+        for (size_t i = 0; i < pixelCount; ++i)
+        {
+            float v = pPixels[i].a;
+            if (!std::isfinite(v))
+                continue;
+            sum += v;
+            minV = std::min(minV, v);
+            maxV = std::max(maxV, v);
+            validCount++;
+        }
+
+        if (validCount < pixelCount)
+        {
+            logWarning(
+                "FLIPPass: {} of {} pixels had a non-finite FLIP value and were excluded from the pooled mean/min/max.",
+                pixelCount - validCount, pixelCount
+            );
+        }
+
+        mAverageFLIP = validCount > 0 ? float(sum / double(validCount)) : 0.f;
+        mMinFLIP = validCount > 0 ? minV : 0.f;
+        mMaxFLIP = validCount > 0 ? maxV : 0.f;
+
+        if (!mOutputFilePath.empty())
+        {
+            std::ofstream f(mOutputFilePath, std::ios::trunc);
+            if (f)
+            {
+                f << "{\n"
+                  << "  \"averageFLIP\": " << mAverageFLIP << ",\n"
+                  << "  \"minFLIP\": " << mMinFLIP << ",\n"
+                  << "  \"maxFLIP\": " << mMaxFLIP << "\n"
+                  << "}\n";
+            }
+            else
+            {
+                logWarning("FLIPPass: failed to open outputFilePath '{}' for writing.", mOutputFilePath.string());
+            }
+        }
     }
 }
 

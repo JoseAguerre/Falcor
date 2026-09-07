@@ -76,12 +76,16 @@ envQuadMatID = sceneBuilder.addMaterial(envQuadMat)  # first addMaterial() call 
 
 sceneBuilder.addMeshInstance(envQuadNode, sceneBuilder.addTriangleMesh(TriangleMesh.createQuad(envQuadSize), envQuadMat))
 
-QUAD_TEXTURE = '../../quadlight/hdr/frame_00083.hdr'
+QUAD_TEXTURE = '../../quadlight/cave/frame_00221.hdr'
 envQuadLight = QuadLight.createFromFile(QUAD_TEXTURE)
 envQuadLight.materialID = envQuadMatID
 envQuadLight.transform = envQuadTransform.matrix
 envQuadLight.size = envQuadSize
-envQuadLight.intensity = 1.0  # starting point - adjust live via the UI's Intensity slider
+# 70x the original 1.0 starting intensity - picked via results/experiment5/ (cave hdr
+# sequence frame_00221 at this intensity widens the Cdf2D-vs-leaf-alias RMSE gap from the
+# original hdr/frame_00083's 23.47% to 39.08%, best-leaf-alias technique becoming AliasCtu
+# rather than BudgetLeafAlias4000 - see results/experiment5/quality_summary_cave.json).
+envQuadLight.intensity = 70.0
 sceneBuilder.quadLight = envQuadLight
 
 # ---------------------------------------------------------------------------

@@ -120,4 +120,10 @@ private:
     bool mUseRealMonitorInfo = false;
     /// Recompilation flag.
     bool mRecompile = true;
+
+    /// Optional path to write the pooled FLIP values (mean/min/max) to as a small JSON file after
+    /// every execute() where computePooledFLIPValues is enabled - added so a headless script (e.g.
+    /// comparing two saved renders via ImageLoader + FLIPPass) can read the result back without
+    /// needing a Python binding on this class; empty (default) disables the write entirely.
+    std::filesystem::path mOutputFilePath;
 };

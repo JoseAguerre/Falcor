@@ -1,0 +1,405 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{38}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{} and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showURL}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showURL #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[Ashikmin et~al\mbox{.}(2000)]%
+        {ashikhminetal}
+\bibfield{author}{\bibinfo{person}{Michael Ashikmin}, \bibinfo{person}{Simon Premo\v{z}e}, {and} \bibinfo{person}{Peter Shirley}.} \bibinfo{year}{2000}\natexlab{}.
+\newblock \showarticletitle{A microfacet-based BRDF generator}. In \bibinfo{booktitle}{\emph{Proceedings of the 27th Annual Conference on Computer Graphics and Interactive Techniques}} \emph{(\bibinfo{series}{SIGGRAPH '00})}. \bibinfo{publisher}{ACM Press/Addison-Wesley Publishing Co.}, \bibinfo{address}{USA}, \bibinfo{pages}{65–74}.
+\newblock
+\showISBNx{1581132085}
+\href{https://doi.org/10.1145/344779.344814}{doi:\nolinkurl{10.1145/344779.344814}}
+
+
+\bibitem[Beckmann and Spizzichino(1963)]%
+        {beckmann1963}
+\bibfield{author}{\bibinfo{person}{Petr Beckmann} {and} \bibinfo{person}{Armando Spizzichino}.} \bibinfo{year}{1963}\natexlab{}.
+\newblock \bibinfo{booktitle}{\emph{The Scattering of Electromagnetic Waves from Rough Surfaces}}.
+\newblock \bibinfo{publisher}{Pergamon Press; [distributed in the Western Hemisphere by Macmillan, New York]}.
+\newblock
+\showISBNx{9780080100074}
+\showLCCN{63010108}
+
+
+\bibitem[Bitterli and d'Eon(2022)]%
+        {bitterlideon2022}
+\bibfield{author}{\bibinfo{person}{Benedikt Bitterli} {and} \bibinfo{person}{Eugene d'Eon}.} \bibinfo{year}{2022}\natexlab{}.
+\newblock \showarticletitle{A Position-Free Path Integral for Homogeneous Slabs and Multiple Scattering on Smith Microfacets}.
+\newblock \bibinfo{journal}{\emph{Computer Graphics Forum}} \bibinfo{volume}{41}, \bibinfo{number}{4} (\bibinfo{year}{2022}), \bibinfo{pages}{93--104}.
+\newblock
+\href{https://doi.org/10.1111/cgf.14589}{doi:\nolinkurl{10.1111/cgf.14589}}
+
+
+\bibitem[Burgess(2020)]%
+        {nvidiaTuring}
+\bibfield{author}{\bibinfo{person}{John Burgess}.} \bibinfo{year}{2020}\natexlab{}.
+\newblock \showarticletitle{RTX on—The NVIDIA Turing GPU}.
+\newblock \bibinfo{journal}{\emph{IEEE Micro}} \bibinfo{volume}{40}, \bibinfo{number}{2} (\bibinfo{year}{2020}), \bibinfo{pages}{36--44}.
+\newblock
+\href{https://doi.org/10.1109/MM.2020.2971677}{doi:\nolinkurl{10.1109/MM.2020.2971677}}
+
+
+\bibitem[Chandrasekhar(1960)]%
+        {chandra1960}
+\bibfield{author}{\bibinfo{person}{S. Chandrasekhar}.} \bibinfo{year}{1960}\natexlab{}.
+\newblock \bibinfo{booktitle}{\emph{Radiative Transfer}}.
+\newblock \bibinfo{publisher}{Dover Publications}.
+\newblock
+\showISBNx{9780486605906}
+\showLCCN{58000162}
+\urldef\tempurl%
+\url{https://books.google.com.uy/books?id=CK3HDRwCT5YC}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Cui et~al\mbox{.}(2023)]%
+        {cui2023}
+\bibfield{author}{\bibinfo{person}{Yuang Cui}, \bibinfo{person}{Gaole Pan}, \bibinfo{person}{Jian Yang}, \bibinfo{person}{Lei Zhang}, \bibinfo{person}{Ling-Qi Yan}, {and} \bibinfo{person}{Beibei Wang}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Multiple-bounce Smith Microfacet BRDFs using the Invariance Principle}. In \bibinfo{booktitle}{\emph{SIGGRAPH Asia 2023 Conference Papers}} (Sydney, NSW, Australia) \emph{(\bibinfo{series}{SA '23})}. \bibinfo{publisher}{Association for Computing Machinery}, \bibinfo{address}{New York, NY, USA}, Article \bibinfo{articleno}{39}, \bibinfo{numpages}{10}~pages.
+\newblock
+\showISBNx{9798400703157}
+\href{https://doi.org/10.1145/3610548.3618198}{doi:\nolinkurl{10.1145/3610548.3618198}}
+
+
+\bibitem[d'Eon(2021)]%
+        {deonLS}
+\bibfield{author}{\bibinfo{person}{Eugene d'Eon}.} \bibinfo{year}{2021}\natexlab{}.
+\newblock \showarticletitle{An analytic BRDF for materials with spherical Lambertian scatterers}.
+\newblock \bibinfo{journal}{\emph{Computer Graphics Forum}} \bibinfo{volume}{40}, \bibinfo{number}{4} (\bibinfo{year}{2021}), \bibinfo{pages}{153--161}.
+\newblock
+\href{https://doi.org/10.1111/cgf.14348}{doi:\nolinkurl{10.1111/cgf.14348}}
+
+
+\bibitem[d'Eon et~al\mbox{.}(2023)]%
+        {deon2023microfacet}
+\bibfield{author}{\bibinfo{person}{Eugene d'Eon}, \bibinfo{person}{Benedikt Bitterli}, \bibinfo{person}{Andrea Weidlich}, {and} \bibinfo{person}{Tizian Zeltner}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Microfacet theory for non-uniform heightfields}. In \bibinfo{booktitle}{\emph{SIGGRAPH 2023 Conference Papers}} (Los Angeles, CA, USA). \bibinfo{publisher}{Association for Computing Machinery}, \bibinfo{address}{New York, NY, USA}, \bibinfo{numpages}{10}~pages.
+\newblock
+\href{https://doi.org/10.1145/3588432.3591486}{doi:\nolinkurl{10.1145/3588432.3591486}}
+
+
+\bibitem[Dong et~al\mbox{.}(2016)]%
+        {dong-walter-etal}
+\bibfield{author}{\bibinfo{person}{Zhao Dong}, \bibinfo{person}{Bruce Walter}, \bibinfo{person}{Steve Marschner}, {and} \bibinfo{person}{Donald~P. Greenberg}.} \bibinfo{year}{2016}\natexlab{}.
+\newblock \showarticletitle{Predicting Appearance from Measured Microgeometry of Metal Surfaces}.
+\newblock \bibinfo{journal}{\emph{ACM Trans. Graph.}} \bibinfo{volume}{35}, \bibinfo{number}{1}, Article \bibinfo{articleno}{9} (\bibinfo{date}{Dec.} \bibinfo{year}{2016}), \bibinfo{numpages}{13}~pages.
+\newblock
+\showISSN{0730-0301}
+\href{https://doi.org/10.1145/2815618}{doi:\nolinkurl{10.1145/2815618}}
+
+
+\bibitem[Falster et~al\mbox{.}(2020)]%
+        {falsteretal}
+\bibfield{author}{\bibinfo{person}{V. Falster}, \bibinfo{person}{Adrian Jarabo}, {and} \bibinfo{person}{Jeppe~Revall Frisvad}.} \bibinfo{year}{2020}\natexlab{}.
+\newblock \showarticletitle{Computing the Bidirectional Scattering of a Microstructure Using Scalar Diffraction Theory and Path Tracing}.
+\newblock \bibinfo{journal}{\emph{Computer Graphics Forum}} \bibinfo{volume}{39}, \bibinfo{number}{7} (\bibinfo{year}{2020}), \bibinfo{pages}{231--242}.
+\newblock
+\href{https://doi.org/10.1111/cgf.14140}{doi:\nolinkurl{10.1111/cgf.14140}}
+
+
+\bibitem[Fan et~al\mbox{.}(2022)]%
+        {fan2022}
+\bibfield{author}{\bibinfo{person}{Jiahui Fan}, \bibinfo{person}{Beibei Wang}, \bibinfo{person}{Milos Hasan}, \bibinfo{person}{Jian Yang}, {and} \bibinfo{person}{Ling-Qi Yan}.} \bibinfo{year}{2022}\natexlab{}.
+\newblock \showarticletitle{Neural Layered BRDFs}. In \bibinfo{booktitle}{\emph{ACM SIGGRAPH 2022 Conference Proceedings}} (Vancouver, BC, Canada) \emph{(\bibinfo{series}{SIGGRAPH '22})}. \bibinfo{publisher}{Association for Computing Machinery}, \bibinfo{address}{New York, NY, USA}, Article \bibinfo{articleno}{4}, \bibinfo{numpages}{8}~pages.
+\newblock
+\showISBNx{9781450393379}
+\href{https://doi.org/10.1145/3528233.3530732}{doi:\nolinkurl{10.1145/3528233.3530732}}
+
+
+\bibitem[Heitz(2014)]%
+        {heitz2014maskingshadowing}
+\bibfield{author}{\bibinfo{person}{Eric Heitz}.} \bibinfo{year}{2014}\natexlab{}.
+\newblock \showarticletitle{Understanding the Masking-Shadowing Function in Microfacet-Based BRDFs}.
+\newblock \bibinfo{journal}{\emph{Journal of Computer Graphics Techniques (JCGT)}} \bibinfo{volume}{3}, \bibinfo{number}{2} (\bibinfo{date}{30 June} \bibinfo{year}{2014}), \bibinfo{pages}{48--107}.
+\newblock
+\showISSN{2331-7418}
+\urldef\tempurl%
+\url{http://jcgt.org/published/0003/02/03/}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Heitz(2018)]%
+        {heitz2018}
+\bibfield{author}{\bibinfo{person}{Eric Heitz}.} \bibinfo{year}{2018}\natexlab{}.
+\newblock \showarticletitle{Sampling the GGX Distribution of Visible Normals}.
+\newblock \bibinfo{journal}{\emph{Journal of Computer Graphics Techniques (JCGT)}} \bibinfo{volume}{7}, \bibinfo{number}{4} (\bibinfo{date}{30 November} \bibinfo{year}{2018}), \bibinfo{pages}{1--13}.
+\newblock
+\showISSN{2331-7418}
+\urldef\tempurl%
+\url{http://jcgt.org/published/0007/04/01/}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Heitz and d'Eon(2014)]%
+        {heitz2014importance}
+\bibfield{author}{\bibinfo{person}{Eric Heitz} {and} \bibinfo{person}{Eugene d'Eon}.} \bibinfo{year}{2014}\natexlab{}.
+\newblock \showarticletitle{Importance Sampling Microfacet-Based BSDFs using the Distribution of Visible Normals}.
+\newblock \bibinfo{journal}{\emph{Computer Graphics Forum}} \bibinfo{volume}{33}, \bibinfo{number}{4} (\bibinfo{year}{2014}), \bibinfo{pages}{103--112}.
+\newblock
+\href{https://doi.org/10.1111/cgf.12417}{doi:\nolinkurl{10.1111/cgf.12417}}
+
+
+\bibitem[Heitz et~al\mbox{.}(2016)]%
+        {heitz2016}
+\bibfield{author}{\bibinfo{person}{Eric Heitz}, \bibinfo{person}{Johannes Hanika}, \bibinfo{person}{Eugene d'Eon}, {and} \bibinfo{person}{Carsten Dachsbacher}.} \bibinfo{year}{2016}\natexlab{}.
+\newblock \showarticletitle{Multiple-scattering microfacet BSDFs with the Smith model}.
+\newblock \bibinfo{journal}{\emph{ACM Trans. Graph.}} \bibinfo{volume}{35}, \bibinfo{number}{4}, Article \bibinfo{articleno}{58} (\bibinfo{date}{July} \bibinfo{year}{2016}), \bibinfo{numpages}{14}~pages.
+\newblock
+\showISSN{0730-0301}
+\href{https://doi.org/10.1145/2897824.2925943}{doi:\nolinkurl{10.1145/2897824.2925943}}
+
+
+\bibitem[Hill et~al\mbox{.}(2017)]%
+        {contyetal}
+\bibfield{author}{\bibinfo{person}{Stephen Hill}, \bibinfo{person}{Stephen McAuley}, \bibinfo{person}{Alejandro Conty}, \bibinfo{person}{Michał Drobot}, \bibinfo{person}{Eric Heitz}, \bibinfo{person}{Christophe Hery}, \bibinfo{person}{Christopher Kulla}, \bibinfo{person}{Jon Lanz}, \bibinfo{person}{Junyi Ling}, \bibinfo{person}{Nathan Walster}, \bibinfo{person}{Feng Xie}, \bibinfo{person}{Adam Micciulla}, {and} \bibinfo{person}{Ryusuke Villemin}.} \bibinfo{year}{2017}\natexlab{}.
+\newblock \showarticletitle{Physically based shading in theory and practice}. In \bibinfo{booktitle}{\emph{ACM SIGGRAPH 2017 Courses}} (Los Angeles, California) \emph{(\bibinfo{series}{SIGGRAPH '17})}. \bibinfo{publisher}{Association for Computing Machinery}, \bibinfo{address}{New York, NY, USA}, Article \bibinfo{articleno}{7}, \bibinfo{numpages}{8}~pages.
+\newblock
+\showISBNx{9781450350143}
+\href{https://doi.org/10.1145/3084873.3084893}{doi:\nolinkurl{10.1145/3084873.3084893}}
+
+
+\bibitem[Kurt et~al\mbox{.}(2010)]%
+        {kurt2010}
+\bibfield{author}{\bibinfo{person}{Murat Kurt}, \bibinfo{person}{L\'{a}szl\'{o} Szirmay-Kalos}, {and} \bibinfo{person}{Jaroslav K\v{r}iv\'{a}nek}.} \bibinfo{year}{2010}\natexlab{}.
+\newblock \showarticletitle{An anisotropic BRDF model for fitting and Monte Carlo rendering}.
+\newblock \bibinfo{journal}{\emph{SIGGRAPH Comput. Graph.}} \bibinfo{volume}{44}, \bibinfo{number}{1}, Article \bibinfo{articleno}{3} (\bibinfo{date}{Feb.} \bibinfo{year}{2010}), \bibinfo{numpages}{15}~pages.
+\newblock
+\showISSN{0097-8930}
+\href{https://doi.org/10.1145/1722991.1722996}{doi:\nolinkurl{10.1145/1722991.1722996}}
+
+
+\bibitem[Lee et~al\mbox{.}(2018)]%
+        {lee2018vscatter}
+\bibfield{author}{\bibinfo{person}{Joo~Ho Lee}, \bibinfo{person}{Adrian Jarabo}, \bibinfo{person}{Daniel~S. Jeon}, \bibinfo{person}{Diego Gutierrez}, {and} \bibinfo{person}{Min~H. Kim}.} \bibinfo{year}{2018}\natexlab{}.
+\newblock \showarticletitle{Practical multiple scattering for rough surfaces}.
+\newblock \bibinfo{journal}{\emph{ACM Trans. Graph.}} \bibinfo{volume}{37}, \bibinfo{number}{6}, Article \bibinfo{articleno}{275} (\bibinfo{date}{Dec.} \bibinfo{year}{2018}), \bibinfo{numpages}{12}~pages.
+\newblock
+\showISSN{0730-0301}
+\href{https://doi.org/10.1145/3272127.3275016}{doi:\nolinkurl{10.1145/3272127.3275016}}
+
+
+\bibitem[Lucas et~al\mbox{.}(2023)]%
+        {lucasetal}
+\bibfield{author}{\bibinfo{person}{Simon Lucas}, \bibinfo{person}{Micka{\"e}l Ribardi{\`e}re}, \bibinfo{person}{Romain Pacanowski}, {and} \bibinfo{person}{Pascal Barla}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{{A Micrograin BSDF Model for the Rendering of Porous Layers}}. In \bibinfo{booktitle}{\emph{{Siggraph Asia 2023 - The 16th ACM SIGGRAPH Conference and Exhibition on Computer Graphics and Interactive Techniques in Asia}}}. \bibinfo{address}{Sydney, Australia}.
+\newblock
+\href{https://doi.org/10.1145/3610548.3618241}{doi:\nolinkurl{10.1145/3610548.3618241}}
+
+
+\bibitem[Oren and Nayar(1994)]%
+        {orennayar}
+\bibfield{author}{\bibinfo{person}{Michael Oren} {and} \bibinfo{person}{Shree~K. Nayar}.} \bibinfo{year}{1994}\natexlab{}.
+\newblock \showarticletitle{Generalization of Lambert's reflectance model}. In \bibinfo{booktitle}{\emph{Proceedings of the 21st Annual Conference on Computer Graphics and Interactive Techniques}} \emph{(\bibinfo{series}{SIGGRAPH '94})}. \bibinfo{publisher}{Association for Computing Machinery}, \bibinfo{address}{New York, NY, USA}, \bibinfo{pages}{239–246}.
+\newblock
+\showISBNx{0897916670}
+\href{https://doi.org/10.1145/192161.192213}{doi:\nolinkurl{10.1145/192161.192213}}
+
+
+\bibitem[Ribardi\`{e}re et~al\mbox{.}(2019)]%
+        {ribardiere2019virtualgonio}
+\bibfield{author}{\bibinfo{person}{Micka\"{e}l Ribardi\`{e}re}, \bibinfo{person}{Benjamin Bringier}, \bibinfo{person}{Lionel Simonot}, {and} \bibinfo{person}{Daniel Meneveaux}.} \bibinfo{year}{2019}\natexlab{}.
+\newblock \showarticletitle{Microfacet BSDFs Generated from NDFs and Explicit Microgeometry}.
+\newblock \bibinfo{journal}{\emph{ACM Trans. Graph.}} \bibinfo{volume}{38}, \bibinfo{number}{5}, Article \bibinfo{articleno}{143} (\bibinfo{date}{June} \bibinfo{year}{2019}), \bibinfo{numpages}{15}~pages.
+\newblock
+\showISSN{0730-0301}
+\href{https://doi.org/10.1145/3338697}{doi:\nolinkurl{10.1145/3338697}}
+
+
+\bibitem[Ross et~al\mbox{.}(2005)]%
+        {ross2005}
+\bibfield{author}{\bibinfo{person}{Vincent Ross}, \bibinfo{person}{Denis Dion}, {and} \bibinfo{person}{Guy Potvin}.} \bibinfo{year}{2005}\natexlab{}.
+\newblock \showarticletitle{Detailed analytical approach to the Gaussian surface bidirectional reflectance distribution function specular component applied to the sea surface}.
+\newblock \bibinfo{journal}{\emph{Journal of the Optical Society of America A}}  \bibinfo{volume}{22} (\bibinfo{date}{11} \bibinfo{year}{2005}), \bibinfo{pages}{2442--2453}.
+\newblock
+\href{https://doi.org/10.1364/JOSAA.22.002442}{doi:\nolinkurl{10.1364/JOSAA.22.002442}}
+
+
+\bibitem[Roth et~al\mbox{.}(2020)]%
+        {roth2020}
+\bibfield{author}{\bibinfo{person}{Benjamin~D. Roth}, \bibinfo{person}{Michael~Grady Saunders}, \bibinfo{person}{Charles~M. Bachmann}, {and} \bibinfo{person}{Jan~Andreas van Aardt}.} \bibinfo{year}{2020}\natexlab{}.
+\newblock \showarticletitle{On Leaf BRDF Estimates and Their Fit to Microfacet Models}.
+\newblock \bibinfo{journal}{\emph{IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing}}  \bibinfo{volume}{13} (\bibinfo{year}{2020}), \bibinfo{pages}{1761--1771}.
+\newblock
+\href{https://doi.org/10.1109/JSTARS.2020.2988428}{doi:\nolinkurl{10.1109/JSTARS.2020.2988428}}
+
+
+\bibitem[Smith(1967)]%
+        {smith1967}
+\bibfield{author}{\bibinfo{person}{Bruce Smith}.} \bibinfo{year}{1967}\natexlab{}.
+\newblock \showarticletitle{Geometrical shadowing of a random rough surface}.
+\newblock \bibinfo{journal}{\emph{IEEE Transactions on Antennas and Propagation}} \bibinfo{volume}{15}, \bibinfo{number}{5} (\bibinfo{year}{1967}), \bibinfo{pages}{668--671}.
+\newblock
+\href{https://doi.org/10.1109/TAP.1967.1138991}{doi:\nolinkurl{10.1109/TAP.1967.1138991}}
+
+
+\bibitem[Stam(2001)]%
+        {stam2001}
+\bibfield{author}{\bibinfo{person}{Jos Stam}.} \bibinfo{year}{2001}\natexlab{}.
+\newblock \showarticletitle{An Illumination Model for a Skin Layer Bounded by Rough Surfaces}. In \bibinfo{booktitle}{\emph{Rendering Techniques 2001}}, \bibfield{editor}{\bibinfo{person}{Steven~J. Gortler} {and} \bibinfo{person}{Karol Myszkowski}} (Eds.). \bibinfo{publisher}{Springer Vienna}, \bibinfo{address}{Vienna}, \bibinfo{pages}{39--52}.
+\newblock
+\showISBNx{978-3-7091-6242-2}
+\href{https://doi.org/10.1007/978-3-7091-6242-2_4}{doi:\nolinkurl{10.1007/978-3-7091-6242-2_4}}
+
+
+\bibitem[Torrance and Sparrow(1967)]%
+        {torrancesparrow}
+\bibfield{author}{\bibinfo{person}{K. Torrance} {and} \bibinfo{person}{E. Sparrow}.} \bibinfo{year}{1967}\natexlab{}.
+\newblock \showarticletitle{Theory for Off-Specular Reflection From Roughened Surfaces}.
+\newblock \bibinfo{journal}{\emph{Journal of the Optical Society of America}}  \bibinfo{volume}{57} (\bibinfo{date}{09} \bibinfo{year}{1967}), \bibinfo{pages}{1105--1114}.
+\newblock
+\href{https://doi.org/10.1364/JOSA.57.001105}{doi:\nolinkurl{10.1364/JOSA.57.001105}}
+
+
+\bibitem[Trowbridge and Reitz(1975)]%
+        {trowbridge1975}
+\bibfield{author}{\bibinfo{person}{T.~S. Trowbridge} {and} \bibinfo{person}{K.~P. Reitz}.} \bibinfo{year}{1975}\natexlab{}.
+\newblock \showarticletitle{Average irregularity representation of a rough surface for ray reflection}.
+\newblock \bibinfo{journal}{\emph{J. Opt. Soc. Am.}} \bibinfo{volume}{65}, \bibinfo{number}{5} (\bibinfo{date}{May} \bibinfo{year}{1975}), \bibinfo{pages}{531--536}.
+\newblock
+\href{https://doi.org/10.1364/JOSA.65.000531}{doi:\nolinkurl{10.1364/JOSA.65.000531}}
+
+
+\bibitem[Turquin(2018)]%
+        {turquin2019}
+\bibfield{author}{\bibinfo{person}{Emmanuel Turquin}.} \bibinfo{year}{2018}\natexlab{}.
+\newblock \showarticletitle{Practical multiple scattering compensation for microfacet models}.
+\newblock
+\urldef\tempurl%
+\url{https://api.semanticscholar.org/CorpusID:221737278}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Walter et~al\mbox{.}(2007)]%
+        {walter2007}
+\bibfield{author}{\bibinfo{person}{Bruce Walter}, \bibinfo{person}{Stephen~R. Marschner}, \bibinfo{person}{Hongsong Li}, {and} \bibinfo{person}{Kenneth~E. Torrance}.} \bibinfo{year}{2007}\natexlab{}.
+\newblock \showarticletitle{Microfacet models for refraction through rough surfaces}. In \bibinfo{booktitle}{\emph{Proceedings of the 18th Eurographics Conference on Rendering Techniques}} (Grenoble, France) \emph{(\bibinfo{series}{EGSR'07})}. \bibinfo{publisher}{Eurographics Association}, \bibinfo{address}{Goslar, DEU}, \bibinfo{pages}{195–206}.
+\newblock
+\showISBNx{9783905673524}
+
+
+\bibitem[Wang et~al\mbox{.}(2022)]%
+        {wang2022}
+\bibfield{author}{\bibinfo{person}{Beibei Wang}, \bibinfo{person}{Wenhua Jin}, \bibinfo{person}{Jiahui Fan}, \bibinfo{person}{Jian Yang}, \bibinfo{person}{Nicolas Holzschuch}, {and} \bibinfo{person}{Ling-Qi Yan}.} \bibinfo{year}{2022}\natexlab{}.
+\newblock \showarticletitle{Position-free Multiple-bounce Computations for Smith Microfacet BSDFs}.
+\newblock \bibinfo{journal}{\emph{ACM Transactions on Graphics (Proceedings of SIGGRAPH 2022)}} \bibinfo{volume}{41}, \bibinfo{number}{4} (\bibinfo{year}{2022}), \bibinfo{pages}{134:1--134:14}.
+\newblock
+
+
+\bibitem[Westin et~al\mbox{.}(1992)]%
+        {westin1992}
+\bibfield{author}{\bibinfo{person}{Stephen~H. Westin}, \bibinfo{person}{James~R. Arvo}, {and} \bibinfo{person}{Kenneth~E. Torrance}.} \bibinfo{year}{1992}\natexlab{}.
+\newblock \showarticletitle{Predicting reflectance functions from complex surfaces}.
+\newblock \bibinfo{journal}{\emph{SIGGRAPH Comput. Graph.}} \bibinfo{volume}{26}, \bibinfo{number}{2} (\bibinfo{date}{July} \bibinfo{year}{1992}), \bibinfo{pages}{255–264}.
+\newblock
+\showISSN{0097-8930}
+\href{https://doi.org/10.1145/142920.134075}{doi:\nolinkurl{10.1145/142920.134075}}
+
+
+\bibitem[Wu et~al\mbox{.}(2011)]%
+        {wu2011bi}
+\bibfield{author}{\bibinfo{person}{Hongzhi Wu}, \bibinfo{person}{Julie Dorsey}, {and} \bibinfo{person}{Holly Rushmeier}.} \bibinfo{year}{2011}\natexlab{}.
+\newblock \showarticletitle{Physically-based interactive bi-scale material design}.
+\newblock \bibinfo{journal}{\emph{ACM Trans. Graph.}} \bibinfo{volume}{30}, \bibinfo{number}{6} (\bibinfo{date}{Dec.} \bibinfo{year}{2011}), \bibinfo{pages}{1–10}.
+\newblock
+\showISSN{0730-0301}
+\href{https://doi.org/10.1145/2070781.2024179}{doi:\nolinkurl{10.1145/2070781.2024179}}
+
+
+\bibitem[Xie and Hanrahan(2018)]%
+        {xie2018vgrooves}
+\bibfield{author}{\bibinfo{person}{Feng Xie} {and} \bibinfo{person}{Pat Hanrahan}.} \bibinfo{year}{2018}\natexlab{}.
+\newblock \showarticletitle{Multiple scattering from distributions of specular v-grooves}.
+\newblock \bibinfo{journal}{\emph{ACM Trans. Graph.}} \bibinfo{volume}{37}, \bibinfo{number}{6}, Article \bibinfo{articleno}{276} (\bibinfo{date}{Dec.} \bibinfo{year}{2018}), \bibinfo{numpages}{14}~pages.
+\newblock
+\showISSN{0730-0301}
+\href{https://doi.org/10.1145/3272127.3275078}{doi:\nolinkurl{10.1145/3272127.3275078}}
+
+
+\bibitem[Yan et~al\mbox{.}(2018)]%
+        {yanetal}
+\bibfield{author}{\bibinfo{person}{Ling-Qi Yan}, \bibinfo{person}{Milo\v{s} Ha\v{s}an}, \bibinfo{person}{Bruce Walter}, \bibinfo{person}{Steve Marschner}, {and} \bibinfo{person}{Ravi Ramamoorthi}.} \bibinfo{year}{2018}\natexlab{}.
+\newblock \showarticletitle{Rendering specular microgeometry with wave optics}.
+\newblock \bibinfo{journal}{\emph{ACM Trans. Graph.}} \bibinfo{volume}{37}, \bibinfo{number}{4}, Article \bibinfo{articleno}{75} (\bibinfo{date}{July} \bibinfo{year}{2018}), \bibinfo{numpages}{10}~pages.
+\newblock
+\showISSN{0730-0301}
+\href{https://doi.org/10.1145/3197517.3201351}{doi:\nolinkurl{10.1145/3197517.3201351}}
+
+
+\bibitem[Zeltner* et~al\mbox{.}(2024)]%
+        {zeltneretal}
+\bibfield{author}{\bibinfo{person}{Tizian Zeltner*}, \bibinfo{person}{Fabrice Rousselle*}, \bibinfo{person}{Andrea Weidlich*}, \bibinfo{person}{Petrik Clarberg*}, \bibinfo{person}{Jan Nov\'{a}k*}, \bibinfo{person}{Benedikt Bitterli*}, \bibinfo{person}{Alex Evans}, \bibinfo{person}{Tom\'{a}\v{s} Davidovi\v{c}}, \bibinfo{person}{Simon Kallweit}, {and} \bibinfo{person}{Aaron Lefohn}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Real-time Neural Appearance Models}.
+\newblock \bibinfo{journal}{\emph{ACM Trans. Graph.}} \bibinfo{volume}{43}, \bibinfo{number}{3}, Article \bibinfo{articleno}{33} (\bibinfo{date}{June} \bibinfo{year}{2024}), \bibinfo{numpages}{17}~pages.
+\newblock
+\showISSN{0730-0301}
+\href{https://doi.org/10.1145/3659577}{doi:\nolinkurl{10.1145/3659577}}
+
+
+\bibitem[Zeng et~al\mbox{.}(2025)]%
+        {zeng2025}
+\bibfield{author}{\bibinfo{person}{Yixin Zeng}, \bibinfo{person}{Kiseok Choi}, \bibinfo{person}{Hadi Amata}, \bibinfo{person}{Kaizhang Kang}, \bibinfo{person}{Wolfgang Heidrich}, \bibinfo{person}{Hongzhi Wu}, {and} \bibinfo{person}{Min~H. Kim}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Designing and Fabricating Color BRDFs with Differentiable Wave Optics}.
+\newblock \bibinfo{journal}{\emph{ACM Trans. Graph.}} \bibinfo{volume}{44}, \bibinfo{number}{6}, Article \bibinfo{articleno}{241} (\bibinfo{date}{Dec.} \bibinfo{year}{2025}), \bibinfo{numpages}{17}~pages.
+\newblock
+\showISSN{0730-0301}
+\href{https://doi.org/10.1145/3763275}{doi:\nolinkurl{10.1145/3763275}}
+
+
+\bibitem[Zhou et~al\mbox{.}(2025)]%
+        {zhou}
+\bibfield{author}{\bibinfo{person}{Fangfang Zhou}, \bibinfo{person}{Haiyu Shen}, \bibinfo{person}{Mingzhen Li}, \bibinfo{person}{Ying Zhao}, {and} \bibinfo{person}{Chongke Bi}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Position-free multiple-scattering computations for micrograin BSDF model}.
+\newblock \bibinfo{journal}{\emph{Graphical Models}}  \bibinfo{volume}{141} (\bibinfo{year}{2025}), \bibinfo{pages}{101288}.
+\newblock
+\showISSN{1524-0703}
+\href{https://doi.org/10.1016/j.gmod.2025.101288}{doi:\nolinkurl{10.1016/j.gmod.2025.101288}}
+
+
+\bibitem[Zirr and Kaplanyan(2016)]%
+        {zirrkaplanyan}
+\bibfield{author}{\bibinfo{person}{Tobias Zirr} {and} \bibinfo{person}{Anton~S. Kaplanyan}.} \bibinfo{year}{2016}\natexlab{}.
+\newblock \showarticletitle{Real-time rendering of procedural multiscale materials}. In \bibinfo{booktitle}{\emph{Proceedings of the 20th ACM SIGGRAPH Symposium on Interactive 3D Graphics and Games}} (Redmond, Washington) \emph{(\bibinfo{series}{I3D '16})}. \bibinfo{publisher}{Association for Computing Machinery}, \bibinfo{address}{New York, NY, USA}, \bibinfo{pages}{139–148}.
+\newblock
+\showISBNx{9781450340434}
+\href{https://doi.org/10.1145/2856400.2856409}{doi:\nolinkurl{10.1145/2856400.2856409}}
+
+
+\end{thebibliography}

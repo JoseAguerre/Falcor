@@ -54,19 +54,23 @@ screenMatID = sceneBuilder.addMaterial(screenMat)
 
 sceneBuilder.addMeshInstance(screenNode, sceneBuilder.addTriangleMesh(TriangleMesh.createQuad(float2(screenWidth, screenHeight)), screenMat))
 
-# Content: a static Poly Haven HDRI (CC0 - no attribution required) rather than a video
-# clip - see images/ and its LICENSE.txt. the_sky_is_on_fire is a dramatic, saturated
-# sunset - the kind of epic wide shot a movie screen would actually be showing, and a
-# useful stress test for the QuadLight samplers (a small, very bright sun disc against a
-# much dimmer sky is exactly the high-dynamic-range, non-uniform case importance
-# sampling is for). Swap SCREEN_TEXTURE for a .hdrplaylist once a real movie clip is
-# wanted - QuadLight.createFromFile auto-detects either from the extension.
-SCREEN_TEXTURE = '../../quadlight/scientist/frame_00050.hdr'
+# Content: quadlight/hdr/frame_00232.hdr - a sunset landscape with a small, very bright sun
+# disc against a much dimmer sky/hillside - exactly the high-dynamic-range, non-uniform case
+# importance sampling is for, and picked for that reason: it widens the Cdf2D-vs-leaf-alias
+# RMSE gap from the previous scientist/frame_00050 texture's 11.25% to ~19-24% depending on
+# intensity (see results/figure_cinema_hdr232_int_0p01875.png and the sibling sweep figures).
+# intensity=3.75 (0.01875x the original 200.0 starting point) was picked over the raw
+# frame_00232 default (200.0, badly overexposed - the whole screen and room blow out to
+# white) as the best-looking balance found by hand across a 0.3x/0.15x/.../0.009375x sweep -
+# even at this level the sun disc itself never meaningfully dims (it's so much brighter than
+# the rest of the frame that it saturates regardless), so intensity is not a lever that can
+# fully fix its exposure; this level was chosen for how the ROOM looks, not the screen.
+SCREEN_TEXTURE = '../../quadlight/hdr/frame_00232.hdr'
 screenLight = QuadLight.createFromFile(SCREEN_TEXTURE)
 screenLight.materialID = screenMatID
 screenLight.transform = screenTransform.matrix
 screenLight.size = float2(screenWidth, screenHeight)
-screenLight.intensity = 200.0  # starting point - adjust live via the UI's Intensity slider
+screenLight.intensity = 3.75  # 0.01875x the original 200.0 - see comment above
 sceneBuilder.quadLight = screenLight
 
 # ---------------------------------------------------------------------------
