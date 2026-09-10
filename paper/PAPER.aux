@@ -24,20 +24,32 @@
 \newlabel{fig:quadtree}{{2}{2}{An example of a variance-driven quadtree built by the VP9 video codec. High variance zones are refined into a dense mesh of small cells}{figure.caption.6}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces 2D power spectrum of samples from 2D CDF inversion, plain per-pixel alias, and our LeafAlias, from the same Halton input. Per-pixel alias shows a sharp, isolated off-axis peak (flatness 0.270, peak/median 16{,}113) -- a periodic banding artifact from its flat array index resonating with the input sequence's base-2 digit structure. Both CDF inversion and ours stay close to the input's own clean spectrum.}}{2}{figure.caption.7}\protected@file@percent }
 \newlabel{fig:spectrum}{{3}{2}{2D power spectrum of samples from 2D CDF inversion, plain per-pixel alias, and our LeafAlias, from the same Halton input. Per-pixel alias shows a sharp, isolated off-axis peak (flatness 0.270, peak/median 16{,}113) -- a periodic banding artifact from its flat array index resonating with the input sequence's base-2 digit structure. Both CDF inversion and ours stay close to the input's own clean spectrum}{figure.caption.7}{}}
+\citation{ergun2012realtime}
+\citation{lambers2022parameterization}
+\citation{rodriguez2023nenv}
+\citation{wu2025efficient}
 \citation{havran2005interactive}
 \citation{iorns2015realtime}
 \citation{lu2013realtime}
 \citation{kronander2014real}
 \citation{morrical2021inverse}
 \citation{lehmann2021weighted}
-\citation{ergun2012realtime}
-\citation{lambers2022parameterization}
-\citation{rodriguez2023nenv}
-\citation{wu2025efficient}
 \citation{falcorsoftware}
 \citation{nimierdavid2019mitsuba2}
 \citation{pharr2023pbrt}
 \citation{cyclessoftware}
+\citation{vose1991linear}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Method}{3}{section.3}\protected@file@percent }
+\newlabel{sec:method}{{3}{3}{Method}{section.3}{}}
+\newlabel{eq:weight}{{1}{3}{Method}{equation.1}{}}
+\newlabel{eq:pdf}{{2}{3}{Method}{equation.2}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Build the alias table over $N$ leaves}}{3}{algorithm.1}\protected@file@percent }
+\newlabel{alg:build}{{1}{3}{Build the alias table over $N$ leaves}{algorithm.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Sampling}{3}{subsection.3.1}\protected@file@percent }
+\newlabel{sec:sampling}{{3.1}{3}{Sampling}{subsection.3.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}MIS with BRDF Sampling}{3}{subsection.3.2}\protected@file@percent }
+\newlabel{sec:mis}{{3.2}{3}{MIS with BRDF Sampling}{subsection.3.2}{}}
+\citation{aguerre2026codec}
 \bibstyle{ACM-Reference-Format}
 \bibdata{sample-base}
 \newlabel{tocindent-1}{0pt}
@@ -47,13 +59,19 @@
 \newlabel{tocindent3}{0pt}
 \newlabel{tocindent4}{0pt}
 \newlabel{tocindent5}{0pt}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Method}{3}{section.3}\protected@file@percent }
-\newlabel{sec:method}{{3}{3}{Method}{section.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Codec-leaf-alias}{3}{subsection.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Budget-leaf-alias}{3}{subsection.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{3}{section.4}\protected@file@percent }
-\newlabel{sec:results}{{4}{3}{Results}{section.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusions and future work}{3}{section.5}\protected@file@percent }
-\newlabel{sec:conclusions}{{5}{3}{Conclusions and future work}{section.5}{}}
-\newlabel{TotPages}{{3}{3}{}{page.3}{}}
-\gdef \@abspage@last{3}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces Draw one light sample}}{4}{algorithm.2}\protected@file@percent }
+\newlabel{alg:sample}{{2}{4}{Draw one light sample}{algorithm.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}CodecLeafAlias}{4}{subsection.3.3}\protected@file@percent }
+\newlabel{sec:codec}{{3.3}{4}{CodecLeafAlias}{subsection.3.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}BudgetLeafAlias}{4}{subsection.3.4}\protected@file@percent }
+\newlabel{sec:budget}{{3.4}{4}{BudgetLeafAlias}{subsection.3.4}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {3}{\ignorespaces Build a budgeted quadtree of $\leq B$ leaves}}{4}{algorithm.3}\protected@file@percent }
+\newlabel{alg:budget}{{3}{4}{Build a budgeted quadtree of $\leq B$ leaves}{algorithm.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Implementation}{4}{subsection.3.5}\protected@file@percent }
+\newlabel{sec:impl}{{3.5}{4}{Implementation}{subsection.3.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{4}{section.4}\protected@file@percent }
+\newlabel{sec:results}{{4}{4}{Results}{section.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusions and future work}{4}{section.5}\protected@file@percent }
+\newlabel{sec:conclusions}{{5}{4}{Conclusions and future work}{section.5}{}}
+\newlabel{TotPages}{{4}{4}{}{page.4}{}}
+\gdef \@abspage@last{4}

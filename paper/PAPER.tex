@@ -49,6 +49,8 @@
 \usepackage{mathtools}
 \usepackage{xspace} 
 \usepackage{multirow}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
 \AtBeginDocument{%
@@ -273,8 +275,6 @@ Attempts to make the per-frame rebuild itself cheaper on a GPU point the same di
 inversion with ray-tracing hardware at high construction cost and non-trivial implementation
 complexity. Lehmann et al.~\cite{lehmann2021weighted} study GPU-specific weighted sampling and alias-table construction directly. 
 
-
-
 Current open-source renderers mostly rely on dense CDF or mipmapped samplers. {Falcor}~\cite{falcorsoftware} uses a hierarchical mip-pyramid importance map over the environment texture's luminance and, separately,
 the triangle-scale alias table for mesh lights. {Mitsuba 3}~\cite{nimierdavid2019mitsuba2} builds a {Hierarchical2D} warp over
 the environment map -- the same mip-pyramid family as Falcor's. {pbrt-v4}~\cite{pharr2023pbrt}
@@ -283,9 +283,156 @@ kind of dense marginal/conditional CDF over a downsampled background map. Every 
 texture is built once and reused.
 
 \section{Method}\label{sec:method}
-This is the method
-\subsection{Codec-leaf-alias}
-\subsection{Budget-leaf-alias}
+
+The LeafAlias technique applies to any light source described by a 2D radiance texture $L(u,v)$ over
+a parameter domain $(u,v)\in[0,1)^2$ -- an environment map, or the emission texture of an
+area light. As with any textured light, variance is minimized when the sampling density
+matches radiance, $p(y)\propto L(y)$. We approximate this with a piecewise-constant density
+over a partition of the domain into disjoint leaf rectangles $\{R_i\}_{i=1}^N$ -- for now
+assumed given; Sections \ref{sec:codec} and \ref{sec:budget} describe the two ways we
+actually construct it. Each leaf carries a single weight proportional to its flux: its area in the parameter domain
+times its average radiance:
+\begin{equation}
+w_i = A_i \bar{L}_i, \qquad \bar{L}_i = \frac{1}{A_i}\int_{R_i} L(u,v)\,dA. \label{eq:weight}
+\end{equation}
+Normalizing over all leaves gives a piecewise-constant density over the parameter domain
+and a per-leaf selection probability:
+\begin{equation}
+p(y) = \frac{\bar{L}_i}{W} \ \text{for } y \in R_i, \qquad
+p_i = \frac{w_i}{W}, \qquad W = \sum_{j=1}^N w_j. \label{eq:pdf}
+\end{equation}
+Converting $p(y)$ to whatever measure a particular light type actually samples with
+respect to (solid angle for a distant environment map or projected solid angle for a local
+area light) is a standard change-of-variables applied at evaluation time, and is
+independent of the sampling structure described below.
+
+Given the partition, we flatten it into an array of $N$ leaves, each storing its rectangle
+and weight $w_i$ from Equation~\ref{eq:weight}. We build a Walker/Vose alias
+table~\cite{vose1991linear} over this array once, in $O(N)$: leaves below the mean weight
+are paired with leaves above it, the excess of the latter absorbs the deficit of the
+former, and the process repeats until every leaf holds a threshold and, where needed, the
+index of the leaf it aliases to (Algorithm~\ref{alg:build}). Unlike a dense CDF, the
+resulting table needs no search at sample time -- selecting a leaf is an $O(1)$ array
+lookup.
+
+\begin{algorithm}[h]
+\caption{Build the alias table over $N$ leaves}
+\label{alg:build}
+\begin{algorithmic}[1]
+\STATE $W \leftarrow \text{mean}(w_1,\dots,w_N)$
+\STATE partition leaf indices into \textit{small} ($w_i < W$) and \textit{large} ($w_i \geq W$)
+\WHILE{\textit{small} and \textit{large} both non-empty}
+  \STATE $s \leftarrow$ pop(\textit{small}); \quad $l \leftarrow$ pop(\textit{large})
+  \STATE $\mathit{threshold}[s] \leftarrow w_s / W$; \quad $\mathit{alias}[s] \leftarrow l$
+  \STATE $w_l \leftarrow w_l - (W - w_s)$ \COMMENT{transfer $l$'s excess weight to $s$}
+  \STATE push $l$ back onto \textit{small} or \textit{large} by its updated $w_l$
+\ENDWHILE
+\FOR{remaining $i$ in \textit{small} $\cup$ \textit{large}}
+  \STATE $\mathit{threshold}[i] \leftarrow 1$
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Sampling}
+\label{sec:sampling}
+To draw a light sample we use three uniform numbers $\xi_1,\xi_2,\xi_3$
+(Algorithm~\ref{alg:sample}). $\xi_1$ selects a bucket in $O(1)$; comparing its leftover
+fractional part against the bucket's threshold decides whether we keep that leaf or its
+alias partner. $\xi_2,\xi_3$ place the sample uniformly
+inside the chosen leaf's rectangle. The sample's pdf is read directly from its
+leaf's stored average luminance via Equation~\ref{eq:pdf} -- not re-derived from the alias
+table. Radiance is read from the texture at the sampled $(u,v)$.
+
+\begin{algorithm}[h]
+\caption{Draw one light sample}
+\label{alg:sample}
+\begin{algorithmic}[1]
+\STATE $i \leftarrow \lfloor \xi_1 N \rfloor$; \quad $f \leftarrow \xi_1 N - i$
+\IF{$\xi_2 < \mathit{threshold}[i]$}
+  \STATE $\mathit{leaf} \leftarrow i$
+\ELSE
+  \STATE $\mathit{leaf} \leftarrow \mathit{alias}[i]$
+\ENDIF
+\STATE $(u,v) \leftarrow \text{lerp}(R_{\mathit{leaf}}.\mathit{min}, R_{\mathit{leaf}}.\mathit{max},\, (f,\xi_3))$
+\STATE \textbf{return} $(u,v)$, $\;p(y){=}\bar{L}_{\mathit{leaf}}/W$ (Eq.~\ref{eq:pdf}), $\;L(u,v)$
+\end{algorithmic}
+\end{algorithm}
+
+Combining light sampling with BRDF sampling via multiple importance sampling requires the
+reverse query: given a direction chosen by BRDF sampling that happens to hit the light at
+some $(u,v)$, the probability $p(y)$ is needed. Rather than searching the partition, we
+maintain a small auxiliary lookup matrix that maps a coarsened $(u,v)$ coordinate directly to
+its leaf index, at a fixed fraction of the texture's resolution matching the partition's
+smallest possible leaf (e.g.\ one entry per $8{\times}8$ block). 
+Every coordinate covered by a given leaf is written to the same entry at
+construction time, so the lookup is an $O(1)$ array read that reproduces the exact same
+$\bar{L}_i/W$ used at sampling time regardless of that leaf's actual size, keeping the
+resulting MIS weight unbiased. We also tried replacing this exact lookup with a single
+scene-wide average density: across our test scenes this produced no perceptible difference
+in the rendered images, but it does introduce bias, since the substituted value no longer
+matches the technique's actual density at that point. 
+
+\subsection{CodecLeafAlias}
+\label{sec:codec}
+Building the partition can be costly, especially for dynamic content that changes every few milliseconds. 
+CodecLeafAlias avoids it entirely when the texture 
+arrives as a compressed video frame. Modern codecs (HEVC, AV1, VP9) already split each frame
+into a coding-tree hierarchy driven by local signal variance -- structurally the same
+quadtree our leaves need, produced as a side effect of decoding rather than an extra pass.
+We take each coding-tree leaf's block directly as one of our leaf rectangles $R_i$, and
+estimate $\bar{L}_i$ from the block's own zero-frequency (DC) transform coefficient rather
+than summing pixels: the DCT/DST's DC term is, up to a fixed normalization constant, exactly
+the block's mean sample value, and is already computed and present in decoder metadata. 
+The resulting leaf array feeds directly into the alias-table construction. 
+
+In our experiments, we encode the dynamic emissive textures as HDR video using libvpx's VP9 Profile 2 and extract the superblock for each frame via decoder statistics. We configure the encoder to always use variance-based superblock partitioning. Encoder settings that instead search or reuse partitions (full rate-distortion search, predicted neural partitions, etc) could still supply a usable partition by combining each block's motion vector with its keyframe's already-computed superblocks. This strategy results in trees of varying number of leaves, ranging from 4000 to up to 20000 depending on the content. We call this method CodecLeafAlias. Since the sampling algorithms are memory-bound operations, we go further by defining a new partition mechanism that allows to chose a budgeted number of leaves to reduce memory needs and improve coherence. We call this other method BudgetLeafAlias.
+
+\subsection{BudgetLeafAlias}
+\label{sec:budget}
+BudgetLeafAlias constructs the quadtree directly from the texture under a hard
+leaf-count budget $B$ (in our implementation, matched to what fits alongside the alias
+table in a modern GPU's L1 data cache; Section~\ref{sec:impl}). Rather than recursing to a
+fixed depth or a fixed per-node threshold, we spend the budget greedily
+(Algorithm~\ref{alg:budget}): a priority queue always refines whichever pending block
+currently contributes the most summed-squared error to the piecewise-constant
+approximation, $\mathrm{Var}(R)\cdot A(R)$, until the budget is exhausted or no block has
+positive variance left to resolve. This is the standard greedy construction for a
+budget-constrained piecewise-constant approximation: unlike a fixed-depth or
+fixed-threshold rule, it spends every one of its $B$ leaves wherever the source image
+actually has the most error left to remove.
+
+\begin{algorithm}[h]
+\caption{Build a budgeted quadtree of $\leq B$ leaves}
+\label{alg:budget}
+\begin{algorithmic}[1]
+\STATE $\mathit{queue} \leftarrow \{\mathit{root}\}$; \quad $\mathit{leaves} \leftarrow \emptyset$
+\WHILE{$\mathit{queue} \neq \emptyset$ and $|\mathit{leaves}| + |\mathit{queue}| + 3 \leq B$}
+  \STATE $R \leftarrow$ pop block with max $\mathrm{Var}(R)\cdot A(R)$ from $\mathit{queue}$
+  \FOR{each of the 4 children $C$ of $R$}
+    \IF{$C$ is a single texel or $\mathrm{Var}(C) = 0$}
+      \STATE $\mathit{leaves} \leftarrow \mathit{leaves} \cup \{C\}$
+    \ELSE
+      \STATE $\mathit{queue} \leftarrow \mathit{queue} \cup \{C\}$
+    \ENDIF
+  \ENDFOR
+\ENDWHILE
+\STATE $\mathit{leaves} \leftarrow \mathit{leaves} \cup \mathit{queue}$ \COMMENT{whatever's left becomes leaves as-is}
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Implementation}
+\label{sec:impl}
+We implement both variants in Falcor. Each leaf is packed into a 16-byte record -- its
+rectangle as two packed 16-bit corner coordinates, the alias threshold and redirect index
+as a half-float and a 16-bit index, and $\bar{L}_i$ as a half-float -- and the tree topology
+into a flat array of 16-bit nodes, one bit of which flags a node as a leaf. For
+BudgetLeafAlias, we size $B$ so the combined leaf and node buffers fit within roughly half
+the GPU's per-core L1 data cache, keeping the whole sampling structure resident there during
+traversal instead of round-tripping to global memory on every sample. This compactness --
+not any change in per-sample statistical efficiency -- is where the technique's real-time
+advantage over a dense CDF or a full-resolution alias table comes from.
+
+1ms in cpu
 
 \section{Results} \label{sec:results}
 These are the results 
