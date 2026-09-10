@@ -254,127 +254,31 @@ the sample set's power spectrum. We show that our LeafAlias method overcomes tho
   \label{fig:spectrum}
 \end{figure}
 
-
-Despite being $O(1)$ to sample, the Alias method is heavy in memory consumption and in the construction of the tables via Vose's technique. Some solutions have been proposed to address the computational performance of those stages \cite{}.
-
-Real-time light sampling has effectively split into two problems: choosing \emph{which}
-light to sample among many, and choosing \emph{where} to sample within one light's own
-spatial extent. The first is now mature. Moreau et al.~\cite{moreau2019dynamic} maintain a
-light-sampling BVH incrementally across frames for thousands of moving lights in under 1ms.
+Despite being $O(1)$ to sample, the per-pixel Alias method is heavy in memory consumption and in the construction of the tables via Vose's technique. 
+Nevertheless, the Alias method is widely used in mesh lights sampling: geometry with thousands of emissive triangles. Moreau et al.~\cite{moreau2019dynamic} maintain a light-sampling BVH incrementally across frames for thousands of moving lights.
 Bitterli et al.'s ReSTIR~\cite{bitterli2020spatiotemporal} resamples across spatial and
 temporal neighbors to pick among many dynamic lights at a fraction of the cost of resampling
 from scratch. Conty Estevez and Kulla~\cite{contykulla2018adaptive} adaptively split a light
-tree per shading point rather than committing to one fixed cut. All three are real-time,
-tree- or reservoir-structured, and explicitly designed for scenes that change every frame.
+tree per shading point rather than committing to one fixed cut. At that scale of thousands of triangles, a plain alias table over per-triangle flux is common practice
+and cheap to rebuild every frame.
 
-Mesh lights -- geometry with thousands of emissive triangles -- sit inside this same
-WHICH-light problem: Moreau et al.\ and Conty Estevez and Kulla both admit individual
-triangles as leaf emitters in their trees, each carrying a single flux value. At that scale
-($10^3$--$10^5$ triangles), a plain alias table over per-triangle flux is common practice
-and cheap to rebuild every frame -- e.g.\ Falcor's own stock \texttt{EmissivePowerSampler}
-builds exactly this, one alias-table entry per emissive triangle, rebuilt whenever the light
-collection changes. This is the same alias method Cline et al.\ warn about, but at a scale
-where an $O(N)$ rebuild and $O(N)$ memory are both trivial and the stratification loss is
-comparatively harmless -- picking one of a few thousand triangles, then sampling uniformly
-inside it, has nowhere near as much structure to disrupt as picking one of millions of
-texels inside a single texture does. The gap this paper addresses only appears three to four
-orders of magnitude further out, once ``how many things could be picked'' stops being
-thousands and becomes the pixel count of a texture.
-
-The second problem -- sampling \emph{where} on a single emissive texture, in proportion to
-its own spatially-varying radiance -- has no equivalent real-time, dynamic-content solution.
-The standard approach, a 2D piecewise-constant CDF inverted by binary search, is exact but
-was designed for a texture built once and reused: Agarwal et
-al.~\cite{agarwal2003structured} and Clarberg et al.~\cite{clarberg2005wavelet} both improve
-on its cost or its ability to sample a \emph{product} of functions, but both still target an
-expensive, offline-amortized build (Agarwal's structured point sets are explicitly a
-preprocess; Clarberg's wavelet/mip warp is cheaper per-sample but the wavelet tree itself is
-still built once and reused). Conty Estevez and Lecocq~\cite{contyestevez2018fast} speed up
-product sampling for production path tracing under the same assumption. For indoor scenes
-where the environment map is only ever seen through a constrained opening, Bitterli et
-al.~\cite{bitterli2015portal} reparameterize the map so the portal's visible region becomes
-an axis-aligned rectangle, sampling the product of radiance and portal visibility directly
--- again a build meant to be amortized over many static frames, not rebuilt each one. Cline
-et
-al.~\cite{cline2009tabular} instead attack the cost of the lookup itself, comparing binary
-search against $O(1)$ alternatives including the alias method -- but flag a critical cost:
-``the alias method has a critical flaw that makes it unsuitable for many applications -- it
-tends to disrupt the stratification or disrepancy-reduction efforts that went into creating
-the input point set.'' Every one of these techniques, fast or slow, assumes the distribution
-does not change from frame to frame.
-
-That assumption is exactly what breaks for video-driven lighting. Havran et
-al.~\cite{havran2005interactive} and Iorns and Rhee~\cite{iorns2015realtime} both light
+Some previous works also address video-driven lighting. Havran et al.~\cite{havran2005interactive} and Iorns and Rhee~\cite{iorns2015realtime} both light
 scenes from captured video environment maps, but neither targets real-time per-frame
-resampling of the video itself as the importance distribution. Lu et
-al.~\cite{lu2013realtime} do: they rebuild a tabulated per-cube-face CDF every single frame
-for real-time sampling of a dynamic environment map, using MIS and a per-face sample-count
-heuristic to cut waste. It is the closest prior work to our own setting, and it is also
-exactly where the two halves of this section meet: real-time, yes, but by paying a full CDF
-rebuild every frame rather than a bounded, cache-fitting structure -- the WHICH-light
-literature's central idea has not yet reached the WHERE-on-this-light problem.
-Attempts to make the per-frame rebuild itself cheaper on a GPU point the same direction
-without closing the gap: Morrical and Zellmann~\cite{morrical2021inverse} accelerate 2D CDF
+resampling of the video itself as the importance distribution. Lu et al.~\cite{lu2013realtime} rebuild a tabulated per-cube-face CDF in real-time for sampling of a dynamic environment map, noting it as an expensive part of the process.  
+Attempts to make the per-frame rebuild itself cheaper on a GPU point the same direction: Morrical and Zellmann~\cite{morrical2021inverse} accelerate 2D CDF
 inversion with ray-tracing hardware at high construction cost and non-trivial implementation
 complexity, and Lehmann et al.~\cite{lehmann2021weighted} study GPU-specific weighted
 sampling and alias-table construction directly.
 
-Two proposals point at the structure we actually build. Ergun et
-al.~\cite{ergun2012realtime} importance-sample environment maps with a kd-tree instead of a
-dense CDF. Lambers~\cite{lambers2022parameterization} proposes a fixed-grid,
-parameterization-independent sampler and suggests, as future work, replacing the grid with
-``a quadtree hierarchy..., with a split criterion based on the variance of importance values
-inside a bin'' -- direct inspiration for the variance-driven quadtree at the core of our
-technique. Neither is built for real-time, GPU execution, or a texture that changes every
-frame; our contribution is to take that idea and the WHICH-light literature's
-budget-bounded, real-time mindset together, and apply both to a video-rate emissive texture.
+Regarding the use of tree structures for sampling, 
+Ergun et al.~\cite{ergun2012realtime} split an environment map into a kd-tree via the greedy partition strategy, to a predefined block count, then fit the sorted leaf probabilities with a closed-form curve for direct inversion. They report concrete gains in memory compression, higher speed and accuracy than CDF inversion at matched performance. Lambers~\cite{lambers2022parameterization} proposes a fixed-grid, parameterization-independent sampler but reports no comparable memory or speed numbers. 
 
-
-Building a tree raises the question Cline et al.\ posed for the alias method directly: does
-clustering samples into leaves reintroduce the same stratification loss? We measured this.
-At the resolutions and leaf budgets the technique targets, leaf-clustering is \emph{not}
-better stratified than plain per-pixel alias -- nearest-neighbor clumping is slightly higher
-for ours, consistently. What it does avoid is the specific defect Cline et al.\ warn about:
- Our technique's real advantage over both baselines is being far cheaper
-per sample -- an $O(1)$ lookup into a tiny, budget-bounded structure -- not better sample
-placement.
-
-\paragraph{Why CDF cost tracks content, not resolution.} GPU cost for tabular CDF inversion
--- the cost every dynamic-lighting technique above either pays every frame or works to
-avoid -- is driven by luminance \emph{spread}, not pixel count. The marginal CDF is tiny and
-stays cache-resident regardless of resolution. The conditional CDF is built at full native
-resolution, but when luminance is concentrated in a few bright regions, most threads' row
-lookups land on the same few rows and stay cache-coherent even though the table is large.
-When luminance is broadly and evenly spread -- a photographic backdrop with no dominant hot
-spot -- lookups scatter almost uniformly across a large buffer, thrashing cache regardless
-of resolution, and the problem worsens as resolution grows. A fixed-size, budget-bounded
-structure sidesteps this entirely by construction, independent of how the source content is
-distributed.
-
-\paragraph{Where today's renderers actually stand.} We checked the current open-source
-implementation of four widely-used renderers directly, rather than assuming from their
-papers. \textbf{Falcor}~\cite{falcorsoftware}, the framework this work builds on, ships an
-\texttt{EnvMapSampler} that builds a hierarchical mip-pyramid importance map over the
-environment texture's luminance -- the Clarberg-style family -- built once when the
-environment map is loaded, with no rebuild path for a texture that changes; and, separately,
-the triangle-scale alias table (\texttt{EmissivePowerSampler}) described above for mesh
-lights, which does rebuild whenever the light collection changes, but is sized for thousands
-of triangles, not millions of texels. Falcor is also portal-\emph{aware} without being
-portal-\emph{sampling}: its PBRT scene importer parses the \texttt{portal} parameter PBRT
-files use for Bitterli et al.'s~\cite{bitterli2015portal} technique, but explicitly logs it
-as an unsupported parameter and drops it rather than implementing the reparameterization --
-so despite recognizing the concept at the file-format level, Falcor does not actually
-perform portal-masked sampling. \textbf{Mitsuba 3}~\cite{nimierdavid2019mitsuba2} builds a \texttt{Hierarchical2D} warp over
-the environment map -- the same mip-pyramid family as Falcor's. \textbf{pbrt-v4}~\cite{pharr2023pbrt}
-uses a dense \texttt{PiecewiseConstant2D} distribution (the textbook marginal-plus-conditional
-CDF, inverted by binary search), optionally mean-subtracted (``compensated'') when combined
-with BSDF sampling via MIS. \textbf{Blender Cycles}~\cite{cyclessoftware} builds the same
-kind of dense marginal/conditional CDF over a downsampled background map
-(\texttt{background\_map\_sample()}). Every one of the four either assumes the environment
-texture is built once and reused, or pays the full cost of a dense CDF or mip pyramid --
-none targets a fixed memory/cache budget, and none is built with a texture that changes
-every frame in mind. This is exactly the gap the rest of this paper addresses.
-
+Current open-source renderers mostly rely on dense CDF or mipmapped samplers. {Falcor}~\cite{falcorsoftware} uses a hierarchical mip-pyramid importance map over the environment texture's luminance and, separately,
+the triangle-scale alias table for mesh lights. {Mitsuba 3}~\cite{nimierdavid2019mitsuba2} builds a {Hierarchical2D} warp over
+the environment map -- the same mip-pyramid family as Falcor's. {pbrt-v4}~\cite{pharr2023pbrt}
+uses a dense CDF distribution, inverted via binary search. {Blender Cycles}~\cite{cyclessoftware} builds the same
+kind of dense marginal/conditional CDF over a downsampled background map. Every one of the four either assumes the environment
+texture is built once and reused.
 
 \section{Method}\label{sec:method}
 This is the method
