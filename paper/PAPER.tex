@@ -240,7 +240,7 @@ of luminance and high-frequency content (see Fig. \ref{fig:quadtree}). We also p
 \end{figure}
 
 \section{Previous works}\label{sec:prev}
-Importance sampling of emissive textures is a well-studied problem in the graphics literature in the context of image-based lighting. Most of the works focus on pre-processing the images to allow for exact or near-exact sampling without introducing bias \cite{}. Several methods choose to simplify the textured light into a set of point or area lights ~\cite{agarwal2003structured}, allowing for real-time sampling and faster convergance but at the cost of more error in the solution.  Cline et al. \cite{cline2009tabular} compare several tabular inversion methods, noting the computational order of building each sampler structure and sampling each point. They analyze the 2D CDF inversion via binary search and the per-pixel Alias method, where they flag the disruption of the stratification of the input point set. Per-pixel  Alias's raster-flattened table produces a real, measurable periodic banding pattern (Figure~\ref{fig:spectrum}) that becomes clear in
+Importance sampling of emissive textures is a well-studied problem in the graphics literature in the context of image-based lighting. Most of the works focus on pre-processing the images to allow for exact or near-exact sampling without introducing bias \cite{lawrence2005adaptive}. Several methods choose to simplify the textured light into a set of point or area lights ~\cite{agarwal2003structured}, allowing for real-time sampling and faster convergance but at the cost of more error in the solution.  Cline et al. \cite{cline2009tabular} compare several tabular inversion methods, noting the computational order of building each sampler structure and sampling each point. They analyze the 2D CDF inversion via binary search and the per-pixel Alias method, where they flag the disruption of the stratification of the input point set. Per-pixel Alias's raster-flattened table produces a real, measurable periodic banding pattern (Figure~\ref{fig:spectrum}) that becomes clear in
 the sample set's power spectrum. We show that our LeafAlias method overcomes those issues because the partition structure helps with stratification. 
 
 \begin{figure}[htbp!]
@@ -262,16 +262,18 @@ from scratch. Conty Estevez and Kulla~\cite{contykulla2018adaptive} adaptively s
 tree per shading point rather than committing to one fixed cut. At that scale of thousands of triangles, a plain alias table over per-triangle flux is common practice
 and cheap to rebuild every frame.
 
-Some previous works also address video-driven lighting. Havran et al.~\cite{havran2005interactive} and Iorns and Rhee~\cite{iorns2015realtime} both light
-scenes from captured video environment maps, but neither targets real-time per-frame
-resampling of the video itself as the importance distribution. Lu et al.~\cite{lu2013realtime} rebuild a tabulated per-cube-face CDF in real-time for sampling of a dynamic environment map, noting it as an expensive part of the process.  
+Regarding the optimization of the sampling structures, 
+Ergun et al.~\cite{ergun2012realtime} split an environment map into a kd-tree via the greedy partition strategy, to a predefined block count, then fit the sorted leaf probabilities with a closed-form curve for direct inversion. They report gains in memory compression, higher speed and accuracy than CDF inversion at matched performance for static environment maps. One disadvantage of using kd-trees is that evaluating the pdf of the map direction when sampled from BRDF in MIS requires traversing the tree.  
+ Lambers~\cite{lambers2022parameterization} proposes a fixed-grid sampler and notes that replacing the grid with a variance-driven quadtree might improve their results. Rodrigues et al.~\cite{rodriguez2023nenv} train a neural normalizing flow that allows both sampling and evaluating the pdf, showing considerable performance gains at the cost of pre-training the structure for the static map. Wu~\cite{wu2025efficient} also preprocess the map by dividing the emissive and non-emissive parts into separate structures. 
+
+The previously described techniques focus mainly in preprocessing static images to improve sampling efficiency, but not dynamic maps. Some previous works address video-driven lighting: Havran et al.~\cite{havran2005interactive} and Iorns and Rhee~\cite{iorns2015realtime} both light scenes from captured video environment maps, but neither targets real-time per-frame
+resampling of the video itself as the importance distribution. Lu et al.~\cite{lu2013realtime} rebuild a tabulated per-cube-face CDF in real-time, noting it as an expensive part of the process.  Kronander et al~\cite{kronander2014real} rely on temporal sample reuse to improve convergance of video-based lighting. 
+
 Attempts to make the per-frame rebuild itself cheaper on a GPU point the same direction: Morrical and Zellmann~\cite{morrical2021inverse} accelerate 2D CDF
 inversion with ray-tracing hardware at high construction cost and non-trivial implementation
-complexity, and Lehmann et al.~\cite{lehmann2021weighted} study GPU-specific weighted
-sampling and alias-table construction directly.
+complexity. Lehmann et al.~\cite{lehmann2021weighted} study GPU-specific weighted sampling and alias-table construction directly. 
 
-Regarding the use of tree structures for sampling, 
-Ergun et al.~\cite{ergun2012realtime} split an environment map into a kd-tree via the greedy partition strategy, to a predefined block count, then fit the sorted leaf probabilities with a closed-form curve for direct inversion. They report concrete gains in memory compression, higher speed and accuracy than CDF inversion at matched performance. Lambers~\cite{lambers2022parameterization} proposes a fixed-grid, parameterization-independent sampler but reports no comparable memory or speed numbers. 
+
 
 Current open-source renderers mostly rely on dense CDF or mipmapped samplers. {Falcor}~\cite{falcorsoftware} uses a hierarchical mip-pyramid importance map over the environment texture's luminance and, separately,
 the triangle-scale alias table for mesh lights. {Mitsuba 3}~\cite{nimierdavid2019mitsuba2} builds a {Hierarchical2D} warp over

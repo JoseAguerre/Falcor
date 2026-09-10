@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.9.7)  9 SEP 2026 15:40
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.9.7)  10 SEP 2026 11:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1041,6 +1041,38 @@ Package pdftex.def Info: images/teaser.png  used on input line 220.
 (pdftex.def)             Requested size: 506.295pt x 174.7674pt.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
 (Font)              scaled to size 9.0pt on input line 220.
+LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
+(Font)              scaled to size 9.0pt on input line 220.
+LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
+(Font)              scaled to size 6.6pt on input line 220.
+LaTeX Font Info:    Font shape `OML/nxlmi/m/it' will be
+(Font)              scaled to size 9.0pt on input line 220.
+LaTeX Font Info:    Font shape `OML/nxlmi/m/it' will be
+(Font)              scaled to size 6.6pt on input line 220.
+LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
+(Font)              scaled to size 9.0pt on input line 220.
+LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
+(Font)              scaled to size 6.6pt on input line 220.
+LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
+(Font)              scaled to size 9.0pt on input line 220.
+LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
+(Font)              scaled to size 6.6pt on input line 220.
+LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
+(Font)              scaled to size 9.0pt on input line 220.
+LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
+(Font)              scaled to size 6.6pt on input line 220.
+LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
+(Font)              scaled to size 9.0pt on input line 220.
+LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
+(Font)              scaled to size 6.6pt on input line 220.
+LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
+(Font)              scaled to size 9.0pt on input line 220.
+LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
+(Font)              scaled to size 6.6pt on input line 220.
+LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
+(Font)              scaled to size 9.0pt on input line 220.
+LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
+(Font)              scaled to size 6.6pt on input line 220.
 
 
 Class acmart Warning: A possible image without description on input line 220.
@@ -1063,38 +1095,6 @@ LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
 (Font)              scaled to size 10.95pt on input line 220.
 LaTeX Font Info:    Font shape `TS1/LinuxLibertineT-TLF/m/n' will be
 (Font)              scaled to size 9.0pt on input line 220.
-LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 220.
-LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 6.6pt on input line 220.
-LaTeX Font Info:    Font shape `OML/nxlmi/m/it' will be
-(Font)              scaled to size 9.0pt on input line 220.
-LaTeX Font Info:    Font shape `OML/nxlmi/m/it' will be
-(Font)              scaled to size 6.6pt on input line 220.
-LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 9.0pt on input line 220.
-LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 6.6pt on input line 220.
-LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 9.0pt on input line 220.
-LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 6.6pt on input line 220.
-LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 9.0pt on input line 220.
-LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 6.6pt on input line 220.
-LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 9.0pt on input line 220.
-LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 6.6pt on input line 220.
-LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 9.0pt on input line 220.
-LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 6.6pt on input line 220.
-LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 9.0pt on input line 220.
-LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 6.6pt on input line 220.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
 (Font)              scaled to size 8.0pt on input line 220.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
@@ -1143,9 +1143,142 @@ tn_nh77jq.enc}
 oyc.enc}{C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/
 lbtn_7grukw.enc} <./images/teaser.png (PNG copy)>]
 
-LaTeX Warning: Reference `' on page 2 undefined on input line 232.
+Package natbib Warning: Citation `uhrina2024performance' on page 2 undefined on
+ input line 231.
+
+
+LaTeX Warning: Reference `fig:quadtree' on page 2 undefined on input line 232.
+
+
+Package natbib Warning: Citation `MINASNY2007383' on page 2 undefined on input 
+line 232.
+
+
+Package natbib Warning: Citation `Zhou2024' on page 2 undefined on input line 2
+32.
+
+<images/quadtree.png, id=59, 825.94286pt x 335.1091pt>
+File: images/quadtree.png Graphic file (type png)
+<use images/quadtree.png>
+Package pdftex.def Info: images/quadtree.png  used on input line 236.
+(pdftex.def)             Requested size: 241.14749pt x 97.83876pt.
+
+Class acmart Warning: A possible image without description on input line 240.
+
+
+Package natbib Warning: Citation `lawrence2005adaptive' on page 2 undefined on 
+input line 243.
+
+
+Package natbib Warning: Citation `agarwal2003structured' on page 2 undefined on
+ input line 243.
+
+
+Package natbib Warning: Citation `cline2009tabular' on page 2 undefined on inpu
+t line 243.
+
+
+LaTeX Warning: Reference `fig:spectrum' on page 2 undefined on input line 243.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+<images/fig_spectrum_paper_color.png, id=61, 514.431pt x 264.114pt>
+File: images/fig_spectrum_paper_color.png Graphic file (type png)
+<use images/fig_spectrum_paper_color.png>
+Package pdftex.def Info: images/fig_spectrum_paper_color.png  used on input lin
+e 248.
+(pdftex.def)             Requested size: 241.14749pt x 123.80716pt.
+
+
+Class acmart Warning: A possible image without description on input line 255.
+
+
+Package natbib Warning: Citation `moreau2019dynamic' on page 2 undefined on inp
+ut line 258.
+
+
+Package natbib Warning: Citation `bitterli2020spatiotemporal' on page 2 undefin
+ed on input line 259.
+
+
+Package natbib Warning: Citation `contykulla2018adaptive' on page 2 undefined o
+n input line 261.
+
+LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
+(Font)              scaled to size 9.0pt on input line 265.
+LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
+(Font)              scaled to size 7.0pt on input line 265.
+
+(C:\Users\Jose\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\se-pdfdoc.de
+f
+File: se-pdfdoc.def 2019/11/29 v1.12 stringenc: PDFDocEncoding
+)
+(C:\Users\Jose\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\se-utf8.def
+File: se-utf8.def 2019/11/29 v1.12 stringenc: UTF-8
+) [2.2{C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lb
+tn_oexx6f.enc} <./images/quadtree.png> <./images/fig_spectrum_paper_color.png>]
+
+
+Package natbib Warning: Citation `havran2005interactive' on page 3 undefined on
+ input line 265.
+
+
+Package natbib Warning: Citation `iorns2015realtime' on page 3 undefined on inp
+ut line 265.
+
+
+Package natbib Warning: Citation `lu2013realtime' on page 3 undefined on input 
+line 267.
+
+
+Package natbib Warning: Citation `kronander2014real' on page 3 undefined on inp
+ut line 267.
+
+
+Package natbib Warning: Citation `morrical2021inverse' on page 3 undefined on i
+nput line 270.
+
+
+Package natbib Warning: Citation `lehmann2021weighted' on page 3 undefined on i
+nput line 272.
+
+
+Package natbib Warning: Citation `ergun2012realtime' on page 3 undefined on inp
+ut line 276.
+
+
+Package natbib Warning: Citation `lambers2022parameterization' on page 3 undefi
+ned on input line 277.
+
+
+Package natbib Warning: Citation `rodriguez2023nenv' on page 3 undefined on inp
+ut line 277.
+
+
+Package natbib Warning: Citation `wu2025efficient' on page 3 undefined on input
+ line 277.
+
+
+Package natbib Warning: Citation `falcorsoftware' on page 3 undefined on input 
+line 279.
+
+
+Package natbib Warning: Citation `nimierdavid2019mitsuba2' on page 3 undefined 
+on input line 280.
+
+
+Package natbib Warning: Citation `pharr2023pbrt' on page 3 undefined on input l
+ine 281.
+
+
+Package natbib Warning: Citation `cyclessoftware' on page 3 undefined on input 
+line 282.
 
 No file PAPER.bbl.
+
+Package natbib Warning: There were undefined citations.
+
 
 Class acmart Warning: Some images may lack descriptions.
 (acmart)              ACM is committed to complying with the upcoming US ADA ht
@@ -1161,22 +1294,12 @@ portant to optimize color contrast for the visually impaired. Taking these impo
 rtant steps when creating your papers will ensure that the widest possible audi
 ence can ingest your work..
 
+[3.3]
 
-Overfull \vbox (1.374pt too high) has occurred while \output is active []
+LaTeX Warning: Hook 'shipout/lastpage' executed on wrong page (2 not 3).
+               Rerun to correct this.
 
-LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 252.
-LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 7.0pt on input line 252.
-
-(C:\Users\Jose\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\se-pdfdoc.de
-f
-File: se-pdfdoc.def 2019/11/29 v1.12 stringenc: PDFDocEncoding
-)
-(C:\Users\Jose\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\se-utf8.def
-File: se-utf8.def 2019/11/29 v1.12 stringenc: UTF-8
-) [2.2{C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lb
-tn_oexx6f.enc}] (PAPER.aux)
+(PAPER.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
@@ -1185,17 +1308,20 @@ L3 programming layer <2025-12-24>
 
 LaTeX Warning: There were undefined references.
 
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package rerunfilecheck Info: File `PAPER.out' has not changed.
 (rerunfilecheck)             Checksum: 8BDFA5709E0A4A001B3995F0BF768C30;1031.
  ) 
 Here is how much of TeX's memory you used:
- 21712 strings out of 467871
- 354717 string characters out of 5418861
- 841204 words of memory out of 5000000
- 49789 multiletter control sequences out of 15000+600000
- 757797 words of font info for 284 fonts, out of 8000000 for 9000
+ 21806 strings out of 467871
+ 357192 string characters out of 5418861
+ 841664 words of memory out of 5000000
+ 49808 multiletter control sequences out of 15000+600000
+ 764292 words of font info for 333 fonts, out of 8000000 for 9000
  1302 hyphenation exceptions out of 8191
- 90i,12n,131p,1004b,620s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,13n,131p,1034b,612s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/Liberti
 neMathMI.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/public/li
 bertine/LinBiolinumT.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/typ
@@ -1205,9 +1331,9 @@ TeX/fonts/type1/public/libertine/LinLibertineT.pfb><C:/Users/Jose/AppData/Local
 /AppData/Local/Programs/MiKTeX/fonts/type1/public/libertine/LinLibertineTI.pfb>
 <C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txsys.pfb
 >
-Output written on PAPER.pdf (2 pages, 6818893 bytes).
+Output written on PAPER.pdf (3 pages, 10386556 bytes).
 PDF statistics:
- 111 PDF objects out of 1000 (max. 8388607)
- 15 named destinations out of 1000 (max. 500000)
- 75862 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 122 PDF objects out of 1000 (max. 8388607)
+ 18 named destinations out of 1000 (max. 500000)
+ 75872 words of extra memory for PDF output out of 89155 (max. 10000000)
 

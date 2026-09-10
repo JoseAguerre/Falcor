@@ -2,15 +2,42 @@
 \providecommand\hyper@newdestlabel[2]{}
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
-\citation{}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Teaser caption.}}{1}{figure.caption.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Two scenes lit by a single dynamic, video-driven emissive texture, rendered with our leaf-alias importance sampler. (Left) The Rover scene — a virtual-production LED wall displaying a looping road/mountain video panorama that lights the vehicle directly, sampled here with BudgetLeafAlias. (Right) The Cinema scene — a theater lit only by the animated sunset footage playing on its own screen, sampled with CodecLeafAlias. Each panel compares, left to right: Random sampling, 2D CDF inversion, our technique, and a converged reference, all at their calibrated real-time budgets ($\approx $33 ms).}}{1}{figure.caption.1}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:teaser}{{1}{1}{Teaser caption}{figure.caption.1}{}}
+\newlabel{fig:teaser}{{1}{1}{Two scenes lit by a single dynamic, video-driven emissive texture, rendered with our leaf-alias importance sampler. (Left) The Rover scene — a virtual-production LED wall displaying a looping road/mountain video panorama that lights the vehicle directly, sampled here with BudgetLeafAlias. (Right) The Cinema scene — a theater lit only by the animated sunset footage playing on its own screen, sampled with CodecLeafAlias. Each panel compares, left to right: Random sampling, 2D CDF inversion, our technique, and a converged reference, all at their calibrated real-time budgets ($\approx $33 ms)}{figure.caption.1}{}}
 \@writefile{toc}{\contentsline {section}{Abstract}{1}{section*.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
 \citation{}
 \citation{}
 \citation{}
+\citation{uhrina2024performance}
+\citation{MINASNY2007383,Zhou2024}
+\citation{lawrence2005adaptive}
+\citation{agarwal2003structured}
+\citation{cline2009tabular}
+\citation{moreau2019dynamic}
+\citation{bitterli2020spatiotemporal}
+\citation{contykulla2018adaptive}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Previous works}{2}{section.2}\protected@file@percent }
+\newlabel{sec:prev}{{2}{2}{Previous works}{section.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces An example of a variance-driven quadtree built by the VP9 video codec. High variance zones are refined into a dense mesh of small cells.}}{2}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:quadtree}{{2}{2}{An example of a variance-driven quadtree built by the VP9 video codec. High variance zones are refined into a dense mesh of small cells}{figure.caption.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces 2D power spectrum of samples from 2D CDF inversion, plain per-pixel alias, and our LeafAlias, from the same Halton input. Per-pixel alias shows a sharp, isolated off-axis peak (flatness 0.270, peak/median 16{,}113) -- a periodic banding artifact from its flat array index resonating with the input sequence's base-2 digit structure. Both CDF inversion and ours stay close to the input's own clean spectrum.}}{2}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:spectrum}{{3}{2}{2D power spectrum of samples from 2D CDF inversion, plain per-pixel alias, and our LeafAlias, from the same Halton input. Per-pixel alias shows a sharp, isolated off-axis peak (flatness 0.270, peak/median 16{,}113) -- a periodic banding artifact from its flat array index resonating with the input sequence's base-2 digit structure. Both CDF inversion and ours stay close to the input's own clean spectrum}{figure.caption.7}{}}
+\citation{havran2005interactive}
+\citation{iorns2015realtime}
+\citation{lu2013realtime}
+\citation{kronander2014real}
+\citation{morrical2021inverse}
+\citation{lehmann2021weighted}
+\citation{ergun2012realtime}
+\citation{lambers2022parameterization}
+\citation{rodriguez2023nenv}
+\citation{wu2025efficient}
+\citation{falcorsoftware}
+\citation{nimierdavid2019mitsuba2}
+\citation{pharr2023pbrt}
+\citation{cyclessoftware}
 \bibstyle{ACM-Reference-Format}
 \bibdata{sample-base}
 \newlabel{tocindent-1}{0pt}
@@ -20,15 +47,13 @@
 \newlabel{tocindent3}{0pt}
 \newlabel{tocindent4}{0pt}
 \newlabel{tocindent5}{0pt}
-\@writefile{toc}{\contentsline {section}{\numberline {2}Previous works}{2}{section.2}\protected@file@percent }
-\newlabel{sec:prev}{{2}{2}{Previous works}{section.2}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Method}{2}{section.3}\protected@file@percent }
-\newlabel{sec:method}{{3}{2}{Method}{section.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Codec-leaf-alias}{2}{subsection.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Budget-leaf-alias}{2}{subsection.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{2}{section.4}\protected@file@percent }
-\newlabel{sec:results}{{4}{2}{Results}{section.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusions and future work}{2}{section.5}\protected@file@percent }
-\newlabel{sec:conclusions}{{5}{2}{Conclusions and future work}{section.5}{}}
-\newlabel{TotPages}{{2}{2}{}{page.2}{}}
-\gdef \@abspage@last{2}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Method}{3}{section.3}\protected@file@percent }
+\newlabel{sec:method}{{3}{3}{Method}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Codec-leaf-alias}{3}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Budget-leaf-alias}{3}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{3}{section.4}\protected@file@percent }
+\newlabel{sec:results}{{4}{3}{Results}{section.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusions and future work}{3}{section.5}\protected@file@percent }
+\newlabel{sec:conclusions}{{5}{3}{Conclusions and future work}{section.5}{}}
+\newlabel{TotPages}{{3}{3}{}{page.3}{}}
+\gdef \@abspage@last{3}
