@@ -1,0 +1,147 @@
+# Sphere-cross demo scene for experiment 12: a small illustrative scene in the style of
+# classic area-light-sampling-technique comparison figures (a cluster of diffuse spheres
+# on a plain ground, lit by one big soft-but-directional area light) - built specifically
+# to show sampler noise differences at a fixed, deliberately low sample count, not for
+# real-time budget calibration like the other paperscenes/ scenes.
+#
+# All-diffuse (matte, non-metal) spheres in a small "+" cross arranged around one center
+# sphere, decreasing in size with distance for a sense of depth - a simplified version of
+# the reference figure's larger sphere cluster (fewer spheres, same idea).
+#
+# Lit by a single QuadLight using the 'hdr' family's own emission texture, positioned
+# above and behind the camera - big relative to the spheres but still close enough to
+# stay clearly directional (soft shadows with a visible direction, not flat env-map-like
+# ambient lighting the way convergence.pyscene's very distant/huge panel is).
+#
+# LIGHT_TEXTURE picked empirically (results/experiment12/): the brief wanted
+# AliasPerPixel visibly noisier than Cdf2D, with BudgetLeafAlias close to Cdf2D, at the
+# SAME lightSamplesPerVertex for all three (not the same render-time-budget comparison
+# every other paperscenes/ scene uses). That inverts what this project's whole body of
+# results otherwise shows: BudgetLeafAlias/AliasCtu-family techniques win by being
+# CHEAPER per lspv (affording more lspv in the same time), not by being more accurate
+# per sample - at matched lspv, plain Cdf2D (and even AliasPerPixel's exact per-pixel
+# alias table) are consistently a bit more sample-efficient than BudgetLeafAlias's
+# leaf-clustering approximation, confirmed on rover's own experiment11 grid too. Tested
+# 6 quadlight families (fireplace/cave/colors/hdr/road/scientist) and 15+ frames within
+# them at lspv=4/8/16 with BENCH_LEAF_BUDGET=4000 (also confirmed raising the leaf
+# budget alone doesn't fix it - plateaus well short of Cdf2D regardless): 'hdr' family
+# frame_00180 at lspv=4 was the best found, where BudgetLeafAlias(4000)=0.01235 edges out
+# AliasPerPixel=0.01245 (Cdf2D=0.01081 best) - a real but thin (~0.8%) margin, kept as-is
+# per explicit direction rather than artificially widening it with a higher lspv for ours.
+
+def _sub(a, b):
+    return float3(a.x - b.x, a.y - b.y, a.z - b.z)
+
+
+def _normalize(a):
+    l = (a.x * a.x + a.y * a.y + a.z * a.z) ** 0.5
+    return float3(a.x / l, a.y / l, a.z / l)
+
+
+sphereMesh = TriangleMesh.createSphere(radius=1.0)  # unit sphere, scaled per-instance
+quadMesh = TriangleMesh.createQuad()
+
+# ---------------------------------------------------------------------------
+# QuadLight: registered FIRST (see convergence.pyscene's NOTE on materialID staleness in
+# SceneBuilder::removeDuplicateMaterials() - registering the light's placeholder material
+# before any other material guarantees materialID 0, immune to later dedup remapping).
+# ---------------------------------------------------------------------------
+
+LIGHT_TEXTURE = '../../quadlight/cave/frame_00221.hdr'  # same frame convergence.pyscene uses - a known-good starting point
+LIGHT_INTENSITY = 70.0  # convergence.pyscene's own calibrated value for this exact texture, re-checked empirically below
+LIGHT_SIZE = float2(35.0, 35.0)  # big + close = "tent"/env-map-like: subtends a wide solid angle from the objects, not a small directional source
+lightPos = float3(0.0, 8.0, 3.2)  # close, mostly overhead ("flying tent"), ~27deg off vertical - steep enough to avoid the light-pointing-straight-down degenerate case in the transform trick below
+sceneCenter = float3(0.0, 0.3, -0.8)
+lightNormal = _normalize(_sub(sceneCenter, lightPos))  # points down/forward into the scene
+
+# Same "swapped" Transform(position=, target=, up=) trick documented in convergence.pyscene
+# and fireplace_room.pyscene: target = position - worldUp (not position - normal) forces
+# the resulting local Y to equal 'up' exactly - which is handed the actual desired light
+# normal. local X = cross(normal, worldUp) pairs with size.x, local Z = worldUp pairs
+# with size.y.
+lightTransform = Transform(position=lightPos, target=_sub(lightPos, float3(0, 1, 0)), up=lightNormal)
+
+lightMat = StandardMaterial('LightPanel')  # non-emissive placeholder - QuadLight itself provides the radiance
+lightMat.baseColor = float4(0.0, 0.0, 0.0, 1.0)
+lightMat.roughness = 1.0
+lightMatID = sceneBuilder.addMaterial(lightMat)  # first addMaterial() call - guarantees materialID 0
+
+sceneBuilder.addMeshInstance(
+    sceneBuilder.addNode('LightPanel', lightTransform),
+    sceneBuilder.addTriangleMesh(TriangleMesh.createQuad(LIGHT_SIZE), lightMat)
+)
+
+quadLight = QuadLight.createFromFile(LIGHT_TEXTURE)
+quadLight.materialID = lightMatID
+quadLight.transform = lightTransform.matrix
+quadLight.size = LIGHT_SIZE
+quadLight.intensity = LIGHT_INTENSITY
+sceneBuilder.quadLight = quadLight
+
+# ---------------------------------------------------------------------------
+# Ground: a large flat diffuse quad (createQuad's default orientation already lies flat
+# in the XZ plane, normal along +Y - same convention convergence.pyscene's Floor uses,
+# no rotation needed).
+# ---------------------------------------------------------------------------
+
+groundMat = StandardMaterial('Ground')
+groundMat.baseColor = float4(0.5, 0.56, 0.53, 1.0)
+groundMat.roughness = 1.0
+
+sceneBuilder.addMeshInstance(
+    sceneBuilder.addNode('Ground', Transform(scaling=float3(30.0, 1.0, 30.0))),
+    sceneBuilder.addTriangleMesh(quadMesh, groundMat)
+)
+
+# ---------------------------------------------------------------------------
+# Object cluster v3: back to all-diffuse spheres (dropped the mirror/glossy GGX
+# materials from v2 - simpler, no bounce-dependent dark-sphere issue), but a NEW
+# symmetric pattern - a 6-fold ring of uniform spheres around one center accent sphere
+# (radial symmetry), not the original "+"-cross and not v2's irregular scatter. Reads
+# naturally as a flower/clock pattern from the overhead camera. Bunny + Lucy (the
+# dragon substitute - see the note further down) still present alongside it.
+# ---------------------------------------------------------------------------
+
+accentMat = StandardMaterial('AccentSphere')
+accentMat.baseColor = float4(0.85, 0.45, 0.4, 1.0)
+accentMat.roughness = 1.0
+
+ringMat = StandardMaterial('RingSphere')
+ringMat.baseColor = float4(0.55, 0.62, 0.78, 1.0)
+ringMat.roughness = 1.0
+
+RING_CENTER = float3(0.0, 0.0, -0.8)
+RING_RADIUS = 0.9
+RING_COUNT = 6
+RING_SPHERE_RADIUS = 0.45
+
+sceneBuilder.addMeshInstance(
+    sceneBuilder.addNode('AccentSphere', Transform(translation=float3(RING_CENTER.x, 0.6, RING_CENTER.z), scaling=float3(0.6, 0.6, 0.6))),
+    sceneBuilder.addTriangleMesh(sphereMesh, accentMat)
+)
+
+import math
+for i in range(RING_COUNT):
+    angle = 2.0 * math.pi * i / RING_COUNT
+    pos = float3(RING_CENTER.x + RING_RADIUS * math.cos(angle), RING_SPHERE_RADIUS, RING_CENTER.z + RING_RADIUS * math.sin(angle))
+    sceneBuilder.addMeshInstance(
+        sceneBuilder.addNode(f'RingSphere{i}', Transform(translation=pos, scaling=float3(RING_SPHERE_RADIUS, RING_SPHERE_RADIUS, RING_SPHERE_RADIUS))),
+        sceneBuilder.addTriangleMesh(sphereMesh, ringMat)
+    )
+
+# Bunny and Lucy (the dragon substitute) removed per explicit direction - spheres only.
+
+# ---------------------------------------------------------------------------
+# Camera: overhead/drone shot, pointing down at the ring. Pulled back a bit further
+# than the bunny/Lucy version (lower focal length) so the ring's outer spheres aren't
+# cropped at the frame edges now that there's nothing else to fill the sides with.
+# ---------------------------------------------------------------------------
+
+camera = Camera()
+camera.position = float3(0.0, 4.0, 0.6)
+camera.target = float3(0.0, 0.0, -0.8)
+camera.up = float3(0, 0, -1)
+camera.focalLength = 28.0
+sceneBuilder.addCamera(camera)
+
+sceneBuilder.renderSettings = SceneRenderSettings(useEnvLight=False, useAnalyticLights=False, useEmissiveLights=False, useQuadLight=True)

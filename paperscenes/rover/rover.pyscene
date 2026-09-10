@@ -229,7 +229,7 @@ ledQuadLight.materialID = ledMatID
 ledQuadLight.transform = ledRootTransform.matrix
 ledQuadLight.size = ledSize
 ledQuadLight.setFold(ledHingeX, ledFoldAngleDeg)
-ledQuadLight.intensity = 18.0
+ledQuadLight.intensity = 20.5
 sceneBuilder.quadLight = ledQuadLight
 
 
@@ -238,10 +238,15 @@ sceneBuilder.quadLight = ledQuadLight
 # ---------------------------------------------------------------------------
 
 camera = Camera()
-camera.position = float3(-56.24, 19.58, -3.550)
-camera.target = float3(-55.28, 19.312, -3.545)
-camera.up = float3(0.0, 1.0, 0.0)
-camera.focalLength = 68.055382  # fovY=20deg @ 24mm frame height, matching fov_axis="smaller" at 860x720
+# experiment17: replaces the original (-56.24,19.58,-3.550)/(-55.28,19.312,-3.545)/68.055382mm
+# camera - closer, more zoomed-in framing (focalLength 68->81.5mm) so the LED wall's left
+# panel fills most of the frame height, promoted to official after review of
+# results/experiment17/figure_rover_newcam_v5.png. Quadlight intensity bumped 18->20.5 to
+# match (see ledQuadLight.intensity above). See results/experiment17/SUMMARY.md.
+camera.position = float3(-52.6620216, 7.40289974, 5.35568619)
+camera.target = float3(-51.6755791, 7.36966372, 5.19498682)
+camera.up = float3(-0.00182660634, 0.999998271, 0.000297568622)
+camera.focalLength = 81.5
 sceneBuilder.addCamera(camera)
 
 # Default cameraSpeed (1.0 units/sec) is calibrated for unit-scale scenes; this one spans
