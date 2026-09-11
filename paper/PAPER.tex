@@ -265,7 +265,7 @@ tree per shading point rather than committing to one fixed cut. At that scale of
 and cheap to rebuild every frame.
 
 Regarding the optimization of the sampling structures, 
-Ergun et al.~\cite{ergun2012realtime} split an environment map into a kd-tree via the greedy partition strategy, to a predefined block count, then fit the sorted leaf probabilities with a closed-form curve for direct inversion. They report gains in memory compression, higher speed and accuracy than CDF inversion at matched performance for static environment maps. One disadvantage of using kd-trees is that evaluating the pdf of the map direction when sampled from BRDF in MIS requires traversing the tree.  
+Ergun et al.~\cite{ergun2012realtime} split an environment map into a kd-tree via the greedy partition strategy, to a predefined block count, then fit the sorted leaf probabilities with a closed-form curve for direct inversion. They report gains in memory compression, higher speed and accuracy than CDF inversion at matched performance for static environment maps. One disadvantage of using kd-trees is that evaluating the pdf of the map direction when sampled from BRDF in multiple importance sampling (MIS) requires traversing the tree.  
  Lambers~\cite{lambers2022parameterization} proposes a fixed-grid sampler and notes that replacing the grid with a variance-driven quadtree might improve their results. Rodrigues et al.~\cite{rodriguez2023nenv} train a neural normalizing flow that allows both sampling and evaluating the pdf, showing considerable performance gains at the cost of pre-training the structure for the static map. Wu~\cite{wu2025efficient} also preprocess the map by dividing the emissive and non-emissive parts into separate structures. 
 
 The previously described techniques focus mainly in preprocessing static images to improve sampling efficiency, but not dynamic maps. Some previous works address video-driven lighting: Havran et al.~\cite{havran2005interactive} and Iorns and Rhee~\cite{iorns2015realtime} both light scenes from captured video environment maps, but neither targets real-time per-frame
@@ -358,7 +358,7 @@ table. Radiance is read from the texture at the sampled $(u,v)$.
 \end{algorithmic}
 \end{algorithm}
 
-Combining light sampling with BRDF sampling via multiple importance sampling requires the
+Combining light sampling with BRDF sampling via MIS requires the
 reverse query: given a direction chosen by BRDF sampling that happens to hit the light at
 some $(u,v)$, the probability $p(y)$ is needed. Rather than searching the partition, we
 maintain a small auxiliary lookup matrix that maps a coarsened $(u,v)$ coordinate directly to
@@ -409,30 +409,26 @@ actually has the most error left to remove.
 \WHILE{$\mathit{queue} \neq \emptyset$ and $|\mathit{leaves}| + |\mathit{queue}| + 3 \leq B$}
   \STATE $R \leftarrow$ pop block with max $\mathrm{Var}(R)\cdot A(R)$ from $\mathit{queue}$
   \FOR{each of the 4 children $C$ of $R$}
-    \IF{$C$ is a single texel or $\mathrm{Var}(C) = 0$}
+    \IF{$C$ is $8{\times}8$ texels or smaller, or $\mathrm{Var}(C) = 0$}
       \STATE $\mathit{leaves} \leftarrow \mathit{leaves} \cup \{C\}$
     \ELSE
       \STATE $\mathit{queue} \leftarrow \mathit{queue} \cup \{C\}$
     \ENDIF
   \ENDFOR
 \ENDWHILE
-\STATE $\mathit{leaves} \leftarrow \mathit{leaves} \cup \mathit{queue}$ \COMMENT{whatever's left becomes leaves as-is}
+\STATE $\mathit{leaves} \leftarrow \mathit{leaves} \cup \mathit{queue}$
 \end{algorithmic}
 \end{algorithm}
 
 \subsection{Implementation}
 \label{sec:impl}
-We implement both variants in Falcor. Each leaf is packed into a 16-byte record -- its
-rectangle as two packed 16-bit corner coordinates, the alias threshold and redirect index
-as a half-float and a 16-bit index, and $\bar{L}_i$ as a half-float -- and the tree topology
-into a flat array of 16-bit nodes, one bit of which flags a node as a leaf. For
-BudgetLeafAlias, we size $B$ so the combined leaf and node buffers fit within roughly half
-the GPU's per-core L1 data cache, keeping the whole sampling structure resident there during
-traversal instead of round-tripping to global memory on every sample. This compactness --
-not any change in per-sample statistical efficiency -- is where the technique's real-time
-advantage over a dense CDF or a full-resolution alias table comes from.
-
-1ms in cpu
+We implement both variants in NVIDIA's Falcor rendering engine and test using a full path tracer with Quasi Monte Carlo sampling and MIS. 
+We construct the LeafAlias tables and partitions in CPU, and pass the results to GPU in each frame.
+All the precomputation is done in under 1 millisecond per frame. We then implement the sampling method in the Slang Shading Language.
+In order to reduce GPU memory usage and improve coherency, we spent some effort in making the sampling structures as small as possible.
+Each leaf is packed into a 16-byte record -- its rectangle as two packed 16-bit corner coordinates, the alias threshold and redirect index
+as a half-float and a 16-bit index, and $\bar{L}_i$ as a half-float. For BudgetLeafAlias, we size $B$ so the combined leaf and node buffers fit within roughly half of the GPU's per-core L1 cache, keeping the whole sampling structure resident there during
+traversal instead of round-tripping to global memory on every sample. This compactness helps improving performance when compared to other memory bound samplers like dense CDF or per-pixel alias table.
 
 \section{Results} \label{sec:results}
 These are the results 
