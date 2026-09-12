@@ -473,15 +473,13 @@ dense per-pixel CDF costs approximately $10$\,ms per full HD frame, while Alias 
 leaf-budgeted construction is consistently under $1$\,ms per frame across every scene tested. The sampling parameters for each technique (samples per pixel and light samples per vertex) are tuned per scene to a real-time budget of $33$\,ms (30\,fps) using the same
 calibration procedure.
 
-Each scene is lit by a different pre-recorded HDR video played back as the
+Each scene is lit by a different HDR video played back as the
 scene's only light source: Rover uses a full HD road/mountain driving sequence
 (600 frames) displayed on a virtual-production LED wall; Cinema uses a full HD 
 sunset-landscape sequence (250 frames) with a small, very bright sun; Fireplace Room uses a 4K real fire video (800 frames); Phone uses
 a full HD abstract color sequence (1200 frames) ; and
 Convergence uses a 4K dark cave with multiple bright lights video (800 frames) as a single environment-map. Altogether, across these five sequences, our techniques are evaluated against thousands of distinct HDR emissive
 textures, not just the one representative frame shown in each figure. The resulting videos are found in the supplementary material.
-
-
 
 Table~\ref{tab:main} reports RMSE, PSNR, and \FLIP\ for all seven techniques on all five
 scenes at these calibrated configurations. On every single scene, at least one of our two techniques is the best on RMSE,
@@ -491,11 +489,6 @@ detail a little more closely on scenes with more spatial complexity, at the cost
 more alias-table fetches to the higher cache levels per pixel; BudgetLeafAlias's curated
 budget already matches Rover's structure closely enough that the extra leaves bring no
 further benefit. 
-
-Table~\ref{tab:main} reports one point on each technique's own time-quality curve. To see the
-full curve, we fit a power law $\text{RMSE}(t) = a\,t^{\,b}$ to a $2048$-point
-samples-per-pixel $\times$ light-samples-per-vertex grid per technique per scene, against
-that scene's own converged reference. 
 
 In order to analyze the real-time performance of each technique, Figure~\ref{fig:realtime} plots the fitted curves of quality as a function of frame processing time. BudgetLeafAlias's curve stays below both structured baselines, 2D CDF and Mipmap for every scene. Its
 curve is also consistently the steepest of the three, so the advantage widens as more time
@@ -535,6 +528,25 @@ Convergence     & 16.90 & 49.3 & 0.1428 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{table}[t]
+\centering
+\small
+\caption{Video-level quality of our real-time technique vs.\ a converged reference. PSNR and RMSE are mean $\pm$ std.\ dev.\ across the video frames; VMAF is the pooled mean with its [min--max] range over the same frames.}
+\label{tab:video}
+\begin{tabular}{l c c c}
+\toprule
+Scene & PSNR (dB) & VMAF & RMSE \\
+\midrule
+Rover & 27.85 $\pm$ 0.038 & 83.3 [81.0--84.1] & 0.0405 $\pm$ 0.00018 \\
+Cinema & 23.87 $\pm$ 0.031 & 75.1 [74.3--75.6] & 0.0641 $\pm$ 0.00023 \\
+Fireplace Room & 23.16 $\pm$ 0.214 & 61.5 [58.9--65.4] & 0.0695 $\pm$ 0.00172 \\
+Phone & 38.32 $\pm$ 0.055 & 93.1 [92.8--93.6] & 0.0121 $\pm$ 0.00008 \\
+Convergence & 16.90 $\pm$ 0.077 & 49.3 [47.9--50.2] & 0.1428 $\pm$ 0.00127 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 
 Video quality tracks the single-frame results closely: Phone, the scene with the highest
 single-frame PSNR in Table~\ref{tab:main}, also has by far the highest video PSNR (38.3\,dB)
