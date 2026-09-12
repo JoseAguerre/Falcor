@@ -119,7 +119,7 @@
 %%
 %% The "title" command has an optional parameter,
 %% allowing the author to define a "short title" to be used in page headers.
-\title{Leaf-alias: real-time importance sampling of dynamic emissive textures}
+\title{LeafAlias: real-time importance sampling of dynamic emissive textures for video-based lighting}
 
 %%
 %% The "author" command and its associated commands are used to define
@@ -149,10 +149,10 @@
 %% article.
 \begin{abstract}
 We present a method for fast importance sampling HDR textured lights that allows real-time video-driven lighting. 
-Our method partitions a light’s texture into a budgeted, variance driven quadtree and builds an alias table over the resulting leaves, avoiding the cost of a dense per-frame CDF while still capturing
-the texture’s overall energy distribution. We present two variants: one that reuses the hierarchical structures already present in the metadata of modern codec video streams, and another that builds a budgeted GPU-friendly quadtree to fit the entire sampling structure in L1 cache.
+Our method partitions a light's texture into a budgeted, variance driven quadtree and builds an alias table over the resulting leaves, avoiding the cost of a dense per-frame CDF while still capturing
+the texture's overall energy distribution. We present two variants: one that reuses the per-frame hierarchical partitions already present in the metadata of modern video codecs, and another that builds a budgeted quadtree to fit the entire sampling structure in the L1 cache of the GPU.
 Compared to the dense 2D CDF-inversion baseline, at a matched real-time frame-time budget our implemented technique reduces
-RMSE by 9–53\% depending on scene, letting the saved sampling cost be reinvested in additional light samples.
+RMSE by 9–53\% depending on scene, by letting the saved sampling cost be reinvested in additional light samples.
 It also reduces memory consumption and transfers by several orders of magnitude when compared to state of the art samplers.
 
 \end{abstract}
@@ -163,20 +163,32 @@ It also reduces memory consumption and transfers by several orders of magnitude 
 %%
 \begin{CCSXML}
 <ccs2012>
-   <concept>
-       <concept_id>10010147.10010371.10010372.10010376</concept_id>
-       <concept_desc>Computing methodologies~Reflectance modeling</concept_desc>
-       <concept_significance>500</concept_significance>
-       </concept>
- </ccs2012>
+<concept>
+<concept_id>10010147.10010371.10010382.10010385</concept_id>
+<concept_desc>Computing methodologies~Image-based rendering</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10010147.10010371.10010395</concept_id>
+<concept_desc>Computing methodologies~Image compression</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10010147.10010371.10010372.10010374</concept_id>
+<concept_desc>Computing methodologies~Ray tracing</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+</ccs2012>
 \end{CCSXML}
 
-\ccsdesc[500]{Computing methodologies~Reflectance modeling}
+\ccsdesc[500]{Computing methodologies~Image-based rendering}
+\ccsdesc[500]{Computing methodologies~Image compression}
+\ccsdesc[500]{Computing methodologies~Ray tracing}
 
 %%
 %% Keywords. The author(s) should pick words that accurately describe
 %% the work being presented. Separate the keywords with commas.
-\keywords{These are the keywords}
+\keywords{Image-based lighting, video codecs, Alias tables, emissive textures, real-time rendering }
 %% A "teaser" image appears between the author and affiliation
 %% information and the body of the document, and typically spans the
 %% page.
@@ -210,7 +222,7 @@ It also reduces memory consumption and transfers by several orders of magnitude 
 \begin{teaserfigure}
   \centering
   \includegraphics[width=1\textwidth]{teaser.png}
-  \caption{Two scenes lit by a single dynamic, video-driven emissive texture, rendered with our leaf-alias importance sampler. (Left) The Rover scene — a virtual-production LED wall displaying a looping road/mountain video panorama that lights the vehicle directly, sampled here with BudgetLeafAlias. (Right) The Cinema scene — a theater lit only by the animated sunset footage playing on its own screen, sampled with CodecLeafAlias. Each panel compares, left to right: Random sampling, 2D CDF inversion, our technique, and a converged reference, all at their calibrated real-time budgets ($\approx$33 ms).}
+  \caption{Two scenes lit by a single dynamic, video-driven emissive texture, rendered with our LeafAlias importance sampler. (Left) The Rover scene — a virtual-production LED wall displaying a looping road/mountain video panorama that lights the vehicle directly, sampled here with BudgetLeafAlias. (Right) The Cinema scene — a theater lit only by the animated sunset footage playing on its own screen, sampled with CodecLeafAlias. Each panel compares, left to right: Random sampling, 2D CDF inversion, our technique, and a converged reference, all at their calibrated real-time budgets ($\approx$33 ms).}
   \label{fig:teaser}
 \end{teaserfigure}
 
@@ -223,15 +235,15 @@ It also reduces memory consumption and transfers by several orders of magnitude 
 
 \section{Introduction}
 
-Importance sampling of emissive textures is essential for efficient image-based lighting, and increasingly critical in production workflows where video is used directly as a dynamic light source in virtual production and VFX. A single emissive texture lets a renderer reproduce the directional detail of a real environment, far beyond what analytic lights can approximate. Traditionally this texture has been static, captured once and reused for an entire sequence. Increasingly, though, it is video: LED-wall virtual production, AR/VR object insertion, and video-based environment lighting all require illumination that changes every frame, not a single fixed capture. 
+Importance sampling of emissive textures is essential for efficient image-based lighting, and increasingly critical in production and VFX workflows where video is used directly as a dynamic light source. A single emissive texture lets a renderer reproduce the directional detail of a real environment far beyond what analytic lights can approximate. Traditionally, this texture has been static: captured once and reused for an entire sequence. However, there are recent use cases such as LED-wall virtual production, AR/VR object insertion, and video-based environment maps that require illumination that changes every frame.
 
-Traditional texture light sampling techniques are designed for static images. They rely on the offline building of large sampling structures that are reused for rendering each frame as long as the image doesn't change. The most common example of such strategy is how rendering and ray tracing toolboxes deal with HDR environment maps. The state-of-the-art approach is to build a two-dimensional piecewise constant distribution from the texture’s luminance: a marginal CDF over rows and a per-row conditional CDF. The sampler is then inverted via binary search at sample time, which is expensive for large textures. A more recent and well-adopted approach is to generate a mipmap-style hierarchical importance map \cite{}. At sample time, a hierarchical descent through a mip pyramid
-of the texture is performed, recursively choosing one of four children at each level in proportion to their summed weight. This technique is also expensive and requires several iterations per sample, although it is more GPU friendly because the number of iterations is always the same for each sample, unlike in the binary search.  Moreover, the mipmap can be fastly constructed using the existing dedicated hardware on modern GPUs. Both techniques require at least $O(N)$ memory for the sampler, with $N$ being the number of pixels.
+State-of-the-art texture light sampling techniques are designed for static images. They rely on offline construction of large sampling structures that are stored and reused. The most common example of this strategy is how rendering and ray tracing toolboxes deal with HDR environment maps. The standard approach is to build a two-dimensional piecewise constant distribution from the texture's luminance: a marginal CDF over rows and a per-row conditional CDF. The sampler is then inverted via binary search at sample time, which is expensive and produces incoherent memory access. A more recent and well-adopted approach is to generate a mipmap-style hierarchical importance map \cite{clarberg2005wavelet}. At sample time, a hierarchical descent through a mip pyramid
+of the texture is performed, recursively choosing one of four children at each level in proportion to their summed weight. This technique is also expensive and requires several iterations per sample, although it is more GPU friendly because the number of iterations is always the same for each sample, unlike with the binary search. Moreover, the mipmap can be constructed quickly using the existing dedicated hardware on modern GPUs. Both techniques require at least $O(N)$ memory for the sampler, with $N$ being the number of pixels.
 
-Another less used but known technique for sampling emissive textures is the Alias method \cite{}. This technique draws from an arbitrary discrete distribution in $O(1)$ time after an $O(N)$ one-time build, at the cost of losing the CDF's implicit spatial coherence: two adjacent table buckets can alias to two arbitrary, unrelated locations in the original distribution. This fact is known to disrupt the stratification or disrepancy-reduction of the input point set. It also requires $O(N)$ memory to store the correlation between every pixel. The process for building the Alias table, despite being $O(N)$, is difficult to optimize for real-time construction \cite{}. 
+Another less used but known technique for sampling emissive textures is the Alias method \cite{burke2004bidirectional}. This technique draws from an arbitrary discrete distribution in $O(1)$ time after an $O(N)$ one-time build, at the cost of losing the CDF's implicit spatial coherence: two adjacent table buckets can alias to two arbitrary, unrelated locations in the original distribution. This fact is known to disrupt stratification or discrepancy reduction of the input point set. It also requires $O(N)$ memory to store the correlation between every pixel. The process for building the Alias table, despite being $O(N)$, is difficult to optimize for real-time construction \cite{lehmann2021weighted}. 
 
-We present a new sampling method that is fast to build (under 1 millisecond for 4k HDR images), produces a sampler that is tiny, and is $O(1)$ to sample without disrupting the stratification of the Quasi Monte Carlo input. The core idea is to reuse the variance-driven image partition that is already present in modern video codecs, which already compute hierarchical spatial partitions that adapt to local signal variance \cite{uhrina2024performance}. These structures implicitly encode the spatial distribution
-of luminance and high-frequency content (see Fig. \ref{fig:quadtree}). We also propose a variant that builds the partition tree on a budgeted number of leaves, using a  Greedy/best-first tree-structured resource allocation \cite{MINASNY2007383,Zhou2024}. Both techniques show consistent quality gains when rendering video light textures in real-time (33 milliseconds per frame), since they allow executing more texture samples without  introducing stratification error.
+We present a new sampling method that is fast to build (under 1 millisecond for 4k HDR images), produces a sampler that is tiny, and is $O(1)$ to sample and reduces the stratification disruption of the per-pixel Alias method. The core idea is to reuse the variance-driven image partition that is already present in modern video codecs, which already compute hierarchical spatial partitions that adapt to local signal variance \cite{uhrina2024performance}. These structures implicitly encode the spatial distribution
+of luminance and high-frequency content (see Fig. \ref{fig:quadtree}). We also propose a variant that builds the partition tree on a budgeted number of leaves, using a  Greedy/best-first tree-structured resource allocation strategy \cite{MINASNY2007383,Zhou2024}. Both techniques show consistent quality gains when rendering video light textures in real-time (33 milliseconds per frame), since they allow executing more texture samples and reducing the stratification error.
 
 \begin{figure}[htbp!]
   \centering
@@ -242,8 +254,7 @@ of luminance and high-frequency content (see Fig. \ref{fig:quadtree}). We also p
 \end{figure}
 
 \section{Previous works}\label{sec:prev}
-Importance sampling of emissive textures is a well-studied problem in the graphics literature in the context of image-based lighting. Most of the works focus on pre-processing the images to allow for exact or near-exact sampling without introducing bias \cite{lawrence2005adaptive}. Several methods choose to simplify the textured light into a set of point or area lights ~\cite{agarwal2003structured}, allowing for real-time sampling and faster convergance but at the cost of more error in the solution.  Cline et al. \cite{cline2009tabular} compare several tabular inversion methods, noting the computational order of building each sampler structure and sampling each point. They analyze the 2D CDF inversion via binary search and the per-pixel Alias method, where they flag the disruption of the stratification of the input point set. Per-pixel Alias's raster-flattened table produces a real, measurable periodic banding pattern (Figure~\ref{fig:spectrum}) that becomes clear in
-the sample set's power spectrum. We show that our LeafAlias method overcomes those issues because the partition structure helps with stratification. 
+Importance sampling of emissive textures is a well-studied problem in the graphics literature in the context of image-based lighting. Most of the works focus on preprocessing the images to allow for exact or near-exact sampling without introducing bias \cite{lawrence2005adaptive}. Several methods choose to simplify the textured light into a set of point or area lights ~\cite{agarwal2003structured}, allowing for real-time sampling and faster convergence but at the cost of more error in the solution.  Cline et al. \cite{cline2009tabular} compare several tabular inversion methods, noting the computational order of building each sampler structure and sampling each point. They analyze the 2D CDF inversion via binary search and the per-pixel Alias method, where they flag the disruption of the stratification of the input point set. The per-pixel Alias method's raster-flattened table produces a real, measurable periodic banding pattern (Figure~\ref{fig:spectrum}) that becomes clear in the power spectrum of the sample set. We show that our LeafAlias method overcomes those issues because the partition structure helps with stratification. 
 
 \begin{figure}[htbp!]
   \centering
@@ -256,8 +267,8 @@ the sample set's power spectrum. We show that our LeafAlias method overcomes tho
   \label{fig:spectrum}
 \end{figure}
 
-Despite being $O(1)$ to sample, the per-pixel Alias method is heavy in memory consumption and in the construction of the tables via Vose's technique. 
-Nevertheless, the Alias method is widely used in mesh lights sampling: geometry with thousands of emissive triangles. Moreau et al.~\cite{moreau2019dynamic} maintain a light-sampling BVH incrementally across frames for thousands of moving lights.
+Despite being $O(1)$ to sample, the per-pixel Alias method is memory-intensive and expensive to construct via Vose's technique. 
+Nevertheless, the Alias method is widely used in mesh light sampling for geometry with thousands of emissive triangles. Moreau et al.~\cite{moreau2019dynamic} maintain a light-sampling BVH incrementally across frames for thousands of moving lights.
 Bitterli et al.'s ReSTIR~\cite{bitterli2020spatiotemporal} resamples across spatial and
 temporal neighbors to pick among many dynamic lights at a fraction of the cost of resampling
 from scratch. Conty Estevez and Kulla~\cite{contykulla2018adaptive} adaptively split a light
@@ -265,22 +276,21 @@ tree per shading point rather than committing to one fixed cut. At that scale of
 and cheap to rebuild every frame.
 
 Regarding the optimization of the sampling structures, 
-Ergun et al.~\cite{ergun2012realtime} split an environment map into a kd-tree via the greedy partition strategy, to a predefined block count, then fit the sorted leaf probabilities with a closed-form curve for direct inversion. They report gains in memory compression, higher speed and accuracy than CDF inversion at matched performance for static environment maps. One disadvantage of using kd-trees is that evaluating the pdf of the map direction when sampled from BRDF in multiple importance sampling (MIS) requires traversing the tree.  
- Lambers~\cite{lambers2022parameterization} proposes a fixed-grid sampler and notes that replacing the grid with a variance-driven quadtree might improve their results. Rodrigues et al.~\cite{rodriguez2023nenv} train a neural normalizing flow that allows both sampling and evaluating the pdf, showing considerable performance gains at the cost of pre-training the structure for the static map. Wu~\cite{wu2025efficient} also preprocess the map by dividing the emissive and non-emissive parts into separate structures. 
+Ergun et al.~\cite{ergun2012realtime} split an environment map into a kd-tree via the greedy partition strategy, to a predefined block count, then fit the sorted leaf probabilities with an approximate analytic curve for direct inversion. They report gains in memory compression, higher speed and accuracy than CDF inversion at matched performance for static environment maps. One disadvantage of using kd-trees is that evaluating the pdf of the map direction when sampled from the BRDF in multiple importance sampling (MIS) requires traversing the tree.  
+ Lambers~\cite{lambers2022parameterization} proposes a fixed-grid sampler and notes that replacing the grid with a variance-driven quadtree might improve their results. Rodrigues et al.~\cite{rodriguez2023nenv} train a neural normalizing flow that allows both sampling and evaluating the pdf, showing considerable performance gains at the cost of pre-training the structure for the static map. Wu~\cite{wu2025efficient} also preprocesses the map by dividing the emissive and non-emissive parts into separate structures. 
 
-The previously described techniques focus mainly in preprocessing static images to improve sampling efficiency, but not dynamic maps. Some previous works address video-driven lighting: Havran et al.~\cite{havran2005interactive} and Iorns and Rhee~\cite{iorns2015realtime} both light scenes from captured video environment maps, but neither targets real-time per-frame
-resampling of the video itself as the importance distribution. Lu et al.~\cite{lu2013realtime} rebuild a tabulated per-cube-face CDF in real-time, noting it as an expensive part of the process.  Kronander et al~\cite{kronander2014real} rely on temporal sample reuse to improve convergance of video-based lighting. 
+The previously described techniques focus mainly on preprocessing static images to improve sampling efficiency, but not dynamic maps. Some previous works address video-driven lighting: Havran et al.~\cite{havran2005interactive} and Iorns and Rhee~\cite{iorns2015realtime} both light scenes from captured video environment maps, but neither targets real-time per-frame
+resampling of the video itself as the importance distribution. Lu et al.~\cite{lu2013realtime} rebuild a tabulated per-cube-face CDF in real-time, noting it as an expensive part of the process. Kronander et al~\cite{kronander2014real} rely on temporal sample reuse to improve convergence of video-based lighting. 
 
-Attempts to make the per-frame rebuild itself cheaper on a GPU point the same direction: Morrical and Zellmann~\cite{morrical2021inverse} accelerate 2D CDF
-inversion with ray-tracing hardware at high construction cost and non-trivial implementation
+Attempts to make the per-frame rebuild itself cheaper on a GPU point in the same direction: Morrical and Zellmann~\cite{morrical2021inverse} accelerate 2D CDF
+inversion with ray-tracing hardware at a high construction cost and non-trivial implementation
 complexity. Lehmann et al.~\cite{lehmann2021weighted} study GPU-specific weighted sampling and alias-table construction directly. 
 
-Current open-source renderers mostly rely on dense CDF or mipmapped samplers. {Falcor}~\cite{falcorsoftware} uses a hierarchical mip-pyramid importance map over the environment texture's luminance and, separately,
+Modern production renderers mostly rely on dense CDF or mipmapped samplers. {Falcor}~\cite{falcorsoftware} uses a hierarchical mip-pyramid importance map over the environment texture's luminance and, separately,
 the triangle-scale alias table for mesh lights. {Mitsuba 3}~\cite{nimierdavid2019mitsuba2} builds a {Hierarchical2D} warp over
 the environment map -- the same mip-pyramid family as Falcor's. {pbrt-v4}~\cite{pharr2023pbrt}
 uses a dense CDF distribution, inverted via binary search. {Blender Cycles}~\cite{cyclessoftware} builds the same
-kind of dense marginal/conditional CDF over a downsampled background map. Every one of the four either assumes the environment
-texture is built once and reused.
+kind of dense marginal/conditional CDF over a downsampled background map. 
 
 \section{Method}\label{sec:method}
 
@@ -556,8 +566,8 @@ animated sequence.
 
 \subsection{Denoised Results}
 \label{sec:denoise}
-Real-time renders are frequently paired with an AI denoiser in production. We pass each
-technique's calibrated real-time render through the same OptiX AI denoiser and re-measure
+Real-time renders are frequently paired with a neurla denoiser in production. We pass each
+technique's calibrated real-time render through the same OptiX denoiser~\cite{nvidia2021optixdenoiser} and re-measure
 RMSE against the reference. Table~\ref{tab:denoise} shows that on every scene tested,
 starting from our lower-noise image lets the denoiser reach a lower final RMSE than starting
 from Random or 2D CDF.
@@ -565,7 +575,7 @@ from Random or 2D CDF.
 \begin{table}[htbp!]
 \centering
 \small
-\caption{RMSE before and after AI denoising. On every scene tested, whichever of our two techniques wins that scene keeps the lowest denoised RMSE too.}
+\caption{RMSE before and after denoising. On every scene tested, whichever of our two techniques wins that scene keeps the lowest denoised RMSE too.}
 \label{tab:denoise}
 \begin{tabular}{ll cc}
 \toprule
@@ -628,7 +638,17 @@ noise relative to both baselines.
 
 
 \section{Conclusions and future work} \label{sec:conclusions}
-These are the conclusions
+
+We introduced LeafAlias, a family of samplers for dynamic emissive textures that build a per-frame alias table over a variance-driven quadtree rather than over raw pixels. The outcome is a sampler that is inexpensive enough to rebuild in every frame, small enough to stay resident in the GPU's L1 cache, and accurate enough to match the alternative methods we compared against.
+
+The consistency of CodecLeafAlias results through the different video light sources that were tested suggests that the signal carries enough information to be reused for importance sampling. The advantage survives once a denoiser is added to the pipeline and holds up when quality is judged over a full animated sequence rather than a single frame. We also show that, when not available, building a small variance-driven quadtree is fast and can improve performance. The decision to use more or fewer leaves depends on the scene complexity and video material. 
+
+More broadly, this work points to an under-exploited overlap between the toolchains of video compression and real-time rendering. We think this connection has more to offer than the single, frame-local piece of it used here. The most direct extension is temporal. The coding-tree partition is currently extracted in every frame, discarding the motion vectors the same encoder already computes to relate consecutive frames. Since those vectors describe how the variance structure itself is moving, they could warp the previous frame's leaves into a predicted partition for the current one. This could be used to improve the QMC sequence that is currently rescrambled independently every frame, reducing discrepancy artifacts. 
+
+A second direction targets the leaf weights rather than the partition. CodecLeafAlias currently estimates each leaf's radiance from a single DC coefficient, which is exact under a piecewise-constant model but discards the higher-frequency information. That information could be used to guide the sampling within the leaf rectangle, potentially improving the efficiency of each drawn sample.
+
+Finally, because every LeafAlias sample already carries an unbiased pdf, it composes naturally with spatiotemporal resampling: using it purely as the candidate generator inside a ReSTIR-style reservoir, rather than as the final sampler, may provide additional variance reduction on scenes with several bright, moving regions competing for the light budget.
+
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{sample-base}
 

@@ -1,15 +1,25 @@
 \relax 
 \providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Two scenes lit by a single dynamic, video-driven emissive texture, rendered with our leaf-alias importance sampler. (Left) The Rover scene — a virtual-production LED wall displaying a looping road/mountain video panorama that lights the vehicle directly, sampled here with BudgetLeafAlias. (Right) The Cinema scene — a theater lit only by the animated sunset footage playing on its own screen, sampled with CodecLeafAlias. Each panel compares, left to right: Random sampling, 2D CDF inversion, our technique, and a converged reference, all at their calibrated real-time budgets ($\approx $33 ms).}}{1}{figure.caption.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Two scenes lit by a single dynamic, video-driven emissive texture, rendered with our LeafAlias importance sampler. (Left) The Rover scene — a virtual-production LED wall displaying a looping road/mountain video panorama that lights the vehicle directly, sampled here with BudgetLeafAlias. (Right) The Cinema scene — a theater lit only by the animated sunset footage playing on its own screen, sampled with CodecLeafAlias. Each panel compares, left to right: Random sampling, 2D CDF inversion, our technique, and a converged reference, all at their calibrated real-time budgets ($\approx $33 ms).\relax }}{1}{figure.caption.1}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:teaser}{{1}{1}{Two scenes lit by a single dynamic, video-driven emissive texture, rendered with our leaf-alias importance sampler. (Left) The Rover scene — a virtual-production LED wall displaying a looping road/mountain video panorama that lights the vehicle directly, sampled here with BudgetLeafAlias. (Right) The Cinema scene — a theater lit only by the animated sunset footage playing on its own screen, sampled with CodecLeafAlias. Each panel compares, left to right: Random sampling, 2D CDF inversion, our technique, and a converged reference, all at their calibrated real-time budgets ($\approx $33 ms)}{figure.caption.1}{}}
+\newlabel{fig:teaser}{{1}{1}{Two scenes lit by a single dynamic, video-driven emissive texture, rendered with our LeafAlias importance sampler. (Left) The Rover scene — a virtual-production LED wall displaying a looping road/mountain video panorama that lights the vehicle directly, sampled here with BudgetLeafAlias. (Right) The Cinema scene — a theater lit only by the animated sunset footage playing on its own screen, sampled with CodecLeafAlias. Each panel compares, left to right: Random sampling, 2D CDF inversion, our technique, and a converged reference, all at their calibrated real-time budgets ($\approx $33 ms).\relax }{figure.caption.1}{}}
 \@writefile{toc}{\contentsline {section}{Abstract}{1}{section*.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
-\citation{}
-\citation{}
-\citation{}
+\citation{clarberg2005wavelet}
+\citation{burke2004bidirectional}
+\citation{lehmann2021weighted}
 \citation{uhrina2024performance}
 \citation{MINASNY2007383,Zhou2024}
 \citation{lawrence2005adaptive}
@@ -18,16 +28,15 @@
 \citation{moreau2019dynamic}
 \citation{bitterli2020spatiotemporal}
 \citation{contykulla2018adaptive}
-\@writefile{toc}{\contentsline {section}{\numberline {2}Previous works}{2}{section.2}\protected@file@percent }
-\newlabel{sec:prev}{{2}{2}{Previous works}{section.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces An example of a variance-driven quadtree built by the VP9 video codec. High variance zones are refined into a dense mesh of small cells.}}{2}{figure.caption.6}\protected@file@percent }
-\newlabel{fig:quadtree}{{2}{2}{An example of a variance-driven quadtree built by the VP9 video codec. High variance zones are refined into a dense mesh of small cells}{figure.caption.6}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces 2D power spectrum of samples from 2D CDF inversion, plain per-pixel alias, and our LeafAlias, from the same Halton input. Per-pixel alias shows a sharp, isolated off-axis peak (flatness 0.270, peak/median 16{,}113) -- a periodic banding artifact from its flat array index resonating with the input sequence's base-2 digit structure. Both CDF inversion and ours stay close to the input's own clean spectrum.}}{2}{figure.caption.7}\protected@file@percent }
-\newlabel{fig:spectrum}{{3}{2}{2D power spectrum of samples from 2D CDF inversion, plain per-pixel alias, and our LeafAlias, from the same Halton input. Per-pixel alias shows a sharp, isolated off-axis peak (flatness 0.270, peak/median 16{,}113) -- a periodic banding artifact from its flat array index resonating with the input sequence's base-2 digit structure. Both CDF inversion and ours stay close to the input's own clean spectrum}{figure.caption.7}{}}
 \citation{ergun2012realtime}
 \citation{lambers2022parameterization}
 \citation{rodriguez2023nenv}
 \citation{wu2025efficient}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{2}{section.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces An example of a variance-driven quadtree built by the VP9 video codec. High variance zones are refined into a dense mesh of small cells.\relax }}{2}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:quadtree}{{2}{2}{An example of a variance-driven quadtree built by the VP9 video codec. High variance zones are refined into a dense mesh of small cells.\relax }{figure.caption.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Previous works}{2}{section.2}\protected@file@percent }
+\newlabel{sec:prev}{{2}{2}{Previous works}{section.2}{}}
 \citation{havran2005interactive}
 \citation{iorns2015realtime}
 \citation{lu2013realtime}
@@ -39,39 +48,85 @@
 \citation{pharr2023pbrt}
 \citation{cyclessoftware}
 \citation{vose1991linear}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces 2D power spectrum of samples from 2D CDF inversion, plain per-pixel alias, and our LeafAlias, from the same Halton input. Per-pixel alias shows a sharp, isolated off-axis peak (flatness 0.270, peak/median 16{,}113) -- a periodic banding artifact from its flat array index resonating with the input sequence's base-2 digit structure. Both CDF inversion and ours stay close to the input's own clean spectrum.\relax }}{3}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:spectrum}{{3}{3}{2D power spectrum of samples from 2D CDF inversion, plain per-pixel alias, and our LeafAlias, from the same Halton input. Per-pixel alias shows a sharp, isolated off-axis peak (flatness 0.270, peak/median 16{,}113) -- a periodic banding artifact from its flat array index resonating with the input sequence's base-2 digit structure. Both CDF inversion and ours stay close to the input's own clean spectrum.\relax }{figure.caption.7}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Method}{3}{section.3}\protected@file@percent }
 \newlabel{sec:method}{{3}{3}{Method}{section.3}{}}
-\newlabel{eq:weight}{{1}{3}{Method}{equation.1}{}}
-\newlabel{eq:pdf}{{2}{3}{Method}{equation.2}{}}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Build the alias table over $N$ leaves}}{3}{algorithm.1}\protected@file@percent }
-\newlabel{alg:build}{{1}{3}{Build the alias table over $N$ leaves}{algorithm.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Sampling}{3}{subsection.3.1}\protected@file@percent }
-\newlabel{sec:sampling}{{3.1}{3}{Sampling}{subsection.3.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}MIS with BRDF Sampling}{3}{subsection.3.2}\protected@file@percent }
-\newlabel{sec:mis}{{3.2}{3}{MIS with BRDF Sampling}{subsection.3.2}{}}
-\citation{aguerre2026codec}
+\newlabel{eq:weight}{{1}{3}{Method}{equation.3.1}{}}
+\newlabel{eq:pdf}{{2}{3}{Method}{equation.3.2}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Build the alias table over $N$ leaves\relax }}{4}{algorithm.1}\protected@file@percent }
+\newlabel{alg:build}{{1}{4}{Build the alias table over $N$ leaves\relax }{algorithm.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Sampling}{4}{subsection.3.1}\protected@file@percent }
+\newlabel{sec:sampling}{{3.1}{4}{Sampling}{subsection.3.1}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces Draw one light sample\relax }}{4}{algorithm.2}\protected@file@percent }
+\newlabel{alg:sample}{{2}{4}{Draw one light sample\relax }{algorithm.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}CodecLeafAlias}{4}{subsection.3.2}\protected@file@percent }
+\newlabel{sec:codec}{{3.2}{4}{CodecLeafAlias}{subsection.3.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}BudgetLeafAlias}{4}{subsection.3.3}\protected@file@percent }
+\newlabel{sec:budget}{{3.3}{4}{BudgetLeafAlias}{subsection.3.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Implementation}{4}{subsection.3.4}\protected@file@percent }
+\newlabel{sec:impl}{{3.4}{4}{Implementation}{subsection.3.4}{}}
+\citation{nvidia2021optixdenoiser}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {3}{\ignorespaces Build a budgeted quadtree of $\leq B$ leaves\relax }}{5}{algorithm.3}\protected@file@percent }
+\newlabel{alg:budget}{{3}{5}{Build a budgeted quadtree of $\leq B$ leaves\relax }{algorithm.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{5}{section.4}\protected@file@percent }
+\newlabel{sec:results}{{4}{5}{Results}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Video Quality}{5}{subsection.4.1}\protected@file@percent }
+\newlabel{sec:video}{{4.1}{5}{Video Quality}{subsection.4.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Denoised Results}{5}{subsection.4.2}\protected@file@percent }
+\newlabel{sec:denoise}{{4.2}{5}{Denoised Results}{subsection.4.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces RMSE, PSNR (dB), and \reflectbox {F}LIP\xspace  \ for all techniques and scenes at their real-time calibrated configurations. On every single scene, at least one of our two techniques is the best technique on every metric.\relax }}{6}{table.caption.8}\protected@file@percent }
+\newlabel{tab:main}{{1}{6}{RMSE, PSNR (dB), and \FLIP \ for all techniques and scenes at their real-time calibrated configurations. On every single scene, at least one of our two techniques is the best technique on every metric.\relax }{table.caption.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Fitted RMSE-vs-time curves for Rover, Cinema, Phone, and Convergence, and all four techniques. BudgetLeafAlias (red) stays below both 2D CDF (blue) and Mipmap (green) across the entire measured range on every scene.\relax }}{6}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:realtime}{{4}{6}{Fitted RMSE-vs-time curves for Rover, Cinema, Phone, and Convergence, and all four techniques. BudgetLeafAlias (red) stays below both 2D CDF (blue) and Mipmap (green) across the entire measured range on every scene.\relax }{figure.caption.9}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Video-level quality of our real-time technique vs.\ a converged reference, averaged over the animated sequence per scene.\relax }}{6}{table.caption.10}\protected@file@percent }
+\newlabel{tab:video}{{2}{6}{Video-level quality of our real-time technique vs.\ a converged reference, averaged over the animated sequence per scene.\relax }{table.caption.10}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Video-level quality of our real-time technique vs.\ a converged reference. PSNR and RMSE are mean $\pm $ std.\ dev.\ across the video frames; VMAF is the pooled mean with its [min--max] range over the same frames.\relax }}{6}{table.caption.11}\protected@file@percent }
+\newlabel{tab:video}{{3}{6}{Video-level quality of our real-time technique vs.\ a converged reference. PSNR and RMSE are mean $\pm $ std.\ dev.\ across the video frames; VMAF is the pooled mean with its [min--max] range over the same frames.\relax }{table.caption.11}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces RMSE before and after denoising. On every scene tested, whichever of our two techniques wins that scene keeps the lowest denoised RMSE too.\relax }}{6}{table.caption.12}\protected@file@percent }
+\newlabel{tab:denoise}{{4}{6}{RMSE before and after denoising. On every scene tested, whichever of our two techniques wins that scene keeps the lowest denoised RMSE too.\relax }{table.caption.12}{}}
 \bibstyle{ACM-Reference-Format}
 \bibdata{sample-base}
+\bibcite{agarwal2003structured}{{1}{2003}{{Agarwal et~al\mbox  {.}}}{{}}}
+\bibcite{bitterli2020spatiotemporal}{{2}{2020}{{Bitterli et~al\mbox  {.}}}{{}}}
+\bibcite{cyclessoftware}{{3}{2024}{{Blender Foundation}}{{}}}
+\bibcite{burke2004bidirectional}{{4}{2004}{{Burke}}{{}}}
+\bibcite{clarberg2005wavelet}{{5}{2005}{{Clarberg et~al\mbox  {.}}}{{}}}
+\bibcite{cline2009tabular}{{6}{2009}{{Cline et~al\mbox  {.}}}{{}}}
+\bibcite{contykulla2018adaptive}{{7}{2018}{{Conty~Estevez and Kulla}}{{}}}
+\bibcite{ergun2012realtime}{{8}{2012}{{Ergun et~al\mbox  {.}}}{{}}}
+\bibcite{havran2005interactive}{{9}{2005}{{Havran et~al\mbox  {.}}}{{}}}
+\bibcite{iorns2015realtime}{{10}{2015}{{Iorns and Rhee}}{{}}}
+\bibcite{kronander2014real}{{11}{2014}{{Kronander et~al\mbox  {.}}}{{}}}
+\bibcite{lambers2022parameterization}{{12}{2022}{{Lambers}}{{}}}
+\bibcite{lawrence2005adaptive}{{13}{2005}{{Lawrence et~al\mbox  {.}}}{{}}}
+\bibcite{lehmann2021weighted}{{14}{2021}{{Lehmann et~al\mbox  {.}}}{{}}}
+\bibcite{lu2013realtime}{{15}{2013}{{Lu et~al\mbox  {.}}}{{}}}
+\bibcite{MINASNY2007383}{{16}{2007}{{Minasny et~al\mbox  {.}}}{{}}}
+\bibcite{moreau2019dynamic}{{17}{2019}{{Moreau et~al\mbox  {.}}}{{}}}
+\bibcite{morrical2021inverse}{{18}{2021}{{Morrical and Zellmann}}{{}}}
+\bibcite{nimierdavid2019mitsuba2}{{19}{2019}{{Nimier-David et~al\mbox  {.}}}{{}}}
+\bibcite{nvidia2021optixdenoiser}{{20}{2021}{{NVIDIA}}{{}}}
+\bibcite{falcorsoftware}{{21}{2024}{{NVIDIA}}{{}}}
+\bibcite{pharr2023pbrt}{{22}{2023}{{Pharr et~al\mbox  {.}}}{{}}}
+\bibcite{rodriguez2023nenv}{{23}{2023}{{Rodriguez-Pardo et~al\mbox  {.}}}{{}}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusions and future work}{7}{section.5}\protected@file@percent }
+\newlabel{sec:conclusions}{{5}{7}{Conclusions and future work}{section.5}{}}
+\@writefile{toc}{\contentsline {section}{References}{7}{section*.16}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Fireplace Room, Phone, and Convergence: full-frame diagonal comparisons (Random / 2D CDF / CodecLeafAlias / Reference) with real measured RMSE per technique, two large matched closeups per scene, and each scene's emissive HDR texture (top-left inset).\relax }}{8}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:figuresonly}{{5}{8}{Fireplace Room, Phone, and Convergence: full-frame diagonal comparisons (Random / 2D CDF / CodecLeafAlias / Reference) with real measured RMSE per technique, two large matched closeups per scene, and each scene's emissive HDR texture (top-left inset).\relax }{figure.caption.13}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Denoised closeups and FLIP error maps when compared to the reference, for 2D CDF and CodecLeafAlias, at the two regions per scene with the largest denoised FLIP gap, for Convergence and Fireplace Room.\relax }}{8}{figure.caption.14}\protected@file@percent }
+\newlabel{fig:denoisedflip}{{6}{8}{Denoised closeups and FLIP error maps when compared to the reference, for 2D CDF and CodecLeafAlias, at the two regions per scene with the largest denoised FLIP gap, for Convergence and Fireplace Room.\relax }{figure.caption.14}{}}
+\bibcite{uhrina2024performance}{{24}{2024}{{Uhrina et~al\mbox  {.}}}{{}}}
+\bibcite{vose1991linear}{{25}{1991}{{Vose}}{{}}}
+\bibcite{wu2025efficient}{{26}{2025}{{Wu}}{{}}}
+\bibcite{Zhou2024}{{27}{2024}{{Zhou et~al\mbox  {.}}}{{}}}
 \newlabel{tocindent-1}{0pt}
 \newlabel{tocindent0}{0pt}
-\newlabel{tocindent1}{4.185pt}
-\newlabel{tocindent2}{10.34999pt}
+\newlabel{tocindent1}{4.62497pt}
+\newlabel{tocindent2}{11.81937pt}
 \newlabel{tocindent3}{0pt}
 \newlabel{tocindent4}{0pt}
 \newlabel{tocindent5}{0pt}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces Draw one light sample}}{4}{algorithm.2}\protected@file@percent }
-\newlabel{alg:sample}{{2}{4}{Draw one light sample}{algorithm.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}CodecLeafAlias}{4}{subsection.3.3}\protected@file@percent }
-\newlabel{sec:codec}{{3.3}{4}{CodecLeafAlias}{subsection.3.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}BudgetLeafAlias}{4}{subsection.3.4}\protected@file@percent }
-\newlabel{sec:budget}{{3.4}{4}{BudgetLeafAlias}{subsection.3.4}{}}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {3}{\ignorespaces Build a budgeted quadtree of $\leq B$ leaves}}{4}{algorithm.3}\protected@file@percent }
-\newlabel{alg:budget}{{3}{4}{Build a budgeted quadtree of $\leq B$ leaves}{algorithm.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Implementation}{4}{subsection.3.5}\protected@file@percent }
-\newlabel{sec:impl}{{3.5}{4}{Implementation}{subsection.3.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{4}{section.4}\protected@file@percent }
-\newlabel{sec:results}{{4}{4}{Results}{section.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusions and future work}{4}{section.5}\protected@file@percent }
-\newlabel{sec:conclusions}{{5}{4}{Conclusions and future work}{section.5}{}}
-\newlabel{TotPages}{{4}{4}{}{page.4}{}}
-\gdef \@abspage@last{4}
+\newlabel{TotPages}{{9}{9}{}{page.9}{}}
+\gdef \@abspage@last{9}

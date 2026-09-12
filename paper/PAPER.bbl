@@ -1,0 +1,364 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{27}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{} and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showURL}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showURL #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[Agarwal et~al\mbox{.}(2003)]%
+        {agarwal2003structured}
+\bibfield{author}{\bibinfo{person}{Sameer Agarwal}, \bibinfo{person}{Ravi
+  Ramamoorthi}, \bibinfo{person}{Serge Belongie}, {and}
+  \bibinfo{person}{Henrik~Wann Jensen}.} \bibinfo{year}{2003}\natexlab{}.
+\newblock \showarticletitle{Structured Importance Sampling of Environment
+  Maps}. In \bibinfo{booktitle}{\emph{ACM SIGGRAPH 2003 Papers}}.
+  \bibinfo{pages}{605--612}.
+\newblock
+
+
+\bibitem[Bitterli et~al\mbox{.}(2020)]%
+        {bitterli2020spatiotemporal}
+\bibfield{author}{\bibinfo{person}{Benedikt Bitterli}, \bibinfo{person}{Chris
+  Wyman}, \bibinfo{person}{Matt Pharr}, \bibinfo{person}{Peter Shirley},
+  \bibinfo{person}{Aaron Lefohn}, {and} \bibinfo{person}{Wojciech Jarosz}.}
+  \bibinfo{year}{2020}\natexlab{}.
+\newblock \showarticletitle{Spatiotemporal Reservoir Resampling for Real-Time
+  Ray Tracing with Dynamic Direct Lighting}.
+\newblock \bibinfo{journal}{\emph{ACM Transactions on Graphics}}
+  \bibinfo{volume}{39}, \bibinfo{number}{4}, Article \bibinfo{articleno}{148}
+  (\bibinfo{year}{2020}), \bibinfo{numpages}{148:1--148:17}~pages.
+\newblock
+\href{https://doi.org/10.1145/3386569.3392481}{doi:\nolinkurl{10.1145/3386569.3392481}}
+
+
+\bibitem[{Blender Foundation}(2024)]%
+        {cyclessoftware}
+\bibfield{author}{\bibinfo{person}{{Blender Foundation}}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \bibinfo{title}{Cycles: Open Source Production Rendering}.
+\newblock
+\newblock
+\shownote{\url{https://github.com/blender/cycles}}.
+
+
+\bibitem[Burke(2004)]%
+        {burke2004bidirectional}
+\bibfield{author}{\bibinfo{person}{David Burke}.}
+  \bibinfo{year}{2004}\natexlab{}.
+\newblock \emph{\bibinfo{title}{Bidirectional importance sampling for
+  illumination from environment maps}}.
+\newblock \bibinfo{thesistype}{Ph.\,D. Dissertation}.
+  \bibinfo{school}{University of British Columbia}.
+\newblock
+
+
+\bibitem[Clarberg et~al\mbox{.}(2005)]%
+        {clarberg2005wavelet}
+\bibfield{author}{\bibinfo{person}{Petrik Clarberg}, \bibinfo{person}{Wojciech
+  Jarosz}, \bibinfo{person}{Tomas Akenine-M{\"o}ller}, {and}
+  \bibinfo{person}{Henrik~Wann Jensen}.} \bibinfo{year}{2005}\natexlab{}.
+\newblock \showarticletitle{Wavelet Importance Sampling: Efficiently Evaluating
+  Products of Complex Functions}.
+\newblock \bibinfo{journal}{\emph{ACM Transactions on Graphics}}
+  \bibinfo{volume}{24}, \bibinfo{number}{3} (\bibinfo{year}{2005}),
+  \bibinfo{pages}{1166--1175}.
+\newblock
+
+
+\bibitem[Cline et~al\mbox{.}(2009)]%
+        {cline2009tabular}
+\bibfield{author}{\bibinfo{person}{David Cline}, \bibinfo{person}{Anshuman
+  Razdan}, {and} \bibinfo{person}{Peter Wonka}.}
+  \bibinfo{year}{2009}\natexlab{}.
+\newblock \showarticletitle{A Comparison of Tabular {PDF} Inversion Methods}.
+\newblock \bibinfo{journal}{\emph{Computer Graphics Forum}}
+  \bibinfo{volume}{28}, \bibinfo{number}{1} (\bibinfo{year}{2009}),
+  \bibinfo{pages}{154--160}.
+\newblock
+\href{https://doi.org/10.1111/j.1467-8659.2008.01197.x}{doi:\nolinkurl{10.1111/j.1467-8659.2008.01197.x}}
+
+
+\bibitem[Conty~Estevez and Kulla(2018)]%
+        {contykulla2018adaptive}
+\bibfield{author}{\bibinfo{person}{Alejandro Conty~Estevez} {and}
+  \bibinfo{person}{Christopher Kulla}.} \bibinfo{year}{2018}\natexlab{}.
+\newblock \showarticletitle{Importance Sampling of Many Lights with Adaptive
+  Tree Splitting}.
+\newblock \bibinfo{journal}{\emph{Proceedings of the ACM on Computer Graphics
+  and Interactive Techniques}} \bibinfo{volume}{1}, \bibinfo{number}{2}
+  (\bibinfo{year}{2018}), \bibinfo{pages}{25:1--25:17}.
+\newblock
+
+
+\bibitem[Ergun et~al\mbox{.}(2012)]%
+        {ergun2012realtime}
+\bibfield{author}{\bibinfo{person}{Serkan Ergun}, \bibinfo{person}{Murat Kurt},
+  {and} \bibinfo{person}{Ayd{\i}n {\"O}zt{\"u}rk}.}
+  \bibinfo{year}{2012}\natexlab{}.
+\newblock \showarticletitle{Real-time {Kd}-tree Based Importance Sampling of
+  Environment Maps}. In \bibinfo{booktitle}{\emph{Proceedings of the Spring
+  Conference on Computer Graphics (SCCG)}},
+  \bibfield{editor}{\bibinfo{person}{Roman {\v D}urikovi{\v c}} {and}
+  \bibinfo{person}{Carol O'Sullivan}} (Eds.). \bibinfo{publisher}{Comenius
+  University Press}, \bibinfo{address}{Budmerice, Slovakia},
+  \bibinfo{pages}{84--91}.
+\newblock
+
+
+\bibitem[Havran et~al\mbox{.}(2005)]%
+        {havran2005interactive}
+\bibfield{author}{\bibinfo{person}{Vlastimil Havran}, \bibinfo{person}{Miloslaw
+  Smyk}, \bibinfo{person}{Grzegorz Krawczyk}, \bibinfo{person}{Karol
+  Myszkowski}, {and} \bibinfo{person}{Hans-Peter Seidel}.}
+  \bibinfo{year}{2005}\natexlab{}.
+\newblock \showarticletitle{Interactive System for Dynamic Scene Lighting using
+  Captured Video Environment Maps}. In \bibinfo{booktitle}{\emph{Rendering
+  Techniques}}. \bibinfo{pages}{31--42}.
+\newblock
+
+
+\bibitem[Iorns and Rhee(2015)]%
+        {iorns2015realtime}
+\bibfield{author}{\bibinfo{person}{Thomas Iorns} {and} \bibinfo{person}{Taehyun
+  Rhee}.} \bibinfo{year}{2015}\natexlab{}.
+\newblock \showarticletitle{Real-time Image Based Lighting for 360-degree
+  Panoramic Video}. In \bibinfo{booktitle}{\emph{Image and Video Technology}}.
+  \bibinfo{publisher}{Springer}, \bibinfo{pages}{139--151}.
+\newblock
+
+
+\bibitem[Kronander et~al\mbox{.}(2014)]%
+        {kronander2014real}
+\bibfield{author}{\bibinfo{person}{Joel Kronander}, \bibinfo{person}{Johan
+  Dahlin}, \bibinfo{person}{Daniel J{\"o}nsson}, \bibinfo{person}{Manon Kok},
+  \bibinfo{person}{Thomas~B Sch{\"o}n}, {and} \bibinfo{person}{Jonas Unger}.}
+  \bibinfo{year}{2014}\natexlab{}.
+\newblock \showarticletitle{Real-time video based lighting using GPU
+  raytracing}. In \bibinfo{booktitle}{\emph{2014 22nd European Signal
+  Processing Conference (EUSIPCO)}}. IEEE, \bibinfo{pages}{1627--1631}.
+\newblock
+
+
+\bibitem[Lambers(2022)]%
+        {lambers2022parameterization}
+\bibfield{author}{\bibinfo{person}{Martin Lambers}.}
+  \bibinfo{year}{2022}\natexlab{}.
+\newblock \showarticletitle{Parameterization-Independent Importance Sampling of
+  Environment Maps}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2208.10815}}
+  (\bibinfo{year}{2022}).
+\newblock
+
+
+\bibitem[Lawrence et~al\mbox{.}(2005)]%
+        {lawrence2005adaptive}
+\bibfield{author}{\bibinfo{person}{Jason Lawrence}, \bibinfo{person}{Szymon
+  Rusinkiewicz}, {and} \bibinfo{person}{Ravi Ramamoorthi}.}
+  \bibinfo{year}{2005}\natexlab{}.
+\newblock \showarticletitle{Adaptive Numerical Cumulative Distribution
+  Functions for Efficient Importance Sampling.}. In
+  \bibinfo{booktitle}{\emph{Rendering Techniques}}. \bibinfo{pages}{11--20}.
+\newblock
+
+
+\bibitem[Lehmann et~al\mbox{.}(2021)]%
+        {lehmann2021weighted}
+\bibfield{author}{\bibinfo{person}{Hans-Peter Lehmann}, \bibinfo{person}{Lorenz
+  H{\"u}bschle-Schneider}, {and} \bibinfo{person}{Peter Sanders}.}
+  \bibinfo{year}{2021}\natexlab{}.
+\newblock \bibinfo{title}{Weighted Random Sampling on {GPU}s}.
+\newblock
+\showeprint[arxiv]{2106.12270}
+
+
+\bibitem[Lu et~al\mbox{.}(2013)]%
+        {lu2013realtime}
+\bibfield{author}{\bibinfo{person}{Heqi Lu}, \bibinfo{person}{Romain
+  Pacanowski}, {and} \bibinfo{person}{Xavier Granier}.}
+  \bibinfo{year}{2013}\natexlab{}.
+\newblock \showarticletitle{Real-Time Importance Sampling of Dynamic
+  Environment Maps}. In \bibinfo{booktitle}{\emph{Eurographics 2013 - Short
+  Papers}}. \bibinfo{publisher}{The Eurographics Association},
+  \bibinfo{address}{Girona, Spain}, \bibinfo{pages}{65--68}.
+\newblock
+
+
+\bibitem[Minasny et~al\mbox{.}(2007)]%
+        {MINASNY2007383}
+\bibfield{author}{\bibinfo{person}{Budiman Minasny}, \bibinfo{person}{Alex~B.
+  McBratney}, {and} \bibinfo{person}{Dennis~J.J. Walvoort}.}
+  \bibinfo{year}{2007}\natexlab{}.
+\newblock \showarticletitle{The variance quadtree algorithm: Use for spatial
+  sampling design}.
+\newblock \bibinfo{journal}{\emph{Computers \& Geosciences}}
+  \bibinfo{volume}{33}, \bibinfo{number}{3} (\bibinfo{year}{2007}),
+  \bibinfo{pages}{383--392}.
+\newblock
+\showISSN{0098-3004}
+\href{https://doi.org/10.1016/j.cageo.2006.08.009}{doi:\nolinkurl{10.1016/j.cageo.2006.08.009}}
+
+
+\bibitem[Moreau et~al\mbox{.}(2019)]%
+        {moreau2019dynamic}
+\bibfield{author}{\bibinfo{person}{Pierre Moreau}, \bibinfo{person}{Matt
+  Pharr}, {and} \bibinfo{person}{Petrik Clarberg}.}
+  \bibinfo{year}{2019}\natexlab{}.
+\newblock \showarticletitle{Dynamic Many-Light Sampling for Real-Time Ray
+  Tracing}. In \bibinfo{booktitle}{\emph{High-Performance Graphics 2019 - Short
+  Papers}}. \bibinfo{publisher}{The Eurographics Association}.
+\newblock
+\href{https://doi.org/10.2312/hpg.20191191}{doi:\nolinkurl{10.2312/hpg.20191191}}
+
+
+\bibitem[Morrical and Zellmann(2021)]%
+        {morrical2021inverse}
+\bibfield{author}{\bibinfo{person}{Nate Morrical} {and} \bibinfo{person}{Stefan
+  Zellmann}.} \bibinfo{year}{2021}\natexlab{}.
+\newblock \showarticletitle{Inverse Transform Sampling Using Ray Tracing
+  Hardware}.
+\newblock In \bibinfo{booktitle}{\emph{Ray Tracing Gems II: Next Generation
+  Real-Time Rendering with DXR, Vulkan, and OptiX}}.
+  \bibinfo{publisher}{Springer}, \bibinfo{pages}{625--641}.
+\newblock
+
+
+\bibitem[Nimier-David et~al\mbox{.}(2019)]%
+        {nimierdavid2019mitsuba2}
+\bibfield{author}{\bibinfo{person}{Merlin Nimier-David}, \bibinfo{person}{Delio
+  Vicini}, \bibinfo{person}{Tizian Zeltner}, {and} \bibinfo{person}{Wenzel
+  Jakob}.} \bibinfo{year}{2019}\natexlab{}.
+\newblock \showarticletitle{Mitsuba 2: A Retargetable Forward and Inverse
+  Renderer}.
+\newblock \bibinfo{journal}{\emph{ACM Transactions on Graphics (Proceedings of
+  SIGGRAPH Asia)}} \bibinfo{volume}{38}, \bibinfo{number}{6}
+  (\bibinfo{year}{2019}).
+\newblock
+\href{https://doi.org/10.1145/3355089.3356498}{doi:\nolinkurl{10.1145/3355089.3356498}}
+
+
+\bibitem[{NVIDIA}(2021)]%
+        {nvidia2021optixdenoiser}
+\bibfield{author}{\bibinfo{person}{{NVIDIA}}.} \bibinfo{year}{2021}\natexlab{}.
+\newblock \bibinfo{title}{{NVIDIA OptiX\texttrademark{} AI-Accelerated
+  Denoiser}}.
+\newblock
+\urldef\tempurl%
+\url{https://developer.nvidia.com/rtx/optix-denoiser}
+\showURL{%
+\tempurl}
+\newblock
+\shownote{Accessed: 2026-09-12}.
+
+
+\bibitem[{NVIDIA}(2024)]%
+        {falcorsoftware}
+\bibfield{author}{\bibinfo{person}{{NVIDIA}}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \bibinfo{title}{Falcor: Real-Time Rendering Framework}.
+\newblock
+\newblock
+\shownote{\url{https://github.com/NVIDIAGameWorks/Falcor}}.
+
+
+\bibitem[Pharr et~al\mbox{.}(2023)]%
+        {pharr2023pbrt}
+\bibfield{author}{\bibinfo{person}{Matt Pharr}, \bibinfo{person}{Wenzel Jakob},
+  {and} \bibinfo{person}{Greg Humphreys}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \bibinfo{booktitle}{\emph{Physically Based Rendering: From Theory to
+  Implementation} (\bibinfo{edition}{4th} ed.)}.
+\newblock \bibinfo{publisher}{MIT Press}.
+\newblock
+
+
+\bibitem[Rodriguez-Pardo et~al\mbox{.}(2023)]%
+        {rodriguez2023nenv}
+\bibfield{author}{\bibinfo{person}{Carlos Rodriguez-Pardo},
+  \bibinfo{person}{Javier Fabre}, \bibinfo{person}{Elena Garces}, {and}
+  \bibinfo{person}{Jorge Lopez-Moreno}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{NEnv: Neural environment maps for global
+  illumination}. In \bibinfo{booktitle}{\emph{Computer graphics forum}},
+  Vol.~\bibinfo{volume}{42}. Wiley Online Library, \bibinfo{pages}{e14883}.
+\newblock
+
+
+\bibitem[Uhrina et~al\mbox{.}(2024)]%
+        {uhrina2024performance}
+\bibfield{author}{\bibinfo{person}{Miroslav Uhrina}, \bibinfo{person}{Lukas
+  Sevcik}, \bibinfo{person}{Juraj Bienik}, {and} \bibinfo{person}{Lenka
+  Smatanova}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Performance comparison of VVC, AV1, HEVC, and AVC
+  for high resolutions}.
+\newblock \bibinfo{journal}{\emph{Electronics}} \bibinfo{volume}{13},
+  \bibinfo{number}{5} (\bibinfo{year}{2024}), \bibinfo{pages}{953}.
+\newblock
+
+
+\bibitem[Vose(1991)]%
+        {vose1991linear}
+\bibfield{author}{\bibinfo{person}{Michael~D. Vose}.}
+  \bibinfo{year}{1991}\natexlab{}.
+\newblock \showarticletitle{A Linear Algorithm for Generating Random Numbers
+  with a Given Distribution}.
+\newblock \bibinfo{journal}{\emph{IEEE Transactions on Software Engineering}}
+  \bibinfo{volume}{17}, \bibinfo{number}{9} (\bibinfo{year}{1991}),
+  \bibinfo{pages}{972--975}.
+\newblock
+\href{https://doi.org/10.1109/32.92917}{doi:\nolinkurl{10.1109/32.92917}}
+
+
+\bibitem[Wu(2025)]%
+        {wu2025efficient}
+\bibfield{author}{\bibinfo{person}{Yu-Ting Wu}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Efficient Environment Map Rendering Based on
+  Decomposition}. In \bibinfo{booktitle}{\emph{Computer Graphics Forum}},
+  Vol.~\bibinfo{volume}{44}. Wiley Online Library, \bibinfo{pages}{e15264}.
+\newblock
+
+
+\bibitem[Zhou et~al\mbox{.}(2024)]%
+        {Zhou2024}
+\bibfield{author}{\bibinfo{person}{Yanzhi Zhou}, \bibinfo{person}{Pengfei Lin},
+  \bibinfo{person}{Hailong Liu}, \bibinfo{person}{Weipeng Zheng},
+  \bibinfo{person}{Xiaoxia Li}, {and} \bibinfo{person}{Wenzhou Zhang}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Fast and flexible spatial sampling methods based on
+  the Quadtree algorithm for ocean monitoring}.
+\newblock \bibinfo{journal}{\emph{Frontiers in Marine Science}}
+  \bibinfo{volume}{Volume 11 - 2024} (\bibinfo{year}{2024}).
+\newblock
+\showISSN{2296-7745}
+\href{https://doi.org/10.3389/fmars.2024.1365366}{doi:\nolinkurl{10.3389/fmars.2024.1365366}}
+
+
+\end{thebibliography}
