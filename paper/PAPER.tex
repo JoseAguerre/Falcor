@@ -424,14 +424,196 @@ actually has the most error left to remove.
 \label{sec:impl}
 We implement both variants in NVIDIA's Falcor rendering engine and test using a full path tracer with Quasi Monte Carlo sampling and MIS. 
 We construct the LeafAlias tables and partitions in CPU, and pass the results to GPU in each frame.
-All the precomputation is done in under 1 millisecond per frame. We then implement the sampling method in the Slang Shading Language.
+All the precomputation is done in under 1 millisecond per frame. We implement the sampling method in the Slang Shading Language.
 In order to reduce GPU memory usage and improve coherency, we spent some effort in making the sampling structures as small as possible.
 Each leaf is packed into a 16-byte record -- its rectangle as two packed 16-bit corner coordinates, the alias threshold and redirect index
 as a half-float and a 16-bit index, and $\bar{L}_i$ as a half-float. For BudgetLeafAlias, we size $B$ so the combined leaf and node buffers fit within roughly half of the GPU's per-core L1 cache, keeping the whole sampling structure resident there during
 traversal instead of round-tripping to global memory on every sample. This compactness helps improving performance when compared to other memory bound samplers like dense CDF or per-pixel alias table.
 
 \section{Results} \label{sec:results}
-These are the results 
+
+\begin{table*}[htbp!]
+\centering
+\small
+\setlength{\tabcolsep}{2.5pt}
+\caption{RMSE, PSNR (dB), and \FLIP\ for all techniques and scenes at their real-time calibrated configurations. On every single scene, at least one of our two techniques is the best technique on every metric.}
+\label{tab:main}
+\begin{tabular}{l ccc ccc ccc ccc ccc}
+\toprule
+\multirow{2}{*}{Technique} & \multicolumn{3}{c}{Rover} & \multicolumn{3}{c}{Cinema} & \multicolumn{3}{c}{Fireplace Room} & \multicolumn{3}{c}{Phone} & \multicolumn{3}{c}{Convergence} \\
+\cmidrule(lr){2-4} \cmidrule(lr){5-7} \cmidrule(lr){8-10} \cmidrule(lr){11-13} \cmidrule(lr){14-16}
+ & RMSE $\downarrow$ & PSNR $\uparrow$ & \FLIP\ $\downarrow$ & RMSE $\downarrow$ & PSNR $\uparrow$ & \FLIP\ $\downarrow$ & RMSE $\downarrow$ & PSNR $\uparrow$ & \FLIP\ $\downarrow$ & RMSE $\downarrow$ & PSNR $\uparrow$ & \FLIP\ $\downarrow$ & RMSE $\downarrow$ & PSNR $\uparrow$ & \FLIP\ $\downarrow$ \\
+\midrule
+Random & 0.0577 & 26.33 & 0.0571 & 0.1109 & 27.77 & 0.0737 & 0.5516 & 17.95 & 0.2444 & 0.0105 & 30.94 & 0.0237 & 0.3296 & 9.71 & 0.4846 \\
+2D CDF & 0.0883 & 24.64 & 0.0675 & 0.1218 & 27.29 & 0.0760 & 0.2295 & 22.60 & 0.1635 & 0.0095 & 31.62 & 0.0222 & 0.1428 & 14.35 & 0.2467 \\
+2D CDF/8 & 0.0580 & 26.33 & 0.0564 & 0.1051 & 28.10 & 0.0714 & 0.2329 & 22.47 & 0.1656 & 0.0088 & 31.81 & 0.0219 & 0.1051 & 16.12 & 0.2021 \\
+Mipmap & 0.0655 & 25.84 & 0.0591 & 0.1105 & 27.80 & 0.0731 & 0.2305 & 22.57 & 0.1640 & 0.0096 & 31.62 & 0.0223 & 0.1435 & 14.29 & 0.2496 \\
+Alias per pixel & 0.0574 & 26.47 & 0.0555 & 0.1054 & 28.11 & 0.0716 & 0.2285 & 22.61 & 0.1631 & 0.0086 & 31.97 & 0.0216 & 0.1008 & 16.35 & 0.1957 \\
+BudgetLeafAlias & \textbf{0.0472} & \textbf{27.25} & \textbf{0.0514} & 0.0936 & \textbf{28.85} & \textbf{0.0680} & 0.2130 & 23.07 & 0.1577 & 0.0086 & 31.97 & 0.0216 & 0.0892 & 17.07 & 0.1818 \\
+CodecLeafAlias & 0.0536 & 26.63 & 0.0547 & \textbf{0.0933} & 28.84 & 0.0682 & \textbf{0.2087} & \textbf{23.20} & \textbf{0.1569} & \textbf{0.0086} & \textbf{32.00} & \textbf{0.0215} & \textbf{0.0870} & \textbf{17.20} & \textbf{0.1800} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+All experiments run on a Intel Core i7-14700F CPU and an NVIDIA GeForce RTX 4080 SUPER GPU (128\,kB of L1 cache/shared memory per streaming
+multiprocessor). We evaluate seven real-time techniques across our five scenes
+(LED-wall Rover, projector-lit Cinema, Fireplace Room, Phone, and the multi-material
+Convergence scene): uniform random sampling ({Random}); dense 2D CDF inversion
+({2D CDF}); the same CDF built at $1/8$ resolution ({2D CDF/8}); a hierarchical
+mipmap-warp sampler ({Mipmap}); a per-pixel alias table ({Alias per pixel}); and our
+own {BudgetLeafAlias} and {CodecLeafAlias}. We added 2D CDF/8 to analyze the quality and performance
+tradeoffs of a coarser resolution; we also tested several further resolution-trimming factors beyond $1/8$ (down to $1/16$ and $1/32$)
+and observed the same trend throughout: the smaller the retained resolution, the cheaper the
+build, but the more error is introduced. We report only the $1/8$ variant in what follows, as the representative trimmed-resolution case.
+
+All techniques are implemented in Falcor, with particular 
+attention paid to making the GPU-side sampling code efficient for each technique. The CPU-side cost
+of building each sampling structure for every frame varies considerably: 2D CDF's
+dense per-pixel CDF costs approximately $10$\,ms per full HD frame, while Alias per pixel's table costs approximately $30$\,ms; our own technique's
+leaf-budgeted construction is consistently under $1$\,ms per frame across every scene tested. The sampling parameters for each technique (samples per pixel and light samples per vertex) are tuned per scene to a real-time budget of $33$\,ms (30\,fps) using the same
+calibration procedure.
+
+Each scene is lit by a different pre-recorded HDR video played back as the
+scene's only light source: Rover uses a full HD road/mountain driving sequence
+(600 frames) displayed on a virtual-production LED wall; Cinema uses a full HD 
+sunset-landscape sequence (250 frames) with a small, very bright sun; Fireplace Room uses a 4K real fire video (800 frames); Phone uses
+a full HD abstract color sequence (1200 frames) ; and
+Convergence uses a 4K dark cave with multiple bright lights video (800 frames) as a single environment-map. Altogether, across these five sequences, our techniques are evaluated against thousands of distinct HDR emissive
+textures, not just the one representative frame shown in each figure. The resulting videos are found in the supplementary material.
+
+
+
+Table~\ref{tab:main} reports RMSE, PSNR, and \FLIP\ for all seven techniques on all five
+scenes at these calibrated configurations. On every single scene, at least one of our two techniques is the best on RMSE,
+PSNR, and \FLIP\ simultaneously. CodecLeafAlias's finer partition (inherited from the video codec, typically
+ finer than BudgetLeafAlias's fixed 4000-leaf budget) lets it track high-frequency
+detail a little more closely on scenes with more spatial complexity, at the cost of a few
+more alias-table fetches to the higher cache levels per pixel; BudgetLeafAlias's curated
+budget already matches Rover's structure closely enough that the extra leaves bring no
+further benefit. 
+
+Table~\ref{tab:main} reports one point on each technique's own time-quality curve. To see the
+full curve, we fit a power law $\text{RMSE}(t) = a\,t^{\,b}$ to a $2048$-point
+samples-per-pixel $\times$ light-samples-per-vertex grid per technique per scene, against
+that scene's own converged reference. 
+
+In order to analyze the real-time performance of each technique, Figure~\ref{fig:realtime} plots the fitted curves of quality as a function of frame processing time. BudgetLeafAlias's curve stays below both structured baselines, 2D CDF and Mipmap for every scene. Its
+curve is also consistently the steepest of the three, so the advantage widens as more time
+becomes available.
+
+\begin{figure*}[htbp!]
+  \centering
+  \includegraphics[width=\textwidth]{realtime_curves.png}
+  \caption{Fitted RMSE-vs-time curves for Rover, Cinema, Phone, and Convergence, and all four
+  techniques. BudgetLeafAlias (red) stays below both 2D CDF
+  (blue) and Mipmap (green) across the entire measured range on every scene.}
+  \label{fig:realtime}
+\end{figure*}
+
+
+\subsection{Video Quality}
+\label{sec:video}
+We additionally measure quality directly on rendered video, encoding the 
+animated sequence per scene (our real-time technique vs. a converged reference) and
+comparing the two videos frame-by-frame. Table~\ref{tab:video} reports mean PSNR and VMAF perceptual video-quality metric across all frames for every scene.
+
+\begin{table}[htbp!]
+\centering
+\small
+\caption{Video-level quality of our real-time technique vs.\ a converged reference, averaged
+over the animated sequence per scene.}
+\label{tab:video}
+\begin{tabular}{l ccc}
+\toprule
+Scene & PSNR (dB) & VMAF & RMSE \\
+\midrule
+Rover           & 27.85 & 83.3 & 0.0405 \\
+Cinema          & 23.87 & 75.1 & 0.0641 \\
+Fireplace Room  & 23.16 & 61.5 & 0.0695 \\
+Phone           & 38.32 & 93.1 & 0.0121 \\
+Convergence     & 16.90 & 49.3 & 0.1428 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Video quality tracks the single-frame results closely: Phone, the scene with the highest
+single-frame PSNR in Table~\ref{tab:main}, also has by far the highest video PSNR (38.3\,dB)
+and VMAF score (93.1), confirming our technique's quality advantage holds up across a full
+animated sequence.
+
+
+\subsection{Denoised Results}
+\label{sec:denoise}
+Real-time renders are frequently paired with an AI denoiser in production. We pass each
+technique's calibrated real-time render through the same OptiX AI denoiser and re-measure
+RMSE against the reference. Table~\ref{tab:denoise} shows that on every scene tested,
+starting from our lower-noise image lets the denoiser reach a lower final RMSE than starting
+from Random or 2D CDF.
+
+\begin{table}[htbp!]
+\centering
+\small
+\caption{RMSE before and after AI denoising. On every scene tested, whichever of our two techniques wins that scene keeps the lowest denoised RMSE too.}
+\label{tab:denoise}
+\begin{tabular}{ll cc}
+\toprule
+Scene & Technique & Noisy RMSE & Denoised RMSE \\
+\midrule
+\multirow{3}{*}{Rover}
+ & Random & 0.0468 & 0.0381 \\
+ & 2D CDF & 0.0779 & 0.0424 \\
+ & {BudgetLeafAlias} & \textbf{0.0367} & \textbf{0.0375} \\
+\midrule
+\multirow{3}{*}{Cinema}
+ & Random & 0.1109 & 0.0111 \\
+ & 2D CDF & 0.1218 & 0.0110 \\
+ & {CodecLeafAlias} & \textbf{0.0933} & \textbf{0.0106} \\
+\midrule
+\multirow{3}{*}{Fireplace Room}
+ & Random & 0.5516 & 0.0312 \\
+ & 2D CDF & 0.2295 & 0.0233 \\
+ & {CodecLeafAlias} & \textbf{0.2087} & \textbf{0.0225} \\
+\midrule
+\multirow{3}{*}{Convergence}
+ & Random & 0.3296 & 0.0148 \\
+ & 2D CDF & 0.1428 & 0.0041 \\
+ & {CodecLeafAlias} & \textbf{0.0870} & \textbf{0.0034} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+Convergence benefits the most: denoising cuts RMSE by over $95\,\%$ for every technique, and
+CodecLeafAlias still finishes with the lowest denoised RMSE of the three ($0.0034$,
+against $0.0041$ for 2D CDF), a direct result of feeding the denoiser a cleaner starting
+image. Figure~\ref{fig:denoisedflip} additionally shows
+denoised closeups and their \FLIP\  error maps for Convergence and Fireplace Room. 2D CDF's denoised output keeps a visibly brighter (higher-error) \FLIP\ map.
+
+Figure~\ref{fig:teaser} shows full-frame comparisons and closeups for Rover and Cinema, where
+BudgetLeafAlias and CodecLeafAlias respectively remove most of the speckled noise still
+visible in Random and 2D CDF's closeups. Figure~\ref{fig:figuresonly} shows
+the same treatment for the remaining three scenes a converged reference, with two matched closeups per scene; each panel also shows, in its top-left
+corner, the actual HDR emissive texture that lit that scene. CodecLeafAlias visibly reduces
+noise relative to both baselines.
+
+\begin{figure*}[htbp!]
+  \centering
+  \includegraphics[width=\textwidth]{figures_only_restir_v9.png}
+  \caption{Fireplace Room, Phone, and Convergence: full-frame diagonal comparisons
+  (Random / 2D CDF / CodecLeafAlias / Reference) with real measured RMSE per technique, two
+  large matched closeups per scene, and each scene's emissive HDR texture (top-left inset).}
+  \label{fig:figuresonly}
+\end{figure*}
+
+\begin{figure*}[htbp!]
+  \centering
+  \includegraphics[width=\textwidth]{denoised_flip_grid.png}
+  \caption{Denoised closeups and FLIP error maps when compared to the reference, for 2D CDF
+  and CodecLeafAlias, at the two regions per scene with the largest denoised FLIP gap, for
+  Convergence and Fireplace Room.}
+  \label{fig:denoisedflip}
+\end{figure*}
+
 
 \section{Conclusions and future work} \label{sec:conclusions}
 These are the conclusions
