@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.11)  12 SEP 2026 19:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.11)  12 SEP 2026 19:57
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -794,8 +794,6 @@ ne 261.
 Class acmart Warning: A possible image without description on input line 268.
 
 [2.2 <./images//quadtree.png>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
 put line 329.
 LaTeX Font Info:    Trying to load font information for OMS+cmr on input line 3
@@ -814,19 +812,22 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[4.4]
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [4.4]
 Overfull \hbox (80.38116pt too wide) in paragraph at lines 451--466
  [][] 
  []
 
 
-Overfull \hbox (10.876pt too wide) in paragraph at lines 486--493
-\OT1/cmr/m/n/9 (-20) the scene's only light source: Rover uses a full HD road/m
+Overfull \hbox (13.25204pt too wide) in paragraph at lines 485--492
+\OT1/cmr/m/n/9 (-20) the scene's only light source: Rover uses a Full HD road/m
 ountain
  []
 
 
-Overfull \hbox (5.649pt too wide) in paragraph at lines 486--493
+Overfull \hbox (5.649pt too wide) in paragraph at lines 485--492
 \OT1/cmr/m/n/9 (-20) driv-ing se-quence (600 frames) dis-played on a virtual-pr
 oduction
  []
@@ -834,47 +835,55 @@ oduction
 <images//realtime_curves.png, id=233, 1036.089pt x 235.5345pt>
 File: images//realtime_curves.png Graphic file (type png)
 <use images//realtime_curves.png>
-Package pdftex.def Info: images//realtime_curves.png  used on input line 509.
+Package pdftex.def Info: images//realtime_curves.png  used on input line 508.
 (pdftex.def)             Requested size: 506.295pt x 115.09663pt.
 
-Class acmart Warning: A possible image without description on input line 514.
+Class acmart Warning: A possible image without description on input line 513.
 
 
-Overfull \hbox (29.53505pt too wide) in paragraph at lines 547--558
+Overfull \hbox (29.53505pt too wide) in paragraph at lines 546--557
  [][] 
  []
 
-[5.5]
-Overfull \hbox (28.0795pt too wide) in paragraph at lines 580--605
+
+Overfull \hbox (28.0795pt too wide) in paragraph at lines 579--604
  [][] 
  []
 
-[6.6 <./images//realtime_curves.png>]
-Overfull \hbox (6.27782pt too wide) in paragraph at lines 614--620
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [5.5]
+Overfull \vbox (1.68237pt too high) has occurred while \output is active []
+
+
+Overfull \hbox (6.27782pt too wide) in paragraph at lines 613--619
 \OT1/cmr/m/n/9 (-20) Rover and Cin-ema, where Bud-getLeafAlias and Code-cLeafAl
 ias
  []
 
+[6.6 <./images//realtime_curves.png>]
 <images//figures_only_restir_v9.png, id=271, 4240.84375pt x 3262.1875pt>
 File: images//figures_only_restir_v9.png Graphic file (type png)
 <use images//figures_only_restir_v9.png>
 Package pdftex.def Info: images//figures_only_restir_v9.png  used on input line
- 623.
+ 622.
 (pdftex.def)             Requested size: 506.295pt x 389.45454pt.
 
-Class acmart Warning: A possible image without description on input line 628.
+
+Class acmart Warning: A possible image without description on input line 627.
 
 <images//denoised_flip_grid.png, id=272, 4117.3825pt x 1067.99pt>
 File: images//denoised_flip_grid.png Graphic file (type png)
 <use images//denoised_flip_grid.png>
-Package pdftex.def Info: images//denoised_flip_grid.png  used on input line 632
+Package pdftex.def Info: images//denoised_flip_grid.png  used on input line 631
 .
 (pdftex.def)             Requested size: 506.295pt x 131.31473pt.
 
-Class acmart Warning: A possible image without description on input line 637.
+Class acmart Warning: A possible image without description on input line 636.
 
 (./PAPER.bbl
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 6396) has occurred while \output is active []
 
 
 Underfull \hbox (badness 2478) in paragraph at lines 143--149
@@ -903,10 +912,6 @@ portant to optimize color contrast for the visually impaired. Taking these impo
 rtant steps when creating your papers will ensure that the widest possible audi
 ence can ingest your work..
 
-
-Overfull \vbox (1.25pt too high) has occurred while \output is active []
-
-
 (/usr/local/texlive/2023basic/texmf-dist/tex/generic/stringenc/se-pdfdoc.def
 File: se-pdfdoc.def 2019/11/29 v1.12 stringenc: PDFDocEncoding
 )
@@ -921,13 +926,13 @@ Package rerunfilecheck Info: File `PAPER.out' has not changed.
 (rerunfilecheck)             Checksum: C260A4CF5B2F9769B85CCD2C3CA1B8A2;1691.
  ) 
 Here is how much of TeX's memory you used:
- 18561 strings out of 477476
- 304397 string characters out of 5824244
- 1886388 words of memory out of 5000000
+ 18563 strings out of 477476
+ 304409 string characters out of 5824244
+ 1890388 words of memory out of 5000000
  37942 multiletter control sequences out of 15000+600000
- 532276 words of font info for 207 fonts, out of 8000000 for 9000
+ 532328 words of font info for 208 fonts, out of 8000000 for 9000
  480 hyphenation exceptions out of 8191
- 90i,13n,131p,1181b,821s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,12n,131p,1167b,821s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx1
 0.pfb></usr/local/texlive/2023basic/texmf-dist/fonts/type1/public/amsfonts/cm/c
 mbx8.pfb></usr/local/texlive/2023basic/texmf-dist/fonts/type1/public/amsfonts/c
@@ -951,7 +956,7 @@ e/2023basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/local/tex
 live/2023basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/local/
 texlive/2023basic/texmf-dist/fonts/type1/public/cm-super/sfrm0700.pfb></usr/loc
 al/texlive/2023basic/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb>
-Output written on PAPER.pdf (9 pages, 29936337 bytes).
+Output written on PAPER.pdf (9 pages, 29936271 bytes).
 PDF statistics:
  408 PDF objects out of 1000 (max. 8388607)
  350 compressed objects within 4 object streams
