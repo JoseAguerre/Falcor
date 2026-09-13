@@ -261,7 +261,7 @@ Importance sampling of emissive textures is a well-studied problem in the graphi
   \includegraphics[width=\linewidth]{fig_spectrum_paper_color.png}
   \caption{2D power spectrum of samples from 2D CDF inversion, plain per-pixel alias, and
   our LeafAlias, from the same Halton input. Per-pixel alias shows a sharp,
-  isolated off-axis peak (flatness 0.270, peak/median 16{,}113) -- a periodic banding
+  isolated off-axis peak (flatness 0.270, peak/median 16{,}113), a periodic banding
   artifact from its flat array index resonating with the input sequence's base-2 digit
   structure. Both CDF inversion and ours stay close to the input's own clean spectrum.}
   \label{fig:spectrum}
@@ -288,17 +288,17 @@ complexity. \cite{lehmann2021weighted} study GPU-specific weighted sampling and 
 
 Modern production renderers mostly rely on dense CDF or mipmapped samplers. {Falcor}~\cite{falcorsoftware} uses a hierarchical mip-pyramid importance map over the environment texture's luminance and, separately,
 the triangle-scale alias table for mesh lights. {Mitsuba 3}~\cite{nimierdavid2019mitsuba2} builds a {Hierarchical2D} warp over
-the environment map -- the same mip-pyramid family as Falcor's. {pbrt-v4}~\cite{pharr2023pbrt}
+the environment map, which is the same mip-pyramid family as Falcor's. {pbrt-v4}~\cite{pharr2023pbrt}
 uses a dense CDF distribution, inverted via binary search. {Blender Cycles}~\cite{cyclessoftware} builds the same
 kind of dense marginal/conditional CDF over a downsampled background map. 
 
 \section{Method}\label{sec:method}
 
 The LeafAlias technique applies to any light source described by a 2D radiance texture $L(u,v)$ over
-a parameter domain $(u,v)\in[0,1)^2$ -- an environment map, or the emission texture of an
+a parameter domain $(u,v)\in[0,1)^2$, e.g. an environment map, or the emission texture of an
 area light. As with any textured light, variance is minimized when the sampling density
 matches radiance, $p(y)\propto L(y)$. We approximate this with a piecewise-constant density
-over a partition of the domain into disjoint leaf rectangles $\{R_i\}_{i=1}^N$ -- for now
+over a partition of the domain into disjoint leaf rectangles $\{R_i\}_{i=1}^N$, for now
 assumed given; Sections \ref{sec:codec} and \ref{sec:budget} describe the two ways we
 actually construct it. Each leaf carries a single weight proportional to its flux: its area in the parameter domain
 times its average radiance:
@@ -322,7 +322,7 @@ table~\cite{vose1991linear} over this array once, in $O(N)$: leaves below the me
 are paired with leaves above it, the excess of the latter absorbs the deficit of the
 former, and the process repeats until every leaf holds a threshold and, where needed, the
 index of the leaf it aliases to (Algorithm~\ref{alg:build}). Unlike a dense CDF, the
-resulting table needs no search at sample time -- selecting a leaf is an $O(1)$ array
+resulting table needs no search at sample time since selecting a leaf is an $O(1)$ array
 lookup.
 
 \begin{algorithm}[h]
@@ -346,12 +346,12 @@ lookup.
 \subsection{Sampling}
 \label{sec:sampling}
 To draw a light sample, we use three uniform numbers $\xi_1,\xi_2,\xi_3$
-(Algorithm~\ref{alg:sample}). $\xi_1$ selects a bucket in $O(1)$; comparing its leftover
-fractional part against the bucket's threshold decides whether we keep that leaf or its
-alias partner. $\xi_2,\xi_3$ place the sample uniformly
+(Algorithm~\ref{alg:sample}). $\xi_1$ selects a bucket in $O(1)$; 
+$\xi_2$ decides whether we keep that leaf or its
+alias partner.
+$\xi_3$ and $f$ place the sample uniformly
 inside the chosen leaf's rectangle. The sample's pdf is read directly from its
-leaf's stored average luminance via Equation~\ref{eq:pdf} -- not re-derived from the alias
-table. Radiance is read from the texture at the sampled $(u,v)$.
+leaf's stored average luminance via Equation~\ref{eq:pdf}. Radiance is read from the texture at the sampled $(u,v)$.
 
 \begin{algorithm}[h]
 \caption{Draw one light sample}
@@ -387,8 +387,8 @@ matches the technique's actual density at that point.
 Building the partition can be costly, especially for dynamic content that changes every few milliseconds. 
 CodecLeafAlias avoids it entirely when the texture 
 arrives as a compressed video frame. Modern codecs (HEVC, AV1, VP9) already split each frame
-into a coding-tree hierarchy driven by local signal variance -- structurally the same
-quadtree our leaves need, produced as a side effect of decoding rather than an extra pass.
+into a coding-tree hierarchy driven by local signal variance, which is structurally the same
+partition our method needs.
 We take each coding-tree leaf's block directly as one of our leaf rectangles $R_i$, and
 estimate $\bar{L}_i$ from the block's own zero-frequency (DC) transform coefficient rather
 than summing pixels: the DCT/DST's DC term is, up to a fixed normalization constant, exactly
@@ -436,7 +436,7 @@ We implement both variants in NVIDIA's Falcor rendering engine and test using a 
 We construct the LeafAlias tables and partitions in the CPU, and pass the results to the GPU in each frame.
 All the precomputation is done in under 1 millisecond per frame. We implement the sampling method in the Slang Shading Language.
 In order to reduce GPU memory usage and improve coherency, we spent some effort in making the sampling structures as small as possible.
-Each leaf is packed into a 16-byte record -- its rectangle as two packed 16-bit corner coordinates, the alias threshold and redirect index
+Each leaf is packed into a 16-byte record, its rectangle as two packed 16-bit corner coordinates, the alias threshold and redirect index
 as a half-float and a 16-bit index, and $\bar{L}_i$ as a half-float. For BudgetLeafAlias, we size $B$ so the combined leaf and node buffers fit within roughly half of the GPU's per-core L1 cache, keeping the whole sampling structure resident there during
 traversal instead of round-tripping to global memory on every sample. This compactness helps improve performance when compared to other memory-bound samplers like dense CDF or per-pixel Alias table.
 
