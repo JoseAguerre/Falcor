@@ -45,7 +45,7 @@
 %%
 %%
 %\documentclass[acmsmall]{acmart}
-\documentclass[sigconf]{acmart}
+\documentclass[acmtog,review,anonymous]{acmart}
 \usepackage{mathtools}
 \usepackage{xspace} 
 \usepackage{multirow}
@@ -63,8 +63,8 @@
 %% the commands and values with those provided to you when you
 %% complete the rights form.
 \setcopyright{acmlicensed}
-\copyrightyear{2025}
-\acmYear{2025}
+\copyrightyear{2026}
+\acmYear{2026}
 \acmJournal{TOG}
 
 %% These commands are for a PROCEEDINGS abstract or paper.
@@ -267,8 +267,8 @@ Importance sampling of emissive textures is a well-studied problem in the graphi
   \label{fig:spectrum}
 \end{figure}
 
-Despite being $O(1)$ to sample, the per-pixel Alias method is memory-intensive and expensive to construct via Vose's technique. 
-Nevertheless, the Alias method is widely used in mesh light sampling for geometry with thousands of emissive triangles. \cite{moreau2019dynamic} maintain a light-sampling BVH incrementally across frames for thousands of moving lights.
+Despite being $O(1)$ to sample, the Alias method is memory-intensive and expensive to construct via Vose's technique. 
+Nevertheless, it is widely used in mesh light sampling for geometry with thousands of emissive triangles. \cite{moreau2019dynamic} maintain a light-sampling BVH incrementally across frames for thousands of moving lights.
 ReSTIR~\cite{bitterli2020spatiotemporal} resamples across spatial and
 temporal neighbors to pick among many dynamic lights at a fraction of the cost of resampling
 from scratch. Conty Estevez and Kulla~\cite{contykulla2018adaptive} adaptively split a light
