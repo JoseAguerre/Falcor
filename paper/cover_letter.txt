@@ -1,0 +1,41 @@
+Dear Editor-in-Chief,
+
+I am submitting my manuscript, "LeafAlias: Real-Time Importance Sampling of Dynamic
+Emissive Textures for Video-Based Lighting" (Submission ID: papers_353s1), for
+consideration for publication in ACM Transactions on Graphics.
+
+Emissive textures used as light sources are traditionally treated as static images, and
+state-of-the-art importance samplers (dense 2D CDF inversion, mipmap hierarchies, per-pixel
+alias tables) are built once and reused for an entire sequence. This assumption breaks down
+in an increasingly common class of workflows -- LED-wall virtual production, AR/VR object
+insertion, and video-based environment maps -- where the emissive texture itself changes
+every frame and the sampling structure must be rebuilt in real time.
+
+This paper introduces LeafAlias, a family of samplers that build a per-frame alias table
+over a variance-driven quadtree partition rather than over raw pixels, in two variants:
+CodecLeafAlias, which reuses the coding-tree partition that modern video codecs already
+compute as part of standard video decoding, and BudgetLeafAlias, which builds a
+budget-constrained quadtree from scratch when no codec metadata is available. Both are
+inexpensive enough to rebuild every frame, small enough to remain resident in the GPU's L1
+cache, and preserve more of the input sample set's spatial coherence than a per-pixel alias
+table -- which we show produces a measurable periodic banding artifact in its sample
+spectrum. At a matched real-time frame-time budget, our technique reduces RMSE by 9-53%
+over dense 2D CDF inversion, depending on the scene, and reduces sampler memory and
+per-frame transfer by several orders of magnitude relative to state-of-the-art samplers.
+
+We believe this work is a good fit for TOG because it identifies and exploits a previously
+unused connection between two mature toolchains -- video compression and real-time
+rendering -- to solve a sampling problem that existing static-image techniques cannot
+address efficiently, and validates it with a full real-time rendering pipeline across
+several video-lit scenes rather than isolated sampling benchmarks.
+
+This manuscript is original work, has not been published previously, and is not currently
+under review at any other journal or conference. All authors have approved the manuscript
+and agree with its submission.
+
+Thank you for your consideration.
+
+Sincerely,
+Jose Aguerre
+Universidad de la República, Montevideo, Uruguay
+jpaguerre@fing.edu.uy

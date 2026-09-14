@@ -472,15 +472,13 @@ Convergence scene): uniform random sampling; dense 2D CDF inversion; the same CD
 mipmap-warp sampler; a per-pixel Alias table; and our
 own {BudgetLeafAlias} and {CodecLeafAlias}. We added 2D CDF/8 to analyze the quality and performance
 tradeoffs of a coarser resolution; we also tested several further resolution-trimming factors beyond $1/8$ (down to $1/16$ and $1/32$)
-and observed the same trend throughout: the smaller the retained resolution, the cheaper the
-build, but the more error is introduced. We report only the $1/8$ variant in what follows, as the representative trimmed-resolution case.
+and observed the same trend: smaller resolutions are cheaper to sample but significant error is introduced. We report only the $1/8$ variant in what follows, as the representative trimmed-resolution case.
 
 All techniques are implemented in Falcor, with particular 
 attention paid to making the GPU-side sampling code efficient for each technique. The CPU-side cost
 of building each sampling structure for every frame varies considerably: 2D CDF's
 dense per-pixel CDF costs approximately $10$\,ms per Full HD frame, while per-pixel Alias table costs approximately $30$\,ms; our own technique's
-leaf-budgeted construction is consistently under $1$\,ms per frame across every scene tested. The sampling parameters for each technique (samples per pixel and light samples per vertex) are tuned per scene to a real-time budget of $33$\,ms (30\,fps) using the same
-calibration procedure.
+leaf-budgeted construction is consistently under $1$\,ms per frame across every scene tested.The sampling parameters for each technique (samples per pixel and light samples per vertex) are tuned per scene to a real-time budget of $33$,ms (30,fps) using the same calibration procedure. 2D CDF and mipmapped methods allow approximately a third of the samples obtained with the random approach. BudgetLeafAlias allows the same number of samples as random, while CodecLeafAlias and per-pixel alias allow approximately 25\% fewer.
 
 Each scene is lit by a different HDR video played back as the
 scene's only light source: Rover uses a Full HD road/mountain driving sequence
@@ -490,6 +488,8 @@ a Full HD abstract color sequence (1200 frames); and
 Convergence uses a 4K dark cave with multiple bright lights video (800 frames) as a single environment map. Altogether, across these five sequences, our techniques are evaluated against thousands of distinct HDR emissive
 textures, not just the one representative frame shown in each figure. The resulting videos are found in the supplementary material.
 
+Figure \ref{fig:spp4} evaluates Lambertian diffuse convolution on three real HDR emissive textures (cave, fire, colors) at a fixed sample budget of 4,spp, comparing 2D CDF, per-pixel alias, and BudgetLeafAlias against a high-sample-count reference (RMSE reported per source). At equal spp, BudgetLeafAlias consistently achieves lower RMSE than per-pixel alias across all three textures, showing that its leaf-budgeted hierarchical structure yields a better importance-sampling approximation than a flat per-pixel alias table at the same cost. 2D CDF yields a better approximation because it is an exact sampling and more expensive technique
+
 Table~\ref{tab:main} reports RMSE, PSNR, and \FLIP\ for all seven techniques on all five
 scenes at these calibrated configurations. On every single scene, at least one of our two techniques is the best on RMSE,
 PSNR, and \FLIP\ simultaneously. CodecLeafAlias's finer partition (inherited from the video codec, typically
@@ -498,6 +498,14 @@ detail a little more closely on scenes with more spatial complexity, at the cost
 more alias-table fetches to the higher cache levels per pixel; BudgetLeafAlias's curated
 budget already matches Rover's structure closely enough that the extra leaves bring no
 further benefit. 
+
+\begin{figure}[htbp!]
+  \centering
+  \includegraphics[width=\columnwidth]{spp4b.png}
+  \caption{Lambertian diffuse convolution across three HDR images, importance sampled with 3 techniques at 4 spp. RMSE against a reference per source. BudgetLeafAlias shows better quality results at the same spp than per-pixel Alias. }
+  \label{fig:spp4}
+\end{figure}
+
 
 In order to analyze the real-time performance of each technique, Figure~\ref{fig:realtime} plots the fitted curves of quality as a function of frame processing time. BudgetLeafAlias's curve stays below both structured baselines, 2D CDF and Mipmap for every scene. Its
 curve is also consistently the steepest of the three, so the advantage widens as more time
@@ -518,25 +526,6 @@ becomes available.
 We additionally measure quality directly on rendered video, encoding the 
 animated sequence per scene (our real-time technique vs. a converged reference) and
 comparing the two videos frame-by-frame. Table~\ref{tab:video} reports mean PSNR and VMAF perceptual video-quality metric across all frames for every scene.
-
-\begin{table}[htbp!]
-\centering
-\small
-\caption{Video-level quality of our real-time technique vs.\ a converged reference, averaged
-over the animated sequence per scene.}
-\label{tab:video}
-\begin{tabular}{l ccc}
-\toprule
-Scene & PSNR (dB) & VMAF & RMSE \\
-\midrule
-Rover           & 27.85 & 83.3 & 0.0405 \\
-Cinema          & 23.87 & 75.1 & 0.0641 \\
-Fireplace Room  & 23.16 & 61.5 & 0.0695 \\
-Phone           & 38.32 & 93.1 & 0.0121 \\
-Convergence     & 16.90 & 49.3 & 0.1428 \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \begin{table}[t]
 \centering
