@@ -297,7 +297,7 @@ kind of dense marginal/conditional CDF over a downsampled background map.
 The LeafAlias technique applies to any light source described by a 2D radiance texture $L(u,v)$ over
 a parameter domain $(u,v)\in[0,1)^2$, e.g. an environment map, or the emission texture of an
 area light. As with any textured light, variance is minimized when the sampling density
-matches radiance, $p(y)\propto L(y)$. We approximate this with a piecewise-constant density
+matches radiance, $p(u,v)\propto L(u,v)$. We approximate this with a piecewise-constant density
 over a partition of the domain into disjoint leaf rectangles $\{R_i\}_{i=1}^N$, for now
 assumed given; Sections \ref{sec:codec} and \ref{sec:budget} describe the two ways we
 actually construct it. Each leaf carries a single weight proportional to its flux: its area in the parameter domain
@@ -308,10 +308,10 @@ w_i = A_i \bar{L}_i, \qquad \bar{L}_i = \frac{1}{A_i}\int_{R_i} L(u,v)\,dA. \lab
 Normalizing over all leaves gives a piecewise-constant density over the parameter domain
 and a per-leaf selection probability:
 \begin{equation}
-p(y) = \frac{\bar{L}_i}{W} \ \text{for } y \in R_i, \qquad
+p(u,v) = \frac{\bar{L}_i}{W} \ \text{for } (u,v) \in R_i, \qquad
 p_i = \frac{w_i}{W}, \qquad W = \sum_{j=1}^N w_j. \label{eq:pdf}
 \end{equation}
-Converting $p(y)$ to whatever measure a particular light type actually samples with
+Converting $p(u,v)$ to whatever measure a particular light type actually samples with
 respect to (solid angle for a distant environment map or projected solid angle for a local
 area light) is a standard change-of-variables applied at evaluation time, and is
 independent of the sampling structure described below.

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.11)  13 SEP 2026 12:22
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.11)  13 SEP 2026 21:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -923,11 +923,11 @@ Package rerunfilecheck Info: File `PAPER.out' has not changed.
 (rerunfilecheck)             Checksum: C260A4CF5B2F9769B85CCD2C3CA1B8A2;1691.
  ) 
 Here is how much of TeX's memory you used:
- 18559 strings out of 477476
- 304381 string characters out of 5824244
+ 18557 strings out of 477476
+ 304367 string characters out of 5824244
  1886388 words of memory out of 5000000
  37942 multiletter control sequences out of 15000+600000
- 532215 words of font info for 206 fonts, out of 8000000 for 9000
+ 532164 words of font info for 205 fonts, out of 8000000 for 9000
  480 hyphenation exceptions out of 8191
  90i,13n,131p,1167b,821s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx1
@@ -953,7 +953,7 @@ e/2023basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/local/tex
 live/2023basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/local/
 texlive/2023basic/texmf-dist/fonts/type1/public/cm-super/sfrm0700.pfb></usr/loc
 al/texlive/2023basic/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb>
-Output written on PAPER.pdf (9 pages, 29935683 bytes).
+Output written on PAPER.pdf (9 pages, 29935700 bytes).
 PDF statistics:
  407 PDF objects out of 1000 (max. 8388607)
  349 compressed objects within 4 object streams
