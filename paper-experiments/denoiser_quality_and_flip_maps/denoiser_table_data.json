@@ -1,0 +1,58 @@
+{
+  "rover": {
+    "Random": {
+      "noisy_rmse": 0.046803,
+      "denoised_rmse": 0.0381193
+    },
+    "2D CDF": {
+      "noisy_rmse": 0.0778782,
+      "denoised_rmse": 0.0424144
+    },
+    "BudgetLeafAlias": {
+      "noisy_rmse": 0.036741,
+      "denoised_rmse": 0.0375242
+    }
+  },
+  "cinema": {
+    "Random": {
+      "noisy_rmse": 0.110928,
+      "denoised_rmse": 0.0110837
+    },
+    "2D CDF": {
+      "noisy_rmse": 0.121794,
+      "denoised_rmse": 0.0110198
+    },
+    "CodecLeafAlias": {
+      "noisy_rmse": 0.0933246,
+      "denoised_rmse": 0.0106355
+    }
+  },
+  "fireplace_room": {
+    "Random": {
+      "noisy_rmse": 0.551594,
+      "denoised_rmse": 0.0311706
+    },
+    "2D CDF": {
+      "noisy_rmse": 0.229503,
+      "denoised_rmse": 0.0233397
+    },
+    "CodecLeafAlias": {
+      "noisy_rmse": 0.208708,
+      "denoised_rmse": 0.0224646
+    }
+  },
+  "convergence": {
+    "Random": {
+      "noisy_rmse": 0.329628,
+      "denoised_rmse": 0.014791
+    },
+    "2D CDF": {
+      "noisy_rmse": 0.142826,
+      "denoised_rmse": 0.00413842
+    },
+    "CodecLeafAlias": {
+      "noisy_rmse": 0.0870087,
+      "denoised_rmse": 0.00342521
+    }
+  }
+}

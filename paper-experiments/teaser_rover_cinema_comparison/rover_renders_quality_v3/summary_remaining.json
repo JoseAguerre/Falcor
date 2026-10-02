@@ -1,0 +1,82 @@
+﻿[
+    {
+        "label":  "AliasCtu",
+        "technique":  "AliasCtu",
+        "samplesPerPixel":  4,
+        "lightSamplesPerVertex":  15,
+        "leafBudget":  0,
+        "rmse":  0.0536175,
+        "mse":  0.00217323,
+        "averageFLIP":  0.0546816
+    },
+    {
+        "label":  "BudgetLeafAlias1000",
+        "technique":  "BudgetLeafAlias",
+        "samplesPerPixel":  4,
+        "lightSamplesPerVertex":  20,
+        "leafBudget":  1000,
+        "rmse":  0.0497383,
+        "mse":  0.00198596,
+        "averageFLIP":  0.0524703
+    },
+    {
+        "label":  "AliasPerPixel",
+        "technique":  "AliasPerPixel",
+        "samplesPerPixel":  4,
+        "lightSamplesPerVertex":  13,
+        "leafBudget":  0,
+        "rmse":  0.057432,
+        "mse":  0.0022539,
+        "averageFLIP":  0.0555165
+    },
+    {
+        "label":  "Cdf2DDiv8",
+        "technique":  "Cdf2DDiv8",
+        "samplesPerPixel":  4,
+        "lightSamplesPerVertex":  12,
+        "leafBudget":  0,
+        "rmse":  0.0580306,
+        "mse":  0.00232732,
+        "averageFLIP":  0.0564172
+    },
+    {
+        "label":  "HierarchicalMip",
+        "technique":  "HierarchicalMip",
+        "samplesPerPixel":  4,
+        "lightSamplesPerVertex":  9,
+        "leafBudget":  0,
+        "rmse":  0.065462,
+        "mse":  0.00260813,
+        "averageFLIP":  0.0591385
+    },
+    {
+        "label":  "Cdf2DDiv16",
+        "technique":  "Cdf2DDiv16",
+        "samplesPerPixel":  4,
+        "lightSamplesPerVertex":  13,
+        "leafBudget":  0,
+        "rmse":  0.0587468,
+        "mse":  0.00230121,
+        "averageFLIP":  0.0563429
+    },
+    {
+        "label":  "Cdf2DDiv32",
+        "technique":  "Cdf2DDiv32",
+        "samplesPerPixel":  4,
+        "lightSamplesPerVertex":  14,
+        "leafBudget":  0,
+        "rmse":  0.0562849,
+        "mse":  0.00225571,
+        "averageFLIP":  0.0558931
+    },
+    {
+        "label":  "BudgetLeafAlias2000",
+        "technique":  "BudgetLeafAlias",
+        "samplesPerPixel":  4,
+        "lightSamplesPerVertex":  22,
+        "leafBudget":  2000,
+        "rmse":  0.0478099,
+        "mse":  0.00189672,
+        "averageFLIP":  0.0514828
+    }
+]

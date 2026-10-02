@@ -1,0 +1,35 @@
+﻿[
+    {
+        "label":  "Random",
+        "samplesPerPixel":  4,
+        "lightSamplesPerVertex":  19,
+        "leafBudget":  0,
+        "rmse":  0.0576818,
+        "mse":  0.00232832,
+        "averageFLIP":  0.057144,
+        "refFrames":  8000,
+        "refSpp":  8
+    },
+    {
+        "label":  "Cdf2D",
+        "samplesPerPixel":  4,
+        "lightSamplesPerVertex":  5,
+        "leafBudget":  0,
+        "rmse":  0.088335,
+        "mse":  0.00343428,
+        "averageFLIP":  0.0675386,
+        "refFrames":  8000,
+        "refSpp":  8
+    },
+    {
+        "label":  "BudgetLeafAlias4000",
+        "samplesPerPixel":  4,
+        "lightSamplesPerVertex":  22,
+        "leafBudget":  4000,
+        "rmse":  0.0472289,
+        "mse":  0.00188471,
+        "averageFLIP":  0.0513714,
+        "refFrames":  8000,
+        "refSpp":  8
+    }
+]

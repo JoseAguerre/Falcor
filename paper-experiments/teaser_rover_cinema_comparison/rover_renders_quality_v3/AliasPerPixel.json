@@ -1,0 +1,17 @@
+{
+  "sampler": "AliasPerPixel",
+  "sampleGenerator": 3,
+  "samplesPerPixel": 4,
+  "maxSurfaceBounces": 5,
+  "maxDiffuseBounces": 2,
+  "maxSpecularBounces": 5,
+  "maxTransmissionBounces": 5,
+  "lightSamplesPerVertex": 13,
+  "leafBudget": null,
+  "accumulatedFrames": 1,
+  "effectiveTotalSpp": 4,
+  "profiledFrames": 2,
+  "meanFrameTimeMs": -0.0004999965312890708,
+  "totalProfiledTimeMs": -0.0009999930625781417,
+  "outName": "AliasPerPixel"
+}

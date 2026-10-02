@@ -1,0 +1,17 @@
+{
+  "sampler": "BudgetLeafAlias",
+  "sampleGenerator": 3,
+  "samplesPerPixel": 4,
+  "maxSurfaceBounces": 5,
+  "maxDiffuseBounces": 2,
+  "maxSpecularBounces": 5,
+  "maxTransmissionBounces": 5,
+  "lightSamplesPerVertex": 22,
+  "leafBudget": 2000,
+  "accumulatedFrames": 1,
+  "effectiveTotalSpp": 4,
+  "profiledFrames": 2,
+  "meanFrameTimeMs": -0.00034999538911506534,
+  "totalProfiledTimeMs": -0.0006999907782301307,
+  "outName": "BudgetLeafAlias2000"
+}

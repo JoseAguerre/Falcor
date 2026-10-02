@@ -1,0 +1,17 @@
+{
+  "sampler": "Cdf2DDiv32",
+  "sampleGenerator": 3,
+  "samplesPerPixel": 4,
+  "maxSurfaceBounces": 5,
+  "maxDiffuseBounces": 2,
+  "maxSpecularBounces": 5,
+  "maxTransmissionBounces": 5,
+  "lightSamplesPerVertex": 5,
+  "leafBudget": null,
+  "accumulatedFrames": 1,
+  "effectiveTotalSpp": 4,
+  "profiledFrames": 2,
+  "meanFrameTimeMs": -0.000600004568696022,
+  "totalProfiledTimeMs": -0.001200009137392044,
+  "outName": "Cdf2DDiv32"
+}

@@ -1,0 +1,17 @@
+{
+  "sampler": "Random",
+  "sampleGenerator": 3,
+  "samplesPerPixel": 8,
+  "maxSurfaceBounces": 5,
+  "maxDiffuseBounces": 2,
+  "maxSpecularBounces": 5,
+  "maxTransmissionBounces": 5,
+  "lightSamplesPerVertex": 1,
+  "leafBudget": null,
+  "accumulatedFrames": 60,
+  "effectiveTotalSpp": 480,
+  "profiledFrames": 39,
+  "meanFrameTimeMs": 14.598325640784028,
+  "totalProfiledTimeMs": 569.3346999905771,
+  "outName": "_calib_ref"
+}

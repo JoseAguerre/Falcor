@@ -1,0 +1,57 @@
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\caption{RMSE, PSNR (dB), and \FLIP\ for all seven techniques, all five scenes, at their real-time calibrated configurations. On every single scene, at least one of our two techniques -- BudgetLeafAlias or CodecLeafAlias -- is the best technique on every metric.}
+\label{tab:main}
+\begin{tabular}{ll ccc}
+\toprule
+Scene & Technique & RMSE $\downarrow$ & PSNR $\uparrow$ & \FLIP\ $\downarrow$ \\
+\midrule
+\multirow{7}{*}{Rover}
+ & Random & 0.0577 & 26.33 & 0.0571 \\
+ & 2D CDF & 0.0883 & 24.64 & 0.0675 \\
+ & 2D CDF/8 & 0.0580 & 26.33 & 0.0564 \\
+ & Mipmap & 0.0655 & 25.84 & 0.0591 \\
+ & Alias per pixel & 0.0574 & 26.47 & 0.0555 \\
+ & BudgetLeafAlias & \textbf{0.0472} & \textbf{27.25} & \textbf{0.0514} \\
+ & CodecLeafAlias & 0.0536 & 26.63 & 0.0547 \\
+\midrule
+\multirow{7}{*}{Cinema}
+ & Random & 0.1109 & 27.77 & 0.0737 \\
+ & 2D CDF & 0.1218 & 27.29 & 0.0760 \\
+ & 2D CDF/8 & 0.1051 & 28.10 & 0.0714 \\
+ & Mipmap & 0.1105 & 27.80 & 0.0731 \\
+ & Alias per pixel & 0.1054 & 28.11 & 0.0716 \\
+ & BudgetLeafAlias & 0.0936 & \textbf{28.85} & \textbf{0.0680} \\
+ & CodecLeafAlias & \textbf{0.0933} & 28.84 & 0.0682 \\
+\midrule
+\multirow{7}{*}{Fireplace Room}
+ & Random & 0.5516 & 17.95 & 0.2444 \\
+ & 2D CDF & 0.2295 & 22.60 & 0.1635 \\
+ & 2D CDF/8 & 0.2329 & 22.47 & 0.1656 \\
+ & Mipmap & 0.2305 & 22.57 & 0.1640 \\
+ & Alias per pixel & 0.2285 & 22.61 & 0.1631 \\
+ & BudgetLeafAlias & 0.2130 & 23.07 & 0.1577 \\
+ & CodecLeafAlias & \textbf{0.2087} & \textbf{23.20} & \textbf{0.1569} \\
+\midrule
+\multirow{7}{*}{Phone}
+ & Random & 0.0105 & 30.94 & 0.0237 \\
+ & 2D CDF & 0.0095 & 31.62 & 0.0222 \\
+ & 2D CDF/8 & 0.0088 & 31.81 & 0.0219 \\
+ & Mipmap & 0.0096 & 31.62 & 0.0223 \\
+ & Alias per pixel & 0.0086 & 31.97 & 0.0216 \\
+ & BudgetLeafAlias & 0.0086 & 31.97 & 0.0216 \\
+ & CodecLeafAlias & \textbf{0.0086} & \textbf{32.00} & \textbf{0.0215} \\
+\midrule
+\multirow{7}{*}{Convergence}
+ & Random & 0.3296 & 9.71 & 0.4846 \\
+ & 2D CDF & 0.1428 & 14.35 & 0.2467 \\
+ & 2D CDF/8 & 0.1051 & 16.12 & 0.2021 \\
+ & Mipmap & 0.1435 & 14.29 & 0.2496 \\
+ & Alias per pixel & 0.1008 & 16.35 & 0.1957 \\
+ & BudgetLeafAlias & 0.0892 & 17.07 & 0.1818 \\
+ & CodecLeafAlias & \textbf{0.0870} & \textbf{17.20} & \textbf{0.1800} \\
+\bottomrule
+\end{tabular}
+\end{table}

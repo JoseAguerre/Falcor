@@ -1,0 +1,31 @@
+\begin{table}[t]
+\centering
+\small
+\caption{RMSE before and after AI denoising. On every scene tested, whichever of our two techniques wins that scene keeps the lowest denoised RMSE too.}
+\label{tab:denoise}
+\begin{tabular}{ll cc}
+\toprule
+Scene & Technique & Noisy RMSE & Denoised RMSE \\
+\midrule
+\multirow{3}{*}{Rover}
+ & Random & 0.0468 & 0.0381 \\
+ & 2D CDF & 0.0779 & 0.0424 \\
+ & \textbf{BudgetLeafAlias} & \textbf{0.0367} & \textbf{0.0375} \\
+\midrule
+\multirow{3}{*}{Cinema}
+ & Random & 0.1109 & 0.0111 \\
+ & 2D CDF & 0.1218 & 0.0110 \\
+ & \textbf{CodecLeafAlias} & \textbf{0.0933} & \textbf{0.0106} \\
+\midrule
+\multirow{3}{*}{Fireplace Room}
+ & Random & 0.5516 & 0.0312 \\
+ & 2D CDF & 0.2295 & 0.0233 \\
+ & \textbf{CodecLeafAlias} & \textbf{0.2087} & \textbf{0.0225} \\
+\midrule
+\multirow{3}{*}{Convergence}
+ & Random & 0.3296 & 0.0148 \\
+ & 2D CDF & 0.1428 & 0.0041 \\
+ & \textbf{CodecLeafAlias} & \textbf{0.0870} & \textbf{0.0034} \\
+\bottomrule
+\end{tabular}
+\end{table}
