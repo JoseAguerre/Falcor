@@ -48,6 +48,10 @@ __exported import PathState;
 __exported import Params;
 import Rendering.RTXDI.RTXDI;
 
+// TOG major revision: stratified NEE state, see the NEE loop.
+static bool gStratifiedQuadNee = false;
+static float2 gStratifiedQuadRnd = float2(0.f);
+
 /** Interface for querying visibility in the scene.
     This is used in `handleHit`.
 */
@@ -619,7 +623,9 @@ struct PathTracer
         if (!kUseQuadLight) return false;
 
         QuadLightSample qls;
-        if (!quadLightSampler.sample(sampleNext2D(sg), vertex.pos, qls)) return false;
+        float2 quadRnd = sampleNext2D(sg);
+        if (gStratifiedQuadNee) quadRnd = gStratifiedQuadRnd; // TOG major revision, see the NEE loop.
+        if (!quadLightSampler.sample(quadRnd, vertex.pos, qls)) return false;
 
         // Setup returned sample. quadLightSampler.sample() already returns pdf w.r.t. solid angle.
         ls.Li = qls.pdf > 0.f ? qls.Le / qls.pdf : float3(0);
@@ -1117,8 +1123,19 @@ struct PathTracer
                     }
                     float sampleWeight = 1.f / float(numSamples);
 
+                    // TOG major revision: one rotated Hammersley set for this vertex's samples of the
+                    // quad light. Each is still marginally uniform (unbiased), but jointly stratified;
+                    // otherwise the generator's successive dimensions are effectively independent.
+                    const bool stratifyQuad = kUseQuadLight && lightType == (uint)LightType::Quad && numSamples > 1 && gScene.quadLight.useStratifiedNee();
+                    float2 quadRotation = stratifyQuad ? sampleNext2D(path.sg) : float2(0.f);
+                    gStratifiedQuadNee = stratifyQuad;
+
                     for (uint i = 0; i < numSamples; i++)
                     {
+                        if (stratifyQuad)
+                        {
+                            gStratifiedQuadRnd = frac(float2((float(i) + 0.5f) / float(numSamples), float(reversebits(i)) * 2.3283064365386963e-10f) + quadRotation);
+                        }
                         LightSample ls;
                         if (!generateLightSampleForType(lightType, selectionPdf, vertex, sampleUpperHemisphere, sampleLowerHemisphere, path.sg, ls))
                             continue;

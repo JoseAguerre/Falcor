@@ -1,0 +1,50 @@
+\documentclass[10pt]{article}
+\usepackage[a4paper,margin=2.0cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\captionsetup{font=small,labelfont=bf}
+
+\title{\vspace{-1.6em}Static and partially updated trees against per-frame rebuilding}
+\author{}
+\date{\vspace{-2.4em}}
+
+\begin{document}
+\maketitle
+\vspace{-1.0em}
+
+\textbf{Summary.} A natural alternative to rebuilding the light-sampling tree every frame is to build one tree for the whole video, or to rebuild it only at keyframes. In this example, an average tree with per-frame weights may provide acceptable quality, depending on the application, but its RMSE is 8.2--11.5\% higher than with per-frame rebuilding. The average-tree variants also require the full video in advance, unlike per-frame and keyframe rebuilding.
+
+\section*{1\quad Setup}
+
+\emph{Trees.} All variants use 4000 leaves, built with the greedy rule of BudgetLeafAlias, and sample the leaves with an alias table. They differ only in which frames the tree and its weights come from:
+\begin{itemize}\setlength{\itemsep}{0pt}
+\item \textbf{Average tree, average weights}: one tree and one set of weights for the whole video, computed from the average of all its frames. To keep the estimator unbiased, 5\% of the probability is spread uniformly: without it, leaves that are dark on average but lit in some frames would never be sampled.
+\item \textbf{Average tree, per-frame weights}: the same tree for the whole video, with the weight of each leaf recomputed from the current frame.
+\item \textbf{New tree every 30 frames, per-frame weights}: the tree is rebuilt at keyframes, once per second at 30 frames per second, and its weights are recomputed from the current frame.
+\item \textbf{New tree and weights every frame}: BudgetLeafAlias.
+\end{itemize}
+\textbf{The average-tree variants require the full video in advance} to compute the average frame and build the shared structure. The keyframe variant and BudgetLeafAlias do not require future frames.
+
+\emph{Rendering and metrics.} The illustrative comparison uses equal samples per scene and the same number of leaves for all variants. The table shows RMSE, PSNR and VMAF, together with the ratio of each variant's RMSE to that of BudgetLeafAlias.  Average error values are reported for each video.
+\section*{2\quad Results}
+
+Table~\ref{tab:average-tree} illustrates the comparison. In this example, rebuilding the tree and its weights every frame gives the lowest RMSE and the highest PSNR and VMAF in every scene. Its RMSE is at least 7\% lower than that of each alternative.
+
+\textbf{A fully static tree has the largest error increase.} With the average tree and average weights, the example RMSE is 13.2\% higher on Rover, 10.0\% on Cinema, 19.0\% on Fireplace Room, 29.6\% on Phone and 47.2\% on Convergence. On Convergence, PSNR is 3.36\,dB lower and VMAF is 12.1 points lower. Fixed weights cannot adapt to changes in the light distribution, and the uniform share used for unbiased sampling also allocates probability to regions that may be dark in a given frame.
+
+Updating the weights every frame recovers much of this loss in the example. The average tree with per-frame weights may therefore be acceptable when a modest quality loss is tolerable, but its error increase remains non-negligible: RMSE is 8.2--11.5\% higher than with BudgetLeafAlias. Rebuilding the tree every 30 frames also leaves an 8.0--11.8\% RMSE increase. A structure that is not rebuilt for the current frame may retain leaves in regions that are no longer the most important to sample.
+
+Rebuilding every frame needs neither the whole video in advance nor a choice of keyframe interval. Unlike average structures, it can therefore be used directly with live and streamed content, such as virtual-production feeds, video calls or games, where future frames are not known, and it adapts at once to cuts, fades and sudden changes of light.
+
+\input{table_average_tree.tex}
+
+\end{document}

@@ -27,6 +27,7 @@
  **************************************************************************/
 #include "QuadLightAliasCtuSampler.h"
 #include "QuadLightLuminance.h"
+#include "QuadLightBuildTiming.h"
 #include "Core/Error.h"
 #include "Core/API/Device.h"
 #include "Utils/Logger.h"
@@ -240,6 +241,15 @@ namespace Falcor
             sizeof(uint32_t), (uint32_t)leafIndexMap.size(), ResourceBindFlags::ShaderResource, MemoryType::DeviceLocal, leafIndexMap.data(),
             false
         );
+        {
+            auto uploadEnd = CpuTimer::getCurrentTimePoint();
+            auto& timing = quadLightBuildTiming();
+            timing.partitionMs = CpuTimer::calcDuration(hierarchyStart, hierarchyEnd);
+            timing.tableMs = CpuTimer::calcDuration(aliasStart, aliasEnd);
+            timing.uploadMs = CpuTimer::calcDuration(aliasEnd, uploadEnd);
+            timing.leaves = uint32_t(leaves.size());
+            timing.bytes = (16 + 4 + 16) * uint64_t(leaves.size()) + sizeof(uint32_t) * leafIndexMap.size();
+        }
     }
 
     void QuadLightAliasCtuSampler::bindShaderData(const ShaderVar& var) const

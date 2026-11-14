@@ -1,0 +1,23 @@
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{2.5pt}
+\caption{RMSE, PSNR (dB) and \FLIP\ for all techniques at equal samples: within a scene, every technique uses the same samples per pixel and light samples per shading point (Rover 4$\times$2, Cinema 4$\times$1, Fireplace Room 4$\times$1, Phone 4$\times$1, Convergence 4$\times$4). Representative frame of each scene against a converged reference; mean of 24 independent renders (\FLIP: 8). The 95\% confidence intervals of the RMSE are 0.0001--0.0011. Best per column in bold.}
+\label{tab:equal-samples}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l ccc ccc ccc ccc ccc}
+\toprule
+\multirow{2}{*}{Technique} & \multicolumn{3}{c}{Rover} & \multicolumn{3}{c}{Cinema} & \multicolumn{3}{c}{Fireplace Room} & \multicolumn{3}{c}{Phone} & \multicolumn{3}{c}{Convergence} \\
+\cmidrule(lr){2-4} \cmidrule(lr){5-7} \cmidrule(lr){8-10} \cmidrule(lr){11-13} \cmidrule(lr){14-16}
+ & RMSE $\downarrow$ & PSNR $\uparrow$ & \FLIP\ $\downarrow$ & RMSE $\downarrow$ & PSNR $\uparrow$ & \FLIP\ $\downarrow$ & RMSE $\downarrow$ & PSNR $\uparrow$ & \FLIP\ $\downarrow$ & RMSE $\downarrow$ & PSNR $\uparrow$ & \FLIP\ $\downarrow$ & RMSE $\downarrow$ & PSNR $\uparrow$ & \FLIP\ $\downarrow$ \\
+\midrule
+Random & 0.0863 & 21.28 & 0.0955 & 0.0588 & 24.61 & 0.0644 & 0.1871 & 14.56 & 0.2758 & 0.0821 & 21.72 & 0.0557 & 0.2917 & 10.70 & 0.4510 \\
+2D CDF & 0.0771 & 22.26 & 0.0864 & 0.0486 & 26.28 & 0.0545 & 0.0839 & 21.52 & \textbf{0.1573} & 0.0528 & 25.54 & 0.0395 & 0.1231 & 18.20 & 0.2039 \\
+2D CDF/8 & 0.0774 & 22.23 & \textbf{0.0846} & 0.0486 & 26.27 & \textbf{0.0533} & 0.0856 & 21.36 & 0.1590 & 0.0535 & 25.44 & 0.0395 & 0.1261 & 17.98 & 0.2070 \\
+Mipmap & \textbf{0.0768} & \textbf{22.29} & 0.0849 & \textbf{0.0485} & \textbf{26.29} & 0.0539 & 0.0840 & 21.51 & 0.1575 & \textbf{0.0527} & \textbf{25.57} & \textbf{0.0393} & 0.1236 & 18.16 & 0.2035 \\
+Alias per pixel & 0.0769 & \textbf{22.29} & 0.0879 & \textbf{0.0485} & \textbf{26.29} & 0.0548 & \textbf{0.0838} & \textbf{21.53} & 0.1577 & \textbf{0.0527} & 25.56 & 0.0395 & \textbf{0.1229} & \textbf{18.21} & \textbf{0.2028} \\
+BudgetLeafAlias & 0.0774 & 22.22 & 0.0888 & \textbf{0.0485} & 26.28 & 0.0547 & 0.0916 & 20.76 & 0.1692 & 0.0541 & 25.33 & 0.0408 & 0.1291 & 17.78 & 0.2116 \\
+CodecLeafAlias & 0.0786 & 22.10 & 0.0880 & 0.0492 & 26.17 & 0.0548 & 0.0867 & 21.24 & 0.1605 & 0.0544 & 25.29 & 0.0402 & 0.1269 & 17.93 & 0.2086 \\
+\bottomrule
+\end{tabular}}
+\end{table*}

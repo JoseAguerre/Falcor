@@ -243,6 +243,16 @@ namespace Falcor
         }
     }
 
+    void QuadLight::setVideoLockstep(bool lockstep)
+    {
+        if (mpVideoPlayer) mpVideoPlayer->setLockstep(lockstep);
+    }
+
+    void QuadLight::setVideoHold(bool hold)
+    {
+        if (mpVideoPlayer) mpVideoPlayer->setHold(hold);
+    }
+
     std::unique_ptr<QuadLightSampler> QuadLight::takePrebuiltSampler()
     {
         return std::move(mpPendingSampler);
@@ -309,6 +319,7 @@ namespace Falcor
         if (mData.intensity != mPrevData.intensity) mChanges |= Changes::Intensity;
         if (any(mData.tint != mPrevData.tint)) mChanges |= Changes::Intensity;
         if (mData.lightSamplesPerVertex != mPrevData.lightSamplesPerVertex) mChanges |= Changes::Intensity;
+        if (mData.stratifiedNee != mPrevData.stratifiedNee) mChanges |= Changes::Intensity;
         if (mData.maxBsdfHitContribution != mPrevData.maxBsdfHitContribution) mChanges |= Changes::Intensity;
         if (mData.useAvgEmissionOnDiffuseBsdfHit != mPrevData.useAvgEmissionOnDiffuseBsdfHit) mChanges |= Changes::Intensity;
         if (any(mData.avgEmission != mPrevData.avgEmission)) mChanges |= Changes::Intensity;
@@ -365,6 +376,12 @@ namespace Falcor
         };
         quadLight.def_static("createFromFile", createFromFile, "path"_a);
         quadLight.def_property_readonly("path", &QuadLight::getPath);
+        // TOG major revision: one process can then cover many frames/playlists/configurations.
+        quadLight.def("loadTexture", &QuadLight::loadTextureFromFile, "path"_a);
+        quadLight.def_property_readonly("videoFrameIndex", &QuadLight::getVideoFrameIndex);
+        quadLight.def_property_readonly("videoFrameCount", &QuadLight::getVideoFrameCount);
+        quadLight.def("setVideoLockstep", &QuadLight::setVideoLockstep, "lockstep"_a);
+        quadLight.def("setVideoHold", &QuadLight::setVideoHold, "hold"_a);
         quadLight.def_property("transform", &QuadLight::getTransform, &QuadLight::setTransform);
         quadLight.def_property("intensity", &QuadLight::getIntensity, &QuadLight::setIntensity);
         quadLight.def_property("tint", &QuadLight::getTint, &QuadLight::setTint);
@@ -394,6 +411,8 @@ namespace Falcor
         quadLight.def_property(
             "budgetLeafAliasLeafBudget", &QuadLight::getBudgetLeafAliasLeafBudget, &QuadLight::setBudgetLeafAliasLeafBudget
         );
+        quadLight.def_property("budgetLeafAliasBlock", &QuadLight::getBudgetLeafAliasBlock, &QuadLight::setBudgetLeafAliasBlock);
+        quadLight.def_property("stratifiedNee", &QuadLight::getStratifiedNee, &QuadLight::setStratifiedNee);
         quadLight.def_property("maxBsdfHitContribution", &QuadLight::getMaxBsdfHitContribution, &QuadLight::setMaxBsdfHitContribution);
         quadLight.def_property(
             "useAvgEmissionOnDiffuseBsdfHit", &QuadLight::getUseAvgEmissionOnDiffuseBsdfHit, &QuadLight::setUseAvgEmissionOnDiffuseBsdfHit

@@ -1,0 +1,63 @@
+\documentclass[10pt]{article}
+\usepackage[a4paper,margin=2.0cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{pdflscape}
+\usepackage[hidelinks]{hyperref}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\captionsetup{font=small,labelfont=bf}
+
+\title{\vspace{-1.6em}Full-video quality of all techniques}
+\author{}
+\date{\vspace{-2.4em}}
+
+\begin{document}
+\maketitle
+\vspace{-1.0em}
+
+\textbf{Summary.} We measure RMSE, PSNR and VMAF for all seven techniques on all five scenes over frames spanning each whole video, each technique at its real-time calibrated configuration, and report every value with its 95\% confidence interval over frames (Table~\ref{tab:video-all}). On every scene one of our two techniques has the best mean on all three metrics; on Phone the margins are small, and BudgetLeafAlias is statistically tied with the 2D CDF, the mipmap warp and the per-pixel alias table.
+
+\section*{1\quad Setup}
+
+\emph{Techniques and configurations.} The seven techniques are uniform random sampling, 2D CDF inversion, the same CDF at $1/8$ resolution (2D CDF/8), a hierarchical mipmap warp, a per-pixel alias table, BudgetLeafAlias with $B=4000$ leaves and CodecLeafAlias. Each technique renders with the samples per pixel (spp) and light samples per shading point (lspv) calibrated for it per scene for real-time rendering, listed in Table~\ref{tab:configs}. The sampling structure is rebuilt every frame, and the sample generator is the same for all techniques. No accumulation or denoising is applied, so every frame is an independent estimate.
+
+\begin{table}[h]
+\centering\small
+\caption{Configuration of each technique per scene: samples per pixel $\times$ light samples per shading point.}
+\label{tab:configs}
+\begin{tabular}{l c c c c c}
+\toprule
+Technique & Rover & Cinema & Fireplace Room & Phone & Convergence \\
+\midrule
+Random & 4$\times$19 & 4$\times$7 & 4$\times$4 & 16$\times$8 & 4$\times$2 \\
+2D CDF & 4$\times$5 & 4$\times$2 & 4$\times$2 & 16$\times$3 & 4$\times$1 \\
+2D CDF/8 & 4$\times$12 & 4$\times$4 & 4$\times$2 & 16$\times$5 & 4$\times$2 \\
+Mipmap & 4$\times$9 & 4$\times$3 & 4$\times$2 & 16$\times$3 & 4$\times$1 \\
+Alias per pixel & 4$\times$13 & 4$\times$4 & 4$\times$2 & 16$\times$7 & 4$\times$2 \\
+BudgetLeafAlias & 4$\times$22 & 4$\times$8 & 4$\times$5 & 16$\times$10 & 4$\times$3 \\
+CodecLeafAlias & 4$\times$15 & 4$\times$8 & 4$\times$4 & 16$\times$10 & 4$\times$3 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\emph{Frames and reference.} For each scene we render regularly spaced frames spanning the whole video: every 5th frame of Rover and Fireplace Room (60 frames each), every 4th of Cinema (63), every 10th of Phone (120) and every 8th of Convergence (80), 383 frames in total. Each frame is compared with a converged reference of the same frame, rendered with the 2D CDF at 8 light samples per shading point and accumulated over 128 frames (48 for Phone).
+
+\emph{Metrics.} RMSE is computed per frame on the tone-mapped output and averaged over frames. PSNR is computed per frame and averaged over the frames that have light: three frames of Cinema are black, every technique is exact on them, and their unbounded PSNR would dominate the mean. VMAF is computed with libvmaf on the frame sequence of each technique against the reference sequence. For each metric we report the mean and its 95\% confidence interval, $1.96\,\sigma/\sqrt{n}$ over the $n$ frames. This interval includes the variation of difficulty between frames, which is shared by all techniques: since every technique renders the same frames, a difference between two techniques can be systematic even when it is smaller than their intervals.
+\section*{2\quad Results}
+
+Table~\ref{tab:video-all} reports RMSE, PSNR and VMAF for all seven techniques on all five scenes. On Rover, Cinema and Convergence, one of our two techniques is the best on RMSE, PSNR and VMAF simultaneously: BudgetLeafAlias on Rover and Cinema, CodecLeafAlias on Convergence. On Fireplace Room, CodecLeafAlias is the best on all three metrics, with BudgetLeafAlias equal on VMAF to one decimal. On Phone, BudgetLeafAlias has the best mean RMSE and PSNR and equals the mipmap warp and the per-pixel alias table on VMAF to one decimal, but the margins are within the noise: it is statistically tied with the per-pixel alias table, the 2D CDF and the mipmap warp. Relative to the 2D CDF, the best of our two techniques lowers the video RMSE by 23\% on Rover, 15\% on Cinema, 5\% on Fireplace Room and 24\% on Convergence; relative to the per-pixel alias table, the strongest baseline overall, by 8\%, 8\%, 5\% and 8\%. The gains hold over the whole video, not only on a representative frame, and appear in the perceptual metric as well: on Convergence, VMAF rises from 54.5 with the 2D CDF and 59.1 with the per-pixel alias table to 61.5 with CodecLeafAlias.
+
+The two variants differ where the structure of the emitter differs. CodecLeafAlias's partition, inherited from the video codec, is finer than BudgetLeafAlias's 4000 leaves on content with small, bright, high-frequency regions, and it is the best technique on the two scenes where the light is concentrated in such regions: the fire of Fireplace Room and the lights of the dark cave in Convergence. On Rover the codec partition follows the detail of the road panorama rather than its light, and BudgetLeafAlias, whose leaves are placed by luminance, is 8\% better. On Cinema the two are within 1\%.
+
+Phone is lit by a broad, smoothly varying color sequence, for which every importance-sampling technique already matches the emitter closely: their RMSE lies between 0.0178 and 0.0183, BudgetLeafAlias, the per-pixel alias table, the 2D CDF and the mipmap warp are statistically tied (the 95\% interval of the per-frame RMSE ratio of each to the lowest includes 1), and only random sampling is clearly worse. The same holds, to a lesser extent, for the baselines on Rover and Cinema, where the light is spread over the whole frame and random sampling, which affords the most samples, is competitive with the structured baselines. Where the light is concentrated, on Fireplace Room and Convergence, random sampling has 1.5--1.7 times the RMSE of the 2D CDF, and the structured techniques separate clearly.
+
+\input{table_video_all.tex}
+
+\end{document}

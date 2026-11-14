@@ -1,0 +1,17 @@
+\begin{table}[H]
+\centering\small
+\caption{Speedup over the 2D CDF at equal quality on the five scenes (full videos, direct illumination): the frame time of the 2D CDF divided by the frame time each technique needs to reach the same video RMSE. Above 1 is faster than the 2D CDF. --: the technique does not reach the 2D CDF's quality at the measured points.}
+\label{tab:scenes}
+\begin{tabular}{lccccc}
+\toprule
+Technique & Rover & Cinema & Fireplace Room & Phone & Convergence \\
+\midrule
+2D CDF & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\
+2D CDF/8 & 1.17 & 1.89 & 1.29 & 1.17 & 1.17 \\
+Mipmap & 0.85 & 1.45 & 1.10 & -- & 1.06 \\
+Alias per pixel & 1.17 & 1.91 & 0.91 & 1.26 & 0.93 \\
+\textbf{BudgetLeafAlias} & 1.31 & 2.23 & 1.19 & 1.47 & 1.27 \\
+\textbf{CodecLeafAlias} & 1.38 & 2.31 & 1.54 & 1.23 & 1.37 \\
+\bottomrule
+\end{tabular}
+\end{table}

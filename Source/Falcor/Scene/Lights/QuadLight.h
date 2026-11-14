@@ -226,9 +226,28 @@ namespace Falcor
         */
         uint32_t getBudgetLeafAliasLeafBudget() const { return mBudgetLeafAliasLeafBudget; }
 
+        /** TOG major revision: block size of BudgetLeafAlias's statistics and of its tree's smallest
+            leaf. 1 (default) is the submitted full-resolution SAT. */
+        void setBudgetLeafAliasBlock(uint32_t block) { mBudgetLeafAliasBlock = block; }
+        uint32_t getBudgetLeafAliasBlock() const { return mBudgetLeafAliasBlock; }
+
+        /** TOG major revision: draw this light's samples at a vertex as one rotated Hammersley set
+            instead of independent sequence dimensions. */
+        void setStratifiedNee(bool value) { mData.stratifiedNee = value ? 1 : 0; }
+        bool getStratifiedNee() const { return mData.stratifiedNee != 0; }
+
         /** Get the file path of the light's texture.
         */
         const std::filesystem::path& getPath() const { return mpTexture->getSourcePath(); }
+
+        /** TOG major revision: the video frame the sampler currently under construction belongs
+            to. getPath() can't be used for that, since the ring builds ahead of playback. */
+        void setBuildFramePath(const std::filesystem::path& path) { mBuildFramePath = path; }
+
+        /** TOG major revision: deterministic playback controls, see QuadLightVideoPlayer. */
+        void setVideoLockstep(bool lockstep);
+        void setVideoHold(bool hold);
+        const std::filesystem::path& getBuildFramePath() const { return mBuildFramePath; }
 
         /** Load a new emission texture from file, replacing the current one in place.
             All other properties (transform, size, intensity, tint, doubleSided, sampler
@@ -322,6 +341,8 @@ namespace Falcor
         QuadLightSamplerType    mSamplerType = QuadLightSamplerType::Cdf2D;     ///< Host-only; not part of the GPU-visible QuadLightData blob (selected via shader define, not read as data).
         QuadLightSamplerType    mPrevSamplerType = QuadLightSamplerType::Cdf2D;
 
+        std::filesystem::path   mBuildFramePath; ///< See setBuildFramePath().
+        uint32_t                mBudgetLeafAliasBlock = 1; ///< See setBudgetLeafAliasBlock().
         uint32_t                mBudgetLeafAliasLeafBudget = 4096; ///< Mirrors QuadLightBudgetLeafAliasSampler::kDefaultLeafBudget - kept as a plain default here rather than including that header.
 
         bool                     mTextureChanged = false;   ///< Set by loadTextureFromFile(), consumed (and cleared) by beginFrame().

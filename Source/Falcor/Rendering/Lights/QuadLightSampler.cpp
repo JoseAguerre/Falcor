@@ -32,10 +32,19 @@
 #include "QuadLightAliasSampler.h"
 #include "QuadLightAliasCtuSampler.h"
 #include "QuadLightBudgetLeafAliasSampler.h"
+#include "QuadLightExternalLeafSampler.h"
+#include "QuadLightGuidedCdfSampler.h"
+#include "QuadLightBuildTiming.h"
 #include "Core/Error.h"
 
 namespace Falcor
 {
+    QuadLightBuildTiming& quadLightBuildTiming()
+    {
+        thread_local QuadLightBuildTiming timing;
+        return timing;
+    }
+
     DefineList QuadLightSampler::getDefines() const
     {
         return {{"_QUAD_LIGHT_SAMPLER_TYPE", std::to_string((uint32_t)mType)}};
@@ -63,6 +72,13 @@ namespace Falcor
             return std::make_unique<QuadLightCdfSampler>(pDevice, pQuadLight, 16);
         case QuadLightSamplerType::Cdf2DDiv32:
             return std::make_unique<QuadLightCdfSampler>(pDevice, pQuadLight, 32);
+        case QuadLightSamplerType::ExternalLeafAlias:
+        case QuadLightSamplerType::ExternalLeafCdf:
+            return std::make_unique<QuadLightExternalLeafSampler>(type, pDevice, pQuadLight, pQuadLight->getPath());
+        case QuadLightSamplerType::CdfGuided:
+            return std::make_unique<QuadLightGuidedCdfSampler>(pDevice, pQuadLight);
+        case QuadLightSamplerType::BudgetLeafTree:
+            return std::make_unique<QuadLightBudgetLeafAliasSampler>(pDevice, pQuadLight, type);
         default:
             FALCOR_THROW("Unknown or not-yet-implemented QuadLightSamplerType");
         }
@@ -92,6 +108,13 @@ namespace Falcor
             return std::make_unique<QuadLightCdfSampler>(pDevice, pQuadLight, width, height, luminance, 16);
         case QuadLightSamplerType::Cdf2DDiv32:
             return std::make_unique<QuadLightCdfSampler>(pDevice, pQuadLight, width, height, luminance, 32);
+        case QuadLightSamplerType::ExternalLeafAlias:
+        case QuadLightSamplerType::ExternalLeafCdf:
+            return std::make_unique<QuadLightExternalLeafSampler>(type, pDevice, pQuadLight, pQuadLight->getBuildFramePath());
+        case QuadLightSamplerType::CdfGuided:
+            return std::make_unique<QuadLightGuidedCdfSampler>(pDevice, pQuadLight, width, height, luminance);
+        case QuadLightSamplerType::BudgetLeafTree:
+            return std::make_unique<QuadLightBudgetLeafAliasSampler>(pDevice, pQuadLight, width, height, luminance, type);
         default:
             FALCOR_THROW("Unknown or not-yet-implemented QuadLightSamplerType");
         }

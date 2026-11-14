@@ -199,6 +199,13 @@ namespace Falcor
         uint32_t getReadySlotCount() const;
         uint32_t getPrefetchDepth() const { return (uint32_t)mSlots.size(); }
 
+        /** TOG major revision, for deterministic experiments. Lockstep: tick() waits for the next
+            frame instead of stalling on the current one, so playback advances exactly once per
+            tick regardless of decode speed. Hold: tick() never advances (e.g. to accumulate
+            several sub-frames of one video frame without rebuilding its sampler). */
+        void setLockstep(bool lockstep) { mLockstep = lockstep; }
+        void setHold(bool hold) { mHold = hold; }
+
     private:
         /** One ring-buffer slot: prefetched GPU texture + sampler for a single playback
             position. Written only by the main thread, via finalizeReadyResults() - see the
@@ -239,6 +246,8 @@ namespace Falcor
             std::vector<float> luminance;          ///< Empty for QuadLightSamplerType::Random, which needs none.
             uint32_t width = 0, height = 0;
             float3 avgEmission = float3(0.f); ///< EXPERIMENTAL, see QuadLightData::useAvgEmissionOnDiffuseBsdfHit. Computed from pBitmap on the worker thread - cheap relative to the decode itself.
+            double decodeMs = 0.0;    ///< TOG major revision: stage timing, see LEAFALIAS_TIMING_CSV.
+            double luminanceMs = 0.0; ///< TOG major revision: stage timing, see LEAFALIAS_TIMING_CSV.
         };
 
         /** Worker thread only: decode+compute the CPU-side data for one job (no GPU calls),
@@ -288,6 +297,8 @@ namespace Falcor
         uint64_t mSequence = 0;        ///< Monotonically increasing playback position (never wraps in practice); playlist index = mSequence % playlist.size().
         double mFrameStartTime = -1.0; ///< -1 sentinel = "not yet started".
         bool mAdvancedThisTick = false;
+        bool mLockstep = false;
+        bool mHold = false;
 
         std::mutex mJobMutex;
         std::condition_variable mJobCv;

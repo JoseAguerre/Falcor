@@ -75,6 +75,19 @@ __exported import Rendering.Lights.QuadLightSamplerInterface;
     import Rendering.Lights.QuadLightBudgetLeafAliasSampler;
     typedef QuadLightBudgetLeafAliasSampler QuadLightSampler;
 
+#elif _QUAD_LIGHT_SAMPLER_TYPE == QUAD_LIGHT_SAMPLER_EXTERNAL_LEAF_ALIAS || \
+      _QUAD_LIGHT_SAMPLER_TYPE == QUAD_LIGHT_SAMPLER_EXTERNAL_LEAF_CDF
+    import Rendering.Lights.QuadLightExternalLeafSampler;
+    typedef QuadLightExternalLeafSampler QuadLightSampler;
+
+#elif _QUAD_LIGHT_SAMPLER_TYPE == QUAD_LIGHT_SAMPLER_BUDGET_LEAF_TREE
+    import Rendering.Lights.QuadLightBudgetLeafTreeSampler;
+    typedef QuadLightBudgetLeafTreeSampler QuadLightSampler;
+
+#elif _QUAD_LIGHT_SAMPLER_TYPE == QUAD_LIGHT_SAMPLER_CDF_GUIDED
+    import Rendering.Lights.QuadLightGuidedCdfSampler;
+    typedef QuadLightGuidedCdfSampler QuadLightSampler;
+
 #elif _QUAD_LIGHT_SAMPLER_TYPE == QUAD_LIGHT_SAMPLER_NULL
 
     /** Null sampler.

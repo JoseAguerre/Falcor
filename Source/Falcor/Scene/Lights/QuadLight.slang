@@ -176,6 +176,11 @@ struct QuadLight
     /** Number of independent NEE samples of this light to draw and average per path
         vertex (only applies when this light is the selected type - see PathTracer.slang).
     */
+    bool useStratifiedNee()
+    {
+        return data.stratifiedNee != 0;
+    }
+
     uint getLightSamplesPerVertex()
     {
         return data.lightSamplesPerVertex;

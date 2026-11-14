@@ -27,6 +27,7 @@
  **************************************************************************/
 #include "QuadLightBudgetLeafAliasSampler.h"
 #include "QuadLightLuminance.h"
+#include "QuadLightBuildTiming.h"
 #include "Core/Error.h"
 #include "Core/API/Device.h"
 #include "Utils/Logger.h"
@@ -35,6 +36,8 @@
 
 #include <algorithm>
 #include <cmath>
+#include <execution>
+#include <numeric>
 #include <queue>
 
 #if FALCOR_WINDOWS
@@ -158,10 +161,11 @@ namespace Falcor
         }
     } // namespace
 
-    QuadLightBudgetLeafAliasSampler::QuadLightBudgetLeafAliasSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight)
-        : QuadLightSampler(QuadLightSamplerType::BudgetLeafAlias, pDevice, pQuadLight)
+    QuadLightBudgetLeafAliasSampler::QuadLightBudgetLeafAliasSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight, QuadLightSamplerType type)
+        : QuadLightSampler(type, pDevice, pQuadLight)
     {
         mLeafBudget = pQuadLight->getBudgetLeafAliasLeafBudget();
+        mAlignBlock = pQuadLight->getBudgetLeafAliasBlock();
 
         auto luminanceStart = CpuTimer::getCurrentTimePoint();
 
@@ -178,11 +182,12 @@ namespace Falcor
     }
 
     QuadLightBudgetLeafAliasSampler::QuadLightBudgetLeafAliasSampler(
-        ref<Device> pDevice, ref<QuadLight> pQuadLight, uint32_t width, uint32_t height, const std::vector<float>& luminance
+        ref<Device> pDevice, ref<QuadLight> pQuadLight, uint32_t width, uint32_t height, const std::vector<float>& luminance, QuadLightSamplerType type
     )
-        : QuadLightSampler(QuadLightSamplerType::BudgetLeafAlias, pDevice, pQuadLight)
+        : QuadLightSampler(type, pDevice, pQuadLight)
     {
         mLeafBudget = pQuadLight->getBudgetLeafAliasLeafBudget();
+        mAlignBlock = pQuadLight->getBudgetLeafAliasBlock();
         build(width, height, luminance);
     }
 
@@ -219,24 +224,70 @@ namespace Falcor
         // SAT precompute paying for O(1) queries afterward is the better tradeoff. This
         // costs ~2*(W+1)*(H+1)*8 bytes of temporary memory (freed when build() returns) -
         // ~268MB at the assumed 4K-resolution ceiling, negligible at typical resolutions.
-        const size_t sw = size_t(w) + 1, sh = size_t(h) + 1;
+        // TOG major revision: with mAlignBlock > 1, the SAT is built over per-block sums gathered in
+        // parallel, and the tree never refines below a block, which cuts the build by about an order
+        // of magnitude. mAlignBlock == 1 is exactly the submitted full-resolution path.
+        const uint32_t block = std::max(1u, mAlignBlock);
+        const uint32_t cw = (w + block - 1) / block, ch = (h + block - 1) / block;
+        const size_t sw = size_t(cw) + 1, sh = size_t(ch) + 1;
         std::vector<double> sat(sw * sh, 0.0);
         std::vector<double> satSq(sw * sh, 0.0);
-        for (uint32_t y = 0; y < h; ++y)
+        if (block == 1)
         {
-            for (uint32_t x = 0; x < w; ++x)
+            for (uint32_t y = 0; y < h; ++y)
             {
-                double v = double(luminance[(size_t)y * w + x]);
-                size_t i = (size_t)(y + 1) * sw + (x + 1);
-                sat[i] = v + sat[i - sw] + sat[i - 1] - sat[i - sw - 1];
-                satSq[i] = v * v + satSq[i - sw] + satSq[i - 1] - satSq[i - sw - 1];
+                for (uint32_t x = 0; x < w; ++x)
+                {
+                    double v = double(luminance[(size_t)y * w + x]);
+                    size_t i = (size_t)(y + 1) * sw + (x + 1);
+                    sat[i] = v + sat[i - sw] + sat[i - 1] - sat[i - sw - 1];
+                    satSq[i] = v * v + satSq[i - sw] + satSq[i - 1] - satSq[i - sw - 1];
+                }
             }
         }
-        auto queryStats = [&](uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, double& outSum, double& outSumSq)
+        else
         {
-            outSum = sat[(size_t)y1 * sw + x1] - sat[(size_t)y0 * sw + x1] - sat[(size_t)y1 * sw + x0] + sat[(size_t)y0 * sw + x0];
-            outSumSq =
-                satSq[(size_t)y1 * sw + x1] - satSq[(size_t)y0 * sw + x1] - satSq[(size_t)y1 * sw + x0] + satSq[(size_t)y0 * sw + x0];
+            std::vector<float> blockSum((size_t)cw * ch), blockSq((size_t)cw * ch);
+            std::vector<uint32_t> rows(ch);
+            std::iota(rows.begin(), rows.end(), 0u);
+            std::for_each(
+                std::execution::par_unseq, rows.begin(), rows.end(),
+                [&](uint32_t by)
+                {
+                    const uint32_t y0 = by * block, y1 = std::min(y0 + block, h);
+                    for (uint32_t bx = 0; bx < cw; ++bx)
+                    {
+                        const uint32_t x0 = bx * block, x1 = std::min(x0 + block, w);
+                        float s = 0.f, q = 0.f;
+                        for (uint32_t y = y0; y < y1; ++y)
+                        {
+                            const float* row = luminance.data() + (size_t)y * w;
+                            for (uint32_t x = x0; x < x1; ++x)
+                            {
+                                s += row[x];
+                                q += row[x] * row[x];
+                            }
+                        }
+                        blockSum[(size_t)by * cw + bx] = s;
+                        blockSq[(size_t)by * cw + bx] = q;
+                    }
+                }
+            );
+            for (uint32_t y = 0; y < ch; ++y)
+            {
+                for (uint32_t x = 0; x < cw; ++x)
+                {
+                    size_t i = (size_t)(y + 1) * sw + (x + 1);
+                    sat[i] = double(blockSum[(size_t)y * cw + x]) + sat[i - sw] + sat[i - 1] - sat[i - sw - 1];
+                    satSq[i] = double(blockSq[(size_t)y * cw + x]) + satSq[i - sw] + satSq[i - 1] - satSq[i - sw - 1];
+                }
+            }
+        }
+        auto queryStats = [&](uint32_t x0t, uint32_t y0t, uint32_t x1t, uint32_t y1t, double& outSum, double& outSumSq)
+        {
+            const size_t x0 = x0t / block, y0 = y0t / block, x1 = (x1t + block - 1) / block, y1 = (y1t + block - 1) / block;
+            outSum = sat[y1 * sw + x1] - sat[y0 * sw + x1] - sat[y1 * sw + x0] + sat[y0 * sw + x0];
+            outSumSq = satSq[y1 * sw + x1] - satSq[y0 * sw + x1] - satSq[y1 * sw + x0] + satSq[y0 * sw + x0];
         };
 
         // ---- Best-first, budget-limited quadtree refinement. At each step, split
@@ -279,7 +330,7 @@ namespace Falcor
             double area = double(x1 - x0) * double(y1 - y0);
             double mean = area > 0.0 ? sum / area : 0.0;
             double variance = std::max(0.0, sumSq / area - mean * mean);
-            bool canSplit = (x1 - x0) > 1 && (y1 - y0) > 1 && variance > 0.0;
+            bool canSplit = (x1 - x0) >= 2 * block && (y1 - y0) >= 2 * block && variance > 0.0;
             if (canSplit)
                 pq.push({x0, y0, x1, y1, mean, variance * area, nodeIndex});
             else
@@ -302,8 +353,8 @@ namespace Falcor
             FALCOR_CHECK(firstChild <= kNodePayloadMask, "QuadLightBudgetLeafAliasSampler: quadtree exceeded its 15-bit node index range.");
             nodes[c.nodeIndex] = uint16_t(firstChild); // internal node: points at its 4 contiguous children.
 
-            uint32_t xm = c.x0 + (c.x1 - c.x0) / 2;
-            uint32_t ym = c.y0 + (c.y1 - c.y0) / 2;
+            uint32_t xm = c.x0 + ((c.x1 - c.x0) / 2 / block) * block;
+            uint32_t ym = c.y0 + ((c.y1 - c.y0) / 2 / block) * block;
             consider(c.x0, c.y0, xm, ym, firstChild + 0);
             consider(xm, c.y0, c.x1, ym, firstChild + 1);
             consider(c.x0, ym, xm, c.y1, firstChild + 2);
@@ -323,6 +374,8 @@ namespace Falcor
         for (uint32_t i = 0; i < leafCount; ++i)
             nodes[finalLeaves[i].nodeIndex] = uint16_t(kNodeLeafFlag | i);
 
+        auto partitionEnd = CpuTimer::getCurrentTimePoint();
+
         // ---- Alias table over the leaves' flux (avgLuma * area), resorted so a bucket's
         // own array position implies its "indexB" (see Utils/Sampling/AliasTable.cpp's own
         // TODO comment: "only one element in the table has indexB==j for any j", i.e. this
@@ -337,6 +390,41 @@ namespace Falcor
             const PendingLeaf& leaf = finalLeaves[i];
             float area = float(leaf.x1 - leaf.x0) * float(leaf.y1 - leaf.y0);
             weights[i] = leaf.avgLuma * area;
+        }
+
+        // BudgetLeafTree: child probabilities, bottom-up (a child's index is always above its parent's).
+        struct GpuTreeNode
+        {
+            float pTop, pLeftTop, pLeftBottom;
+            uint32_t child;
+        };
+        std::vector<GpuTreeNode> treeNodes;
+        if (getType() == QuadLightSamplerType::BudgetLeafTree)
+        {
+            treeNodes.resize(nodes.size());
+            std::vector<double> mass(nodes.size(), 0.0);
+            for (size_t i = nodes.size(); i-- > 0;)
+            {
+                const uint16_t v = nodes[i];
+                GpuTreeNode& n = treeNodes[i];
+                if (v & kNodeLeafFlag)
+                {
+                    const uint32_t leaf = v & kNodePayloadMask;
+                    mass[i] = double(weights[leaf]);
+                    n = {1.f, 1.f, 1.f, 0x80000000u | leaf};
+                }
+                else
+                {
+                    const uint32_t c = v & kNodePayloadMask;
+                    const double m0 = mass[c], m1 = mass[c + 1], m2 = mass[c + 2], m3 = mass[c + 3];
+                    const double top = m0 + m1, bottom = m2 + m3, total = top + bottom;
+                    mass[i] = total;
+                    n.pTop = total > 0.0 ? float(top / total) : 0.5f;
+                    n.pLeftTop = top > 0.0 ? float(m0 / top) : 0.5f;
+                    n.pLeftBottom = bottom > 0.0 ? float(m2 / bottom) : 0.5f;
+                    n.child = c;
+                }
+            }
         }
 
         mWeightSum = 0.0;
@@ -400,15 +488,33 @@ namespace Falcor
 
         mNodeCount = uint32_t(nodes.size());
         mLeafCount = leafCount;
+        auto tableEnd = CpuTimer::getCurrentTimePoint();
 
         mpNodes = mpDevice->createTypedBuffer(ResourceFormat::R16Uint, mNodeCount, ResourceBindFlags::ShaderResource, MemoryType::DeviceLocal, nodes.data());
         mpLeaves = mpDevice->createStructuredBuffer(
             sizeof(PackedLeaf), leafCount, ResourceBindFlags::ShaderResource, MemoryType::DeviceLocal, packedLeaves.data(), false
         );
 
+        mpTree = nullptr;
+        if (!treeNodes.empty())
+        {
+            mpTree = mpDevice->createStructuredBuffer(
+                sizeof(GpuTreeNode), (uint32_t)treeNodes.size(), ResourceBindFlags::ShaderResource, MemoryType::DeviceLocal, treeNodes.data(), false
+            );
+        }
+
         updateStats();
+        if (mpTree) mStructureBytes += sizeof(GpuTreeNode) * treeNodes.size();
 
         auto end = CpuTimer::getCurrentTimePoint();
+        {
+            auto& timing = quadLightBuildTiming();
+            timing.partitionMs = CpuTimer::calcDuration(start, partitionEnd);
+            timing.tableMs = CpuTimer::calcDuration(partitionEnd, tableEnd);
+            timing.uploadMs = CpuTimer::calcDuration(tableEnd, end);
+            timing.leaves = mLeafCount;
+            timing.bytes = mStructureBytes;
+        }
         logInfo(
             "QuadLightBudgetLeafAliasSampler: build time {:.3f} ms ({} leaves / {} budget, {} nodes, {:.1f} KB)",
             CpuTimer::calcDuration(start, end), mLeafCount, budget, mNodeCount, mStructureBytes / 1024.0
@@ -447,6 +553,8 @@ namespace Falcor
         var["weightSum"] = float(mWeightSum);
         var["nodes"] = mpNodes;
         var["leaves"] = mpLeaves;
+        var["alignBlock"] = std::max(1u, mAlignBlock);
+        if (mpTree) var["tree"] = mpTree;
     }
 
     bool QuadLightBudgetLeafAliasSampler::renderUI(Gui::Widgets& widget)

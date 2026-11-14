@@ -68,6 +68,7 @@ struct QuadLightBudgetLeafAliasSampler : IQuadLightSampler
     uint2                       gridDim;    ///< Source image size = the quadtree root's rect.
     uint                        leafCount;
     float                       weightSum;  ///< Total flux (avgLuma * area) summed over all leaves.
+    uint                        alignBlock; ///< Split points stay on this grid; 1 = the submitted plain bisection.
 
     static const uint kNodeLeafFlag = 0x8000u;
     static const uint kNodePayloadMask = 0x7fffu;
@@ -93,8 +94,8 @@ struct QuadLightBudgetLeafAliasSampler : IQuadLightSampler
                 return v & kNodePayloadMask;
 
             uint firstChild = v & kNodePayloadMask;
-            uint xm = x0 + (x1 - x0) / 2u;
-            uint ym = y0 + (y1 - y0) / 2u;
+            uint xm = x0 + ((x1 - x0) / 2u / alignBlock) * alignBlock;
+            uint ym = y0 + ((y1 - y0) / 2u / alignBlock) * alignBlock;
             uint qx = texel.x >= xm ? 1u : 0u;
             uint qy = texel.y >= ym ? 1u : 0u;
             if (qx == 0u) x1 = xm; else x0 = xm;

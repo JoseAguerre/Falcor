@@ -1,0 +1,90 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: PAPER.aux
+Reallocating 'name_of_file' (item size: 1) to 21 items.
+The style file: ACM-Reference-Format.bst
+Reallocating 'name_of_file' (item size: 1) to 12 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'wiz_functions' (item size: 4) to 6000 items.
+Database file #1: sample-base.bib
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'wiz_functions' (item size: 4) to 9000 items.
+Reallocating 'glb_str_end' (item size: 4) to 20 items.
+Reallocating 'glb_str_ptr' (item size: 4) to 20 items.
+Reallocating 'global_strs' (item size: 1) to 4000000 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Warning--empty publisher in agarwal2003structured
+Warning--empty address in agarwal2003structured
+Warning--articleno or eid field, but no numpages field, in bitterli2020spatiotemporal
+Warning--INFO: reduced pages = [148:1--148:17] to numpages = [17]
+Warning--empty publisher in havran2005interactive
+Warning--empty address in havran2005interactive
+Warning--empty address in iorns2015realtime
+Warning--articleno or eid field, but no numpages field, in karlik2019mis
+Warning--page numbers missing in both pages and numpages fields in karlik2019mis
+Warning--articleno or eid, but no pages or numpages field in karlik2019mis
+Warning--empty publisher in kronander2014real
+Warning--empty address in kronander2014real
+Warning--no number and no volume in lambers2022parameterization
+Warning--page numbers missing in both pages and numpages fields in lambers2022parameterization
+Warning--empty publisher in lawrence2005adaptive
+Warning--empty address in lawrence2005adaptive
+Warning--page numbers missing in both pages and numpages fields in li2026gradient
+Warning--empty address in moreau2019dynamic
+Warning--page numbers missing in both pages and numpages fields in moreau2019dynamic
+Warning--empty address in morrical2021inverse
+Warning--page numbers missing in both pages and numpages fields in nimierdavid2019mitsuba2
+Warning--empty address in pharr2023pbrt
+Warning--articleno or eid field, but no numpages field, in rath2020variance
+Warning--page numbers missing in both pages and numpages fields in rath2020variance
+Warning--articleno or eid, but no pages or numpages field in rath2020variance
+Warning--can't use both volume and number fields in rodriguez2023nenv
+Warning--empty publisher in rodriguez2023nenv
+Warning--empty address in rodriguez2023nenv
+Warning--can't use both volume and number fields in wu2025efficient
+Warning--empty publisher in wu2025efficient
+Warning--empty address in wu2025efficient
+Warning--page numbers missing in both pages and numpages fields in Zhou2024
+You've used 36 entries,
+            6273 wiz_defined-function locations,
+            1748 strings with 25424 characters,
+and the built_in function-call counts, 40673 in all, are:
+= -- 5172
+> -- 1252
+< -- 0
++ -- 399
+- -- 442
+* -- 2815
+:= -- 3856
+add.period$ -- 183
+call.type$ -- 36
+change.case$ -- 260
+chr.to.int$ -- 116
+cite$ -- 67
+duplicate$ -- 3656
+empty$ -- 2552
+format.name$ -- 517
+if$ -- 9950
+int.to.chr$ -- 2
+int.to.str$ -- 1
+missing$ -- 123
+newline$ -- 336
+num.names$ -- 254
+pop$ -- 1421
+preamble$ -- 1
+purify$ -- 545
+quote$ -- 0
+skip$ -- 1352
+stack$ -- 0
+substring$ -- 3007
+swap$ -- 392
+text.length$ -- 87
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 883
+warning$ -- 32
+while$ -- 223
+width$ -- 0
+write$ -- 741
+(There were 32 warnings)

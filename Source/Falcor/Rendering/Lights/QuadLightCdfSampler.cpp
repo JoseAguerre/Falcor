@@ -27,6 +27,7 @@
  **************************************************************************/
 #include "QuadLightCdfSampler.h"
 #include "QuadLightLuminance.h"
+#include "QuadLightBuildTiming.h"
 #include "Core/Error.h"
 #include "Core/API/Device.h"
 #include "Utils/Logger.h"
@@ -138,6 +139,7 @@ namespace Falcor
             marginalCDF[y + 1] = float(marginalAcc);
         }
 
+        auto tableEnd = CpuTimer::getCurrentTimePoint();
         mpLuminance = mpDevice->createTexture2D(w, h, ResourceFormat::R32Float, 1, 1, luminance.data(), ResourceBindFlags::ShaderResource);
         mpConditionalCDF = mpDevice->createStructuredBuffer(
             sizeof(float), (uint32_t)conditionalCDF.size(), ResourceBindFlags::ShaderResource, MemoryType::DeviceLocal, conditionalCDF.data(), false
@@ -147,6 +149,13 @@ namespace Falcor
         );
 
         auto end = CpuTimer::getCurrentTimePoint();
+        {
+            auto& timing = quadLightBuildTiming();
+            timing.tableMs = CpuTimer::calcDuration(start, tableEnd);
+            timing.uploadMs = CpuTimer::calcDuration(tableEnd, end);
+            timing.leaves = w * h;
+            timing.bytes = sizeof(float) * (uint64_t(w) * h + conditionalCDF.size() + marginalCDF.size());
+        }
         logInfo(
             "QuadLightCdfSampler: build time {:.3f} ms (grid {}x{}{})", CpuTimer::calcDuration(start, end), w, h,
             downsampleFactor > 1 ? fmt::format(", downsampled 1/{}", downsampleFactor) : std::string()

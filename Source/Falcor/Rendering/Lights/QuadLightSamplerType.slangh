@@ -44,6 +44,10 @@ enum class QuadLightSamplerType : uint32_t
     Cdf2DDiv8       = 6, ///< Cdf2D, but the CDF/luminance grid is built at 1/8 the source resolution (box-filtered).
     Cdf2DDiv16      = 7, ///< Cdf2D, but at 1/16 the source resolution.
     Cdf2DDiv32      = 8, ///< Cdf2D, but at 1/32 the source resolution.
+    ExternalLeafAlias = 9,  ///< TOG major revision: alias table over leaves read from a per-frame file.
+    ExternalLeafCdf   = 10, ///< TOG major revision: CDF over the same leaves, identical pdf (partition-vs-alias ablation).
+    CdfGuided         = 11, ///< TOG major revision: Cdf2D with guide tables (expected O(1) lookup, same mapping).
+    BudgetLeafTree    = 12, ///< TOG major revision: BudgetLeafAlias's quadtree, sampled by a hierarchical warp (keeps QMC stratification).
 
     Null            = 0xff,
 };
@@ -58,6 +62,10 @@ FALCOR_ENUM_INFO(QuadLightSamplerType, {
     { QuadLightSamplerType::Cdf2DDiv8, "Cdf2DDiv8" },
     { QuadLightSamplerType::Cdf2DDiv16, "Cdf2DDiv16" },
     { QuadLightSamplerType::Cdf2DDiv32, "Cdf2DDiv32" },
+    { QuadLightSamplerType::ExternalLeafAlias, "ExternalLeafAlias" },
+    { QuadLightSamplerType::ExternalLeafCdf, "ExternalLeafCdf" },
+    { QuadLightSamplerType::CdfGuided, "CdfGuided" },
+    { QuadLightSamplerType::BudgetLeafTree, "BudgetLeafTree" },
     { QuadLightSamplerType::Null, "Null" },
 });
 FALCOR_ENUM_REGISTER(QuadLightSamplerType);
@@ -73,6 +81,10 @@ FALCOR_ENUM_REGISTER(QuadLightSamplerType);
 #define QUAD_LIGHT_SAMPLER_CDF_2D_DIV8         6
 #define QUAD_LIGHT_SAMPLER_CDF_2D_DIV16        7
 #define QUAD_LIGHT_SAMPLER_CDF_2D_DIV32        8
+#define QUAD_LIGHT_SAMPLER_EXTERNAL_LEAF_ALIAS 9
+#define QUAD_LIGHT_SAMPLER_EXTERNAL_LEAF_CDF   10
+#define QUAD_LIGHT_SAMPLER_CDF_GUIDED          11
+#define QUAD_LIGHT_SAMPLER_BUDGET_LEAF_TREE    12
 #define QUAD_LIGHT_SAMPLER_NULL               0xff
 
 #ifdef HOST_CODE

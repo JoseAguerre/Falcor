@@ -27,6 +27,7 @@
  **************************************************************************/
 #include "QuadLightAliasSampler.h"
 #include "QuadLightLuminance.h"
+#include "QuadLightBuildTiming.h"
 #include "Core/Error.h"
 #include "Core/API/Device.h"
 #include "Utils/Logger.h"
@@ -81,6 +82,12 @@ namespace Falcor
         mpAliasTable = std::make_unique<AliasTable>(mpDevice, *pLuminance, rng); // AliasTable takes weights by value - copies from *pLuminance
 
         auto end = CpuTimer::getCurrentTimePoint();
+        {
+            auto& timing = quadLightBuildTiming();
+            timing.tableMs = CpuTimer::calcDuration(start, end); // AliasTable's constructor also uploads.
+            timing.leaves = w * h;
+            timing.bytes = (16ull + 4ull) * uint64_t(w) * h;
+        }
         logInfo("QuadLightAliasSampler: build time {:.3f} ms", CpuTimer::calcDuration(start, end));
     }
 

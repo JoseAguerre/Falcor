@@ -1,0 +1,47 @@
+\documentclass[10pt]{article}
+\usepackage[a4paper,margin=2.0cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{pdflscape}
+\usepackage[hidelinks]{hyperref}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\captionsetup{font=small,labelfont=bf}
+\newcommand{\FLIP}{\protect\reflectbox{F}LIP}
+
+\title{\vspace{-1.6em}Quality of all techniques at equal samples}
+\author{}
+\date{\vspace{-2.4em}}
+
+\begin{document}
+\maketitle
+\vspace{-1.0em}
+
+\textbf{Summary.} We compare the sampling quality of all techniques with the cost of sampling taken out: every technique renders with the same number of samples, at the operating point of each scene where importance sampling matters most. All techniques that importance sample at texel resolution reach the same error within 1\%, and random sampling has 1.1--2.4 times their error. BudgetLeafAlias and CodecLeafAlias are slightly behind, by 0--9\% and 1--3\%, because they importance sample the emitter only down to the resolution of their leaves. Their advantage is the lower cost of each sample and of building the structure, which shows at equal time rather than at equal samples.
+
+\section*{1\quad Setup}
+
+\emph{Techniques.} Uniform random sampling; 2D CDF inversion; the 2D CDF at $1/8$ resolution (2D CDF/8); a hierarchical mipmap warp; a per-pixel alias table; BudgetLeafAlias with $B=4000$ leaves; and CodecLeafAlias.
+
+\emph{Operating points.} Importance sampling only matters to the extent that sampling the emitter is a large part of the image error. To find where it is largest, we rendered each scene with random sampling, the 2D CDF and BudgetLeafAlias on a grid of 1, 4 and 16 samples per pixel by 1, 2, 4, 8 and 16 light samples per shading point. The ratio of the random to the 2D CDF error is largest at 4 samples per pixel with few light samples per shading point: 4$\times$2 in Rover, 4$\times$1 in Cinema, Fireplace Room and Phone, and 4$\times$4 in Convergence. With more light samples per shading point, the light-sampling noise falls and a larger share of the error comes from the rest of the light path, which no light sampler affects. All techniques render at these points, the same within a scene.
+
+\emph{Measurement.} Each technique renders the representative frame of each scene 24 times with independent random numbers, without accumulation or denoising, and the sampling structure is built from that frame. We compare each render with a converged reference of the same frame (2D CDF, 8 light samples per shading point, 1500 accumulated frames; 400 for Phone) and report the mean RMSE and PSNR over the 24 renders and \FLIP\ over the first 8. The 95\% confidence intervals of the RMSE are 0.0001--0.0011, below 1\% of the value in every cell.
+
+\section*{2\quad Results}
+
+Table~\ref{tab:equal-samples} reports RMSE, PSNR and \FLIP\ for all techniques at equal samples. The three techniques that importance sample the emitter at full texel resolution (the 2D CDF, the mipmap warp and the per-pixel alias table) reach the same error within 1\% on every scene. They sample the same distribution, proportional to the luminance of each texel, and differ only in how they invert it, so at equal samples they are expected to coincide. Random sampling is clearly worse: its RMSE is 1.12 and 1.21 times that of the 2D CDF on Rover and Cinema, where the light is spread over a large, bright frame, and 1.55, 2.23 and 2.37 times on Phone, Fireplace Room and Convergence, where it is concentrated in a few bright regions. The 2D CDF at $1/8$ resolution is up to 2.6\% behind the full-resolution techniques, since each of its cells averages 64 texels.
+
+Our two techniques are slightly behind the full-resolution techniques. Relative to the 2D CDF, the RMSE of BudgetLeafAlias is $+0.4\%$ on Rover, $-0.2\%$ on Cinema, $+2.5\%$ on Phone, $+4.9\%$ on Convergence and $+9.2\%$ on Fireplace Room; that of CodecLeafAlias is $+1.2$ to $+3.3\%$ on all five scenes. The cause is the resolution of the sampling density. Both techniques choose a leaf in proportion to its mean luminance and then a texel uniformly within the leaf, so the density is constant over each leaf, and the variation of luminance within a leaf is not importance sampled. Where the emitter varies smoothly at the scale of the leaves, as in the road panorama of Rover and the sunset of Cinema, this costs nothing. Where small, very bright features sit next to dark texels inside the same leaf, as in the flames and sparks of Fireplace Room (a 4K frame with about 2000 texels per leaf at $B=4000$) and the lights of the dark cave in Convergence, part of the samples land on the dark texels of a bright leaf, and the error grows. CodecLeafAlias, whose partition comes from the video codec, has more and smaller leaves on such detailed content and loses less there (3.3\% on Fireplace Room), but its partition follows image detail rather than light, so it also spends leaves where they do not help and is 1--3\% behind everywhere.
+
+These differences are small because light sampling is only one part of the error of a path-traced frame: the leaf density increases the light-sampling variance, but its effect on the rendered image is diluted by the noise of the rest of the path. Raising the leaf budget of BudgetLeafAlias from 4000 to 16000 recovers only 1--4\% of RMSE, while the cost of sampling grows by 25--29\%, since the alias table no longer fits in the cache. At equal samples, therefore, our techniques do not sample better than a texel-resolution distribution, and are not meant to: they trade a small loss of sampling quality for a much lower cost per sample and per frame, which pays off at equal time, when that cost buys more samples.
+
+\input{table_equal_samples.tex}
+
+\end{document}

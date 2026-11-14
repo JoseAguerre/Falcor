@@ -1,0 +1,29 @@
+\begin{table}[H]
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\caption{LED wall showing the same photograph at three resolutions (Rover scene, one frame, direct illumination). \emph{samples}: light samples per shading point that fit in a 33.3\,ms frame (+: the engine's limit of 64 is reached before 33.3\,ms). \emph{faster}: how many times shorter the frame is than the 2D CDF's 33.3\,ms when the technique reaches the same RMSE. \emph{RMSE}: error at 33.3\,ms relative to the 2D CDF (below 1 is better). $^\dagger$Not reported: see the text.}
+\label{tab:wall}
+\begin{tabular}{l ccc ccc ccc}
+\toprule
+ & \multicolumn{3}{c}{1820$\times$1024} & \multicolumn{3}{c}{3640$\times$2048} & \multicolumn{3}{c}{7280$\times$4096} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+Technique & samples & faster & RMSE & samples & faster & RMSE & samples & faster & RMSE \\
+\midrule
+\multicolumn{10}{l}{\textit{Road, broad light}} \\
+2D CDF & 34 & 1 & 1 & 25 & 1 & 1 & 10 & 1 & 1 \\
+2D CDF/8 & 45 & 1.33 & 0.939 & 38 & 1.58 & 0.916 & 32 & 2.67 & 0.814 \\
+Mipmap & 33 & 0.98 & 1.004 & 31 & 1.06 & 0.957 & 28 & 2.44 & 0.826 \\
+Alias per pixel & 53 & 1.52 & 0.917 & 22 & 0.93 & 1.014 & 16 & 1.49 & 0.915 \\
+\textbf{BudgetLeafAlias} & 60 & 1.78 & 0.883 & 58 & 2.15 & 0.852 & 40 & 3.08 & 0.792 \\
+\textbf{CodecLeafAlias} & 59 & 1.67 & 0.901 & 55 & 2.04 & 0.871 & 40 & 3.06 & 0.791 \\
+\midrule
+\multicolumn{10}{l}{\textit{Morning, sun in frame}} \\
+2D CDF & 46 & 1 & 1 & 35 & 1 & 1 & 22 & 1 & 1 \\
+2D CDF/8 & 57 & 1.22 & 0.957 & 51 & 1.41 & 0.927 & 46 & 1.95 & 0.864 \\
+Mipmap & 39 & 0.88 & 1.031 & 38 & 1.11 & 0.978 & 36 & 1.71 & 0.899 \\
+Alias per pixel & 64+ & 1.37 & 0.927 & 33 & 0.95 & 1.011 & 27 & 1.23 & 0.957 \\
+\textbf{BudgetLeafAlias}$^\dagger$ & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+\textbf{CodecLeafAlias} & 64+ & 1.51 & 0.939 & 64+ & 1.76 & 0.893 & 63 & 2.38 & 0.819 \\
+\bottomrule
+\end{tabular}
+\end{table}

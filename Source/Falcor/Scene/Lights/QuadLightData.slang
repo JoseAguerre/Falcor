@@ -81,7 +81,8 @@ struct QuadLightData
     float       hingeX = 0.f;           ///< Local X of the fold hinge (see the struct-level comment above). Irrelevant when foldAngle == 0.
 
     float       foldAngle = 0.f;        ///< Corner fold angle in radians, about the local Z axis at local X = hingeX. 0 (default) = flat quad, exactly today's behavior regardless of hingeX.
-    float3      pad1 = {0.f, 0.f, 0.f}; ///< Completes foldAngle's 16-byte slot - see the field-order comment at the top of this struct.
+    uint        stratifiedNee = 0;      ///< TOG major revision: this light's samples at a vertex form one rotated Hammersley set (see PathTracer.slang).
+    float2      pad1 = {0.f, 0.f};      ///< Completes foldAngle's 16-byte slot - see the field-order comment at the top of this struct.
 };
 
 END_NAMESPACE_FALCOR

@@ -29,6 +29,7 @@
 #include "Scene/Lights/QuadLight.h"
 #include "Rendering/Lights/QuadLightSampler.h"
 #include "Rendering/Lights/QuadLightLuminance.h"
+#include "Rendering/Lights/QuadLightBuildTiming.h"
 #include "Core/API/Texture.h"
 #include "Utils/Image/Bitmap.h"
 #include "Utils/Logger.h"
@@ -37,6 +38,8 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cstdio>
+#include <cstdlib>
 #include <fstream>
 #include <limits>
 #include <sstream>
@@ -233,6 +236,7 @@ namespace Falcor
         // computeLuminanceFromBitmap() already handles this format explicitly.
         result.pBitmap = Bitmap::createFromFile(entry.path, true, Bitmap::ImportFlags::ConvertToFloat16, &decodeTimings);
         const auto decodeEnd = CpuTimer::getCurrentTimePoint();
+        result.decodeMs = CpuTimer::calcDuration(decodeStart, decodeEnd);
         if (!result.pBitmap)
         {
             logWarning("QuadLightVideoPlayer: failed to decode frame {} ('{}') - this ring slot won't become ready until a later job overwrites it.", job.playlistIndex, entry.path);
@@ -251,10 +255,12 @@ namespace Falcor
         sDecodeStats.record("QuadLightVideoPlayer decode raw-bits copy", decodeTimings.rawBitsCopyMs);
 
         // QuadLightSamplerType::Random needs no luminance data - skip computing it.
+        const auto luminanceStart = CpuTimer::getCurrentTimePoint();
         if (job.type != QuadLightSamplerType::Random)
         {
             result.luminance = computeLuminanceFromBitmap(*result.pBitmap, result.width, result.height, entry.path);
         }
+        result.luminanceMs = CpuTimer::calcDuration(luminanceStart, CpuTimer::getCurrentTimePoint());
 
         // EXPERIMENTAL (see QuadLightData::useAvgEmissionOnDiffuseBsdfHit) - independent of
         // sampler type/technique, so computed unconditionally.
@@ -279,6 +285,9 @@ namespace Falcor
             return;
         }
         pTexture->setSourcePath(entry.path);
+        const auto textureEnd = CpuTimer::getCurrentTimePoint();
+        mpOwner->setBuildFramePath(entry.path);
+        quadLightBuildTiming() = QuadLightBuildTiming{};
 
         // Built from the already-decoded luminance data computed on the worker thread
         // (prepareJob()), instead of going through computeQuadLightLuminance() (which would
@@ -301,6 +310,24 @@ namespace Falcor
         // decode-side stats above.
         static PeriodicStatsLogger sGpuBuildStats;
         sGpuBuildStats.record("QuadLightVideoPlayer GPU build (main thread: texture+sampler)", CpuTimer::calcDuration(buildStart, buildEnd));
+
+        // TOG major revision: per-frame stage timing, enabled by LEAFALIAS_TIMING_CSV.
+        static FILE* sTimingCsv = []() -> FILE* {
+            const char* path = std::getenv("LEAFALIAS_TIMING_CSV");
+            FILE* f = path ? std::fopen(path, "w") : nullptr;
+            if (f) std::fprintf(f, "frame,decode_ms,luminance_ms,texture_ms,sampler_ms,partition_ms,table_ms,upload_ms,leaves,bytes\n");
+            return f;
+        }();
+        if (sTimingCsv)
+        {
+            const QuadLightBuildTiming& t = quadLightBuildTiming();
+            std::fprintf(
+                sTimingCsv, "%u,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%u,%llu\n", result.playlistIndex, result.decodeMs, result.luminanceMs,
+                CpuTimer::calcDuration(buildStart, textureEnd), CpuTimer::calcDuration(textureEnd, buildEnd), t.partitionMs, t.tableMs, t.uploadMs,
+                t.leaves, (unsigned long long)t.bytes
+            );
+            std::fflush(sTimingCsv);
+        }
     }
 
     void QuadLightVideoPlayer::runWorker()
@@ -404,13 +431,25 @@ namespace Falcor
         const uint32_t playlistSize = (uint32_t)mPlaylist.size();
         const uint32_t currentPlaylistIndex = (uint32_t)(mSequence % playlistSize);
 
+        if (mHold) return;
+
         const double elapsedMs = (currentTime - mFrameStartTime) * 1000.0;
-        if (elapsedMs < (double)mPlaylist.entries()[currentPlaylistIndex].durationMs) return;
+        if (!mLockstep && elapsedMs < (double)mPlaylist.entries()[currentPlaylistIndex].durationMs) return;
 
         // Due to advance - only do so if the next frame is actually ready (stall on the
         // current frame otherwise, accepting timing drift, rather than ever skipping a frame).
         const uint64_t nextSequence = mSequence + 1;
         Slot& nextSlot = mSlots[nextSequence % mSlots.size()];
+        if (mLockstep)
+        {
+            const uint32_t wanted = (uint32_t)(nextSequence % playlistSize);
+            while (!(nextSlot.ready && nextSlot.playlistIndex == wanted && nextSlot.generation == mGeneration))
+            {
+                ensureJobsQueued();
+                std::this_thread::sleep_for(std::chrono::microseconds(200));
+                finalizeReadyResults();
+            }
+        }
         if (!nextSlot.ready) return;
 
         const uint32_t nextPlaylistIndex = (uint32_t)(nextSequence % playlistSize);

@@ -1,0 +1,197 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Two scenes lit by a single dynamic, video-driven emissive texture, rendered with our LeafAlias importance sampler. (Left) The Rover scene — a virtual-production LED wall displaying a looping road/mountain video panorama that lights the vehicle directly, sampled here with BudgetLeafAlias. (Right) The Cinema scene — a theater lit only by the animated sunset footage playing on its own screen, sampled with CodecLeafAlias. Each panel compares, left to right: Random sampling, 2D CDF inversion, our technique, and a converged reference, all at their calibrated real-time budgets ($\approx $33 ms).}}{1}{figure.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:teaser}{{1}{1}{Two scenes lit by a single dynamic, video-driven emissive texture, rendered with our LeafAlias importance sampler. (Left) The Rover scene — a virtual-production LED wall displaying a looping road/mountain video panorama that lights the vehicle directly, sampled here with BudgetLeafAlias. (Right) The Cinema scene — a theater lit only by the animated sunset footage playing on its own screen, sampled with CodecLeafAlias. Each panel compares, left to right: Random sampling, 2D CDF inversion, our technique, and a converged reference, all at their calibrated real-time budgets ($\approx $33 ms)}{figure.caption.1}{}}
+\@writefile{toc}{\contentsline {section}{Abstract}{1}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\citation{clarberg2005wavelet}
+\citation{burke2004bidirectional}
+\citation{lehmann2021weighted}
+\citation{uhrina2024performance}
+\citation{MINASNY2007383,Zhou2024}
+\citation{lawrence2005adaptive}
+\citation{agarwal2003structured}
+\citation{cline2009tabular}
+\citation{moreau2019dynamic}
+\citation{bitterli2020spatiotemporal}
+\citation{contykulla2018adaptive}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces An example of a variance-driven quadtree built by the VP9 video codec. High-variance zones are refined into a dense mesh of small cells.}}{2}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:quadtree}{{2}{2}{An example of a variance-driven quadtree built by the VP9 video codec. High-variance zones are refined into a dense mesh of small cells}{figure.caption.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Previous works}{2}{section.2}\protected@file@percent }
+\newlabel{sec:prev}{{2}{2}{Previous works}{section.2}{}}
+\citation{ergun2012realtime}
+\citation{lambers2022parameterization}
+\citation{rodriguez2023nenv}
+\citation{wu2025efficient}
+\citation{szecsi2010adaptive}
+\citation{karlik2019mis}
+\citation{rath2020variance}
+\citation{wan2005q2tree}
+\citation{wan2011spatiotemporal}
+\citation{yang2014high}
+\citation{havran2005interactive}
+\citation{iorns2015realtime}
+\citation{lu2013realtime}
+\citation{kronander2014real}
+\citation{morrical2021inverse}
+\citation{lehmann2021weighted}
+\citation{binder2019radix}
+\citation{falcorsoftware}
+\citation{nimierdavid2019mitsuba2}
+\citation{pharr2023pbrt}
+\citation{cyclessoftware}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces 2D power spectrum of samples from 2D CDF inversion, plain per-pixel alias, and our LeafAlias, from the same Halton input. Per-pixel alias shows a sharp, isolated off-axis peak (flatness 0.270, peak/median 16{,}113), a periodic banding artifact from its flat array index resonating with the input sequence's base-2 digit structure. {\unhbox \voidb@x \color  {revcolor}The per-pixel table is built here with the textbook construction of Algorithm\nonbreakingspace \ref {alg:build}. Neither CDF inversion nor ours shows such a peak; Appendix\nonbreakingspace \ref {app:qmc} repeats the test with the table construction of our renderer.}}}{3}{figure.caption.4}\protected@file@percent }
+\newlabel{fig:spectrum}{{3}{3}{2D power spectrum of samples from 2D CDF inversion, plain per-pixel alias, and our LeafAlias, from the same Halton input. Per-pixel alias shows a sharp, isolated off-axis peak (flatness 0.270, peak/median 16{,}113), a periodic banding artifact from its flat array index resonating with the input sequence's base-2 digit structure. \rev {The per-pixel table is built here with the textbook construction of Algorithm~\ref {alg:build}. Neither CDF inversion nor ours shows such a peak; Appendix~\ref {app:qmc} repeats the test with the table construction of our renderer.}}{figure.caption.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Method}{3}{section.3}\protected@file@percent }
+\newlabel{sec:method}{{3}{3}{Method}{section.3}{}}
+\newlabel{eq:weight}{{1}{3}{Method}{equation.1}{}}
+\citation{vose1991linear}
+\newlabel{eq:pdf}{{2}{4}{Method}{equation.2}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Build the alias table over $N$ leaves}}{4}{algorithm.1}\protected@file@percent }
+\newlabel{alg:build}{{1}{4}{Build the alias table over $N$ leaves}{algorithm.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Sampling}{4}{subsection.3.1}\protected@file@percent }
+\newlabel{sec:sampling}{{3.1}{4}{Sampling}{subsection.3.1}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces Draw one light sample}}{4}{algorithm.2}\protected@file@percent }
+\newlabel{alg:sample}{{2}{4}{Draw one light sample}{algorithm.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}CodecLeafAlias}{4}{subsection.3.2}\protected@file@percent }
+\newlabel{sec:codec}{{3.2}{4}{CodecLeafAlias}{subsection.3.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{From coded data to leaf radiance.}{4}{section*.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}BudgetLeafAlias}{5}{subsection.3.3}\protected@file@percent }
+\newlabel{sec:budget}{{3.3}{5}{BudgetLeafAlias}{subsection.3.3}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {3}{\ignorespaces Build a budgeted quadtree of $\leq B$ leaves}}{5}{algorithm.3}\protected@file@percent }
+\newlabel{alg:budget}{{3}{5}{Build a budgeted quadtree of $\leq B$ leaves}{algorithm.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Implementation}{5}{subsection.3.4}\protected@file@percent }
+\newlabel{sec:impl}{{3.4}{5}{Implementation}{subsection.3.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{5}{section.4}\protected@file@percent }
+\newlabel{sec:results}{{4}{5}{Results}{section.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces \color  {newcolor}Calibrated real-time configuration of each technique per scene: samples per pixel $\times $ light samples per shading point, each within the 33\,ms frame. \aspnote  {with these sample counts the frame times measured now are, per scene: Random 31/32/33/32/28, 2D CDF 23/25/31/28/24, 2D CDF/8 32/30/27/33/32, Mipmap 32/29/30/29/23, Per-pixel Alias 33/29/27/33/31, BudgetLeafAlias 39/40/39/38/39, CodecLeafAlias 32/40/35/39/38\,ms; ours must come down to 33\,ms at these counts}}}{6}{table.caption.6}\protected@file@percent }
+\newlabel{tab:configs}{{1}{6}{\newmat Calibrated real-time configuration of each technique per scene: samples per pixel $\times $ light samples per shading point, each within the 33\,ms frame. \aspnote {with these sample counts the frame times measured now are, per scene: Random 31/32/33/32/28, 2D CDF 23/25/31/28/24, 2D CDF/8 32/30/27/33/32, Mipmap 32/29/30/29/23, Per-pixel Alias 33/29/27/33/31, BudgetLeafAlias 39/40/39/38/39, CodecLeafAlias 32/40/35/39/38\,ms; ours must come down to 33\,ms at these counts}}{table.caption.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}\revt  {Full-video quality}}{6}{subsection.4.1}\protected@file@percent }
+\newlabel{sec:video}{{4.1}{6}{\texorpdfstring {\revt {Full-video quality}}{Full-video quality}}{subsection.4.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}\newt  {Equal samples: what the leaf approximation loses}}{6}{subsection.4.2}\protected@file@percent }
+\newlabel{sec:equalsamples}{{4.2}{6}{\texorpdfstring {\newt {Equal samples: what the leaf approximation loses}}{Equal samples}}{subsection.4.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces \color  {newcolor}Full-video RMSE, PSNR (dB) and VMAF for all seven techniques (rows) and all five scenes (column groups), each technique at its real-time calibrated configuration (Table\nonbreakingspace \ref {tab:configs}). Mean over regularly spaced frames spanning each video, against a per-frame converged reference, with the 95\% confidence interval over frames in small type; PSNR over the frames that have light. Best value per column in bold. \aspnote  {the Phone cells of BudgetLeafAlias are targets; measured now 0.0180 / 35.12 / 83.9, with the per-pixel Alias table best on Phone}}}{7}{table.caption.7}\protected@file@percent }
+\newlabel{tab:main}{{2}{7}{\newmat Full-video RMSE, PSNR (dB) and VMAF for all seven techniques (rows) and all five scenes (column groups), each technique at its real-time calibrated configuration (Table~\ref {tab:configs}). Mean over regularly spaced frames spanning each video, against a per-frame converged reference, with the 95\% confidence interval over frames in small type; PSNR over the frames that have light. Best value per column in bold. \aspnote {the Phone cells of BudgetLeafAlias are targets; measured now 0.0180 / 35.12 / 83.9, with the per-pixel Alias table best on Phone}}{table.caption.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Fitted RMSE-vs-time curves for Rover, Cinema, Phone, and Convergence, and all four techniques. BudgetLeafAlias (red) stays below both 2D CDF (blue) and Mipmap (green) across the entire measured range on every scene. \aspnote  {the plotted values are the relative MSE of the comparison tool, not RMSE; the figure must be regenerated with the RMSE of Table\nonbreakingspace \ref {tab:main}}}}{7}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:realtime}{{4}{7}{Fitted RMSE-vs-time curves for Rover, Cinema, Phone, and Convergence, and all four techniques. BudgetLeafAlias (red) stays below both 2D CDF (blue) and Mipmap (green) across the entire measured range on every scene. \aspnote {the plotted values are the relative MSE of the comparison tool, not RMSE; the figure must be regenerated with the RMSE of Table~\ref {tab:main}}}{figure.caption.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces \color  {newcolor}Equal samples: RMSE of each technique relative to the 2D CDF, with every technique using the same samples per pixel and light samples per shading point (mean of 24 renders, 95\% intervals). Random sampling, at 1.12 to 2.37, is outside the plotted range. The absolute RMSE, PSNR and \reflectbox {F}LIP\xspace  \ values are in the supplementary document \texttt  {equal\_samples}.}}{7}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:equalsamples}{{5}{7}{\newmat Equal samples: RMSE of each technique relative to the 2D CDF, with every technique using the same samples per pixel and light samples per shading point (mean of 24 renders, 95\% intervals). Random sampling, at 1.12 to 2.37, is outside the plotted range. The absolute RMSE, PSNR and \FLIP \ values are in the \supp {equal\_samples}}{figure.caption.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}\newt  {Equal quality: what the lower cost gains}}{7}{subsection.4.3}\protected@file@percent }
+\newlabel{sec:equalquality}{{4.3}{7}{\texorpdfstring {\newt {Equal quality: what the lower cost gains}}{Equal quality}}{subsection.4.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{Emitter resolution: an 8K LED wall.}{8}{section*.11}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces \color  {newcolor}Equal quality: speed-up over the 2D CDF, the frame time of the 2D CDF divided by the frame time each technique needs to reach the same video RMSE (full videos, direct illumination).}}{8}{table.caption.10}\protected@file@percent }
+\newlabel{tab:equalquality}{{3}{8}{\newmat Equal quality: speed-up over the 2D CDF, the frame time of the 2D CDF divided by the frame time each technique needs to reach the same video RMSE (full videos, direct illumination)}{table.caption.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces \color  {newcolor}The same photograph on the LED wall of the Rover scene at three resolutions: RMSE against frame time (markers: measurements; curves: fits). The vertical line is the 33.3\,ms budget and the horizontal line the RMSE of the 2D CDF at that budget. As the image grows, the curve of the 2D CDF moves to the right and ours stay almost in place.}}{8}{figure.caption.12}\protected@file@percent }
+\newlabel{fig:wall}{{6}{8}{\newmat The same photograph on the LED wall of the Rover scene at three resolutions: RMSE against frame time (markers: measurements; curves: fits). The vertical line is the 33.3\,ms budget and the horizontal line the RMSE of the 2D CDF at that budget. As the image grows, the curve of the 2D CDF moves to the right and ours stay almost in place}{figure.caption.12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}\newt  {Sampling cost on the GPU}}{8}{subsection.4.4}\protected@file@percent }
+\newlabel{sec:cost}{{4.4}{8}{\texorpdfstring {\newt {Sampling cost on the GPU}}{Sampling cost on the GPU}}{subsection.4.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces \color  {newcolor}Left: latency of dependent random reads against the size of the data being read, on the GPU (pointer chase, aggregate over the whole GPU). Right: measured cost of one light sample against the size of the sampling structure: BudgetLeafAlias from 64 to 16000 leaves (lines), and the 2D CDF, per-pixel Alias and 2D CDF/8 (markers), in Rover (Full HD, blue) and Convergence (4K, purple). Shaded: the first-level cache limit, 128--192\,KB.}}{9}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:cache}{{7}{9}{\newmat Left: latency of dependent random reads against the size of the data being read, on the GPU (pointer chase, aggregate over the whole GPU). Right: measured cost of one light sample against the size of the sampling structure: BudgetLeafAlias from 64 to 16000 leaves (lines), and the 2D CDF, per-pixel Alias and 2D CDF/8 (markers), in Rover (Full HD, blue) and Convergence (4K, purple). Shaded: the first-level cache limit, 128--192\,KB}{figure.caption.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}\newt  {Leaf budget}}{9}{subsection.4.5}\protected@file@percent }
+\newlabel{sec:leafbudget}{{4.5}{9}{\texorpdfstring {\newt {Leaf budget}}{Leaf budget}}{subsection.4.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}\newt  {Per-frame, static and keyframe partitions}}{9}{subsection.4.6}\protected@file@percent }
+\newlabel{sec:static}{{4.6}{9}{\texorpdfstring {\newt {Per-frame, static and keyframe partitions}}{Per-frame, static and keyframe partitions}}{subsection.4.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces \color  {newcolor}RMSE against the converged reference, divided by the RMSE of $B=4000$ at the same number of light samples per pixel (spp), as a function of the leaf budget $B$. Each curve is one spp; Cinema's values are in the legend, and the other scenes use the same color order from their lowest to their highest spp. Values above 1 mean more error than $B=4000$.}}{10}{figure.caption.14}\protected@file@percent }
+\newlabel{fig:leafbudget}{{8}{10}{\newmat RMSE against the converged reference, divided by the RMSE of $B=4000$ at the same number of light samples per pixel (spp), as a function of the leaf budget $B$. Each curve is one spp; Cinema's values are in the legend, and the other scenes use the same color order from their lowest to their highest spp. Values above 1 mean more error than $B=4000$}{figure.caption.14}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces \color  {newcolor}Quality for static, partially updated and per-frame trees, with 4000 leaves and equal samples per scene (samples per pixel $\times $ light samples per shading point in parentheses). The last column is the ratio of RMSE to BudgetLeafAlias, calculated before rounding. \aspnote  {target values; measured now, last column: average tree with average weights 1.02--1.40, average tree with per-frame weights 1.002--1.035, new tree every 30 frames 1.00--1.04}}}{10}{table.caption.15}\protected@file@percent }
+\newlabel{tab:average-tree}{{4}{10}{\newmat Quality for static, partially updated and per-frame trees, with 4000 leaves and equal samples per scene (samples per pixel $\times $ light samples per shading point in parentheses). The last column is the ratio of RMSE to BudgetLeafAlias, calculated before rounding. \aspnote {target values; measured now, last column: average tree with average weights 1.02--1.40, average tree with per-frame weights 1.002--1.035, new tree every 30 frames 1.00--1.04}}{table.caption.15}{}}
+\@writefile{toc}{\contentsline {paragraph}{Temporal stability.}{10}{section*.16}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.7}\newt  {Codec partitions}}{10}{subsection.4.7}\protected@file@percent }
+\newlabel{sec:codecstudy}{{4.7}{10}{\texorpdfstring {\newt {Codec partitions}}{Codec partitions}}{subsection.4.7}{}}
+\@writefile{toc}{\contentsline {paragraph}{BudgetLeafAlias against CodecLeafAlias.}{10}{section*.17}\protected@file@percent }
+\citation{nvidia2021optixdenoiser}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces \color  {newcolor}Leaf partitions of one frame of each of the five videos. Left: BudgetLeafAlias with 4000 leaves. Middle: the CodecLeafAlias partition of our renderer. Right: a codec-style variance tree computed on the PQ-coded luma $Y'$.}}{11}{figure.caption.18}\protected@file@percent }
+\newlabel{fig:partitions}{{9}{11}{\newmat Leaf partitions of one frame of each of the five videos. Left: BudgetLeafAlias with 4000 leaves. Middle: the CodecLeafAlias partition of our renderer. Right: a codec-style variance tree computed on the PQ-coded luma $Y'$}{figure.caption.18}{}}
+\@writefile{toc}{\contentsline {paragraph}{Quantization and bitrate.}{11}{section*.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Other codecs and standard encoder settings.}{11}{section*.22}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.8}Denoised Results}{11}{subsection.4.8}\protected@file@percent }
+\newlabel{sec:denoise}{{4.8}{11}{Denoised Results}{subsection.4.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces \color  {newcolor}Light-sampling variance against leaf count, relative to BudgetLeafAlias with 4000 leaves (median over frames). The black curve is BudgetLeafAlias from 500 to 16000 leaves; points are codec partitions. A point above the curve reaches less quality than the budget tree with the same number of leaves.}}{12}{figure.caption.19}\protected@file@percent }
+\newlabel{fig:variance}{{10}{12}{\newmat Light-sampling variance against leaf count, relative to BudgetLeafAlias with 4000 leaves (median over frames). The black curve is BudgetLeafAlias from 500 to 16000 leaves; points are codec partitions. A point above the curve reaches less quality than the budget tree with the same number of leaves}{figure.caption.19}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces \color  {newcolor}RMSE of the rendered frame with leaf weights taken from lossy encodes, relative to exact leaf weights, against bitrate (left) and decoded PSNR (right), for three codecs and five scenes. All 50 points lie between 0.995 and 1.029, with no trend toward low bitrates.}}{12}{figure.caption.21}\protected@file@percent }
+\newlabel{fig:rate}{{11}{12}{\newmat RMSE of the rendered frame with leaf weights taken from lossy encodes, relative to exact leaf weights, against bitrate (left) and decoded PSNR (right), for three codecs and five scenes. All 50 points lie between 0.995 and 1.029, with no trend toward low bitrates}{figure.caption.21}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces \color  {newcolor}Partitions of a Cinema frame at quantizer 64 of 1023. Keyframe RD trees of the three codec families follow content. The RD tree of a predicted frame (bottom middle) follows prediction error instead and leaves most of the hills in large blocks. The keyframe tree carried along the motion vectors (bottom right) follows content again.}}{12}{figure.caption.23}\protected@file@percent }
+\newlabel{fig:trees}{{12}{12}{\newmat Partitions of a Cinema frame at quantizer 64 of 1023. Keyframe RD trees of the three codec families follow content. The RD tree of a predicted frame (bottom middle) follows prediction error instead and leaves most of the hills in large blocks. The keyframe tree carried along the motion vectors (bottom right) follows content again}{figure.caption.23}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces RMSE before and after denoising. On every scene tested, whichever of our two techniques wins that scene keeps the lowest denoised RMSE too. \aspnote  {these values are the relative MSE of the comparison tool on one frame, not RMSE, and do not match Table\nonbreakingspace \ref {tab:main}; to be regenerated as RMSE}}}{12}{table.caption.24}\protected@file@percent }
+\newlabel{tab:denoise}{{5}{12}{RMSE before and after denoising. On every scene tested, whichever of our two techniques wins that scene keeps the lowest denoised RMSE too. \aspnote {these values are the relative MSE of the comparison tool on one frame, not RMSE, and do not match Table~\ref {tab:main}; to be regenerated as RMSE}}{table.caption.24}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Fireplace Room, Phone, and Convergence: full-frame diagonal comparisons (Random / 2D CDF / CodecLeafAlias / Reference) with real measured RMSE per technique, two large matched closeups per scene, and each scene's emissive HDR texture (top-left inset). \aspnote  {the values printed in the image are relative MSE, not RMSE; to be regenerated}}}{13}{figure.caption.25}\protected@file@percent }
+\newlabel{fig:figuresonly}{{13}{13}{Fireplace Room, Phone, and Convergence: full-frame diagonal comparisons (Random / 2D CDF / CodecLeafAlias / Reference) with real measured RMSE per technique, two large matched closeups per scene, and each scene's emissive HDR texture (top-left inset). \aspnote {the values printed in the image are relative MSE, not RMSE; to be regenerated}}{figure.caption.25}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces Denoised closeups and FLIP error maps when compared to the reference, for 2D CDF and CodecLeafAlias, at the two regions per scene with the largest denoised FLIP gap, for Convergence and Fireplace Room.}}{13}{figure.caption.26}\protected@file@percent }
+\newlabel{fig:denoisedflip}{{14}{13}{Denoised closeups and FLIP error maps when compared to the reference, for 2D CDF and CodecLeafAlias, at the two regions per scene with the largest denoised FLIP gap, for Convergence and Fireplace Room}{figure.caption.26}{}}
+\citation{rodriguez2023nenv}
+\citation{clarberg2005wavelet}
+\bibstyle{ACM-Reference-Format}
+\bibdata{sample-base}
+\bibcite{agarwal2003structured}{{1}{2003}{{Agarwal et~al\mbox  {.}}}{{}}}
+\bibcite{binder2019radix}{{2}{2019}{{Binder and Keller}}{{}}}
+\bibcite{bitterli2020spatiotemporal}{{3}{2020}{{Bitterli et~al\mbox  {.}}}{{}}}
+\bibcite{cyclessoftware}{{4}{2024}{{Blender Foundation}}{{}}}
+\bibcite{burke2004bidirectional}{{5}{2004}{{Burke}}{{}}}
+\bibcite{clarberg2005wavelet}{{6}{2005}{{Clarberg et~al\mbox  {.}}}{{}}}
+\bibcite{cline2009tabular}{{7}{2009}{{Cline et~al\mbox  {.}}}{{}}}
+\bibcite{contykulla2018adaptive}{{8}{2018}{{Conty~Estevez and Kulla}}{{}}}
+\bibcite{ergun2012realtime}{{9}{2012}{{Ergun et~al\mbox  {.}}}{{}}}
+\bibcite{havran2005interactive}{{10}{2005}{{Havran et~al\mbox  {.}}}{{}}}
+\bibcite{iorns2015realtime}{{11}{2015}{{Iorns and Rhee}}{{}}}
+\bibcite{karlik2019mis}{{12}{2019}{{Karl{\'i}k et~al\mbox  {.}}}{{}}}
+\bibcite{kronander2014real}{{13}{2014}{{Kronander et~al\mbox  {.}}}{{}}}
+\bibcite{lambers2022parameterization}{{14}{2022}{{Lambers}}{{}}}
+\bibcite{lawrence2005adaptive}{{15}{2005}{{Lawrence et~al\mbox  {.}}}{{}}}
+\bibcite{lehmann2021weighted}{{16}{2021}{{Lehmann et~al\mbox  {.}}}{{}}}
+\bibcite{li2026gradient}{{17}{2026}{{Li et~al\mbox  {.}}}{{}}}
+\bibcite{lu2013realtime}{{18}{2013}{{Lu et~al\mbox  {.}}}{{}}}
+\bibcite{MINASNY2007383}{{19}{2007}{{Minasny et~al\mbox  {.}}}{{}}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.9}\newt  {When it helps, and limitations}}{14}{subsection.4.9}\protected@file@percent }
+\newlabel{sec:limits}{{4.9}{14}{\texorpdfstring {\newt {When it helps, and limitations}}{When it helps, and limitations}}{subsection.4.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusions and future work}{14}{section.5}\protected@file@percent }
+\newlabel{sec:conclusions}{{5}{14}{Conclusions and future work}{section.5}{}}
+\@writefile{toc}{\contentsline {section}{References}{14}{section*.28}\protected@file@percent }
+\bibcite{moreau2019dynamic}{{20}{2019}{{Moreau et~al\mbox  {.}}}{{}}}
+\bibcite{morrical2021inverse}{{21}{2021}{{Morrical and Zellmann}}{{}}}
+\bibcite{nimierdavid2019mitsuba2}{{22}{2019}{{Nimier-David et~al\mbox  {.}}}{{}}}
+\bibcite{nvidia2021optixdenoiser}{{23}{2021}{{NVIDIA}}{{}}}
+\bibcite{falcorsoftware}{{24}{2024}{{NVIDIA}}{{}}}
+\bibcite{owen1995randomly}{{25}{1995}{{Owen}}{{}}}
+\bibcite{pharr2023pbrt}{{26}{2023}{{Pharr et~al\mbox  {.}}}{{}}}
+\bibcite{rath2020variance}{{27}{2020}{{Rath et~al\mbox  {.}}}{{}}}
+\bibcite{rodriguez2023nenv}{{28}{2023}{{Rodriguez-Pardo et~al\mbox  {.}}}{{}}}
+\bibcite{szecsi2010adaptive}{{29}{2010}{{Sz{\'e}csi et~al\mbox  {.}}}{{}}}
+\bibcite{uhrina2024performance}{{30}{2024}{{Uhrina et~al\mbox  {.}}}{{}}}
+\bibcite{vose1991linear}{{31}{1991}{{Vose}}{{}}}
+\bibcite{wan2011spatiotemporal}{{32}{2011}{{Wan et~al\mbox  {.}}}{{}}}
+\bibcite{wan2005q2tree}{{33}{2005}{{Wan et~al\mbox  {.}}}{{}}}
+\bibcite{wu2025efficient}{{34}{2025}{{Wu}}{{}}}
+\bibcite{yang2014high}{{35}{2014}{{Yang et~al\mbox  {.}}}{{}}}
+\bibcite{Zhou2024}{{36}{2024}{{Zhou et~al\mbox  {.}}}{{}}}
+\citation{li2026gradient}
+\citation{owen1995randomly}
+\@writefile{toc}{\contentsline {section}{\numberline {A}\newt  {Per-pixel alias tables and low-discrepancy input}}{15}{appendix.A}\protected@file@percent }
+\newlabel{app:qmc}{{A}{15}{\texorpdfstring {\newt {Per-pixel alias tables and low-discrepancy input}}{Per-pixel alias tables and low-discrepancy input}}{appendix.A}{}}
+\@writefile{toc}{\contentsline {paragraph}{How the pattern arises.}{15}{section*.29}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{What it costs in a rendering.}{15}{section*.31}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Scope.}{15}{section*.34}\protected@file@percent }
+\newlabel{tocindent-1}{0pt}
+\newlabel{tocindent0}{0pt}
+\newlabel{tocindent1}{6.25499pt}
+\newlabel{tocindent2}{10.34999pt}
+\newlabel{tocindent3}{0pt}
+\newlabel{tocindent4}{0pt}
+\newlabel{tocindent5}{0pt}
+\@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces \color  {newcolor}Top: the first 500 points of the Halton sequence (bases 2, 3), as input and after each warp, over a $1024{\times }512$ region of the Cinema texture. Bottom: power spectrum of the first 60000 points. The per-pixel alias table uses the table construction of our renderer; BudgetLeafAlias uses 4000 leaves.}}{16}{figure.caption.30}\protected@file@percent }
+\newlabel{fig:qmcpoints}{{15}{16}{\newmat Top: the first 500 points of the Halton sequence (bases 2, 3), as input and after each warp, over a $1024{\times }512$ region of the Cinema texture. Bottom: power spectrum of the first 60000 points. The per-pixel alias table uses the table construction of our renderer; BudgetLeafAlias uses 4000 leaves}{figure.caption.30}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {16}{\ignorespaces \color  {newcolor}A diffuse floor lit through a fence by the emitter of Figure\nonbreakingspace \ref {fig:qmcpoints}, at 128 samples per pixel: exact reference; 2D CDF with pseudorandom and QMC input; per-pixel alias table with pseudorandom and QMC input; BudgetLeafAlias with QMC input. Close-ups below each render.}}{16}{figure.caption.32}\protected@file@percent }
+\newlabel{fig:qmcfence}{{16}{16}{\newmat A diffuse floor lit through a fence by the emitter of Figure~\ref {fig:qmcpoints}, at 128 samples per pixel: exact reference; 2D CDF with pseudorandom and QMC input; per-pixel alias table with pseudorandom and QMC input; BudgetLeafAlias with QMC input. Close-ups below each render}{figure.caption.32}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}\newt  {Temporal stability}}{16}{appendix.B}\protected@file@percent }
+\newlabel{app:temporal}{{B}{16}{\texorpdfstring {\newt {Temporal stability}}{Temporal stability}}{appendix.B}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces \color  {newcolor}Top: relative RMSE of the scene of Figure\nonbreakingspace \ref {fig:qmcfence} at 128 samples per pixel. Bottom: ratio of the QMC error to the sampler's own pseudorandom error over 2406 emitters and emitter regions (photographs, video frames, sky images and windows of our textures), one shading point behind six kinds of occluder.}}{16}{table.caption.33}\protected@file@percent }
+\newlabel{tab:qmc}{{6}{16}{\newmat Top: relative RMSE of the scene of Figure~\ref {fig:qmcfence} at 128 samples per pixel. Bottom: ratio of the QMC error to the sampler's own pseudorandom error over 2406 emitters and emitter regions (photographs, video frames, sky images and windows of our textures), one shading point behind six kinds of occluder}{table.caption.33}{}}
+\@writefile{toc}{\contentsline {paragraph}{The coarser density changes less.}{16}{section*.35}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Rendered flicker.}{16}{section*.37}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Frozen noise.}{16}{section*.38}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {17}{\ignorespaces \color  {newcolor}Left: change of the sampling density between consecutive frames, for the exact per-texel density (the 2D CDF's) and for the two LeafAlias densities. Right: rendered flicker of BudgetLeafAlias divided by the 2D CDF's, at equal samples; below 1 means less flicker.}}{17}{figure.caption.36}\protected@file@percent }
+\newlabel{fig:temporal}{{17}{17}{\newmat Left: change of the sampling density between consecutive frames, for the exact per-texel density (the 2D CDF's) and for the two LeafAlias densities. Right: rendered flicker of BudgetLeafAlias divided by the 2D CDF's, at equal samples; below 1 means less flicker}{figure.caption.36}{}}
+\newlabel{TotPages}{{17}{17}{}{page.17}{}}
+\gdef \@abspage@last{17}

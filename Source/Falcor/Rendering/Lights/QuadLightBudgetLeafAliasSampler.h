@@ -73,14 +73,15 @@ namespace Falcor
     {
     public:
         /** Decodes pQuadLight's source image itself (via computeQuadLightLuminance()) before building. */
-        QuadLightBudgetLeafAliasSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight);
+        QuadLightBudgetLeafAliasSampler(ref<Device> pDevice, ref<QuadLight> pQuadLight, QuadLightSamplerType type = QuadLightSamplerType::BudgetLeafAlias);
 
         /** Builds directly from an already-computed luminance array, skipping the decode -
             for callers (e.g. video playback prefetch) that already have one on hand from
             building the GPU texture, so the same source image isn't decoded twice.
         */
         QuadLightBudgetLeafAliasSampler(
-            ref<Device> pDevice, ref<QuadLight> pQuadLight, uint32_t width, uint32_t height, const std::vector<float>& luminance
+            ref<Device> pDevice, ref<QuadLight> pQuadLight, uint32_t width, uint32_t height, const std::vector<float>& luminance,
+            QuadLightSamplerType type = QuadLightSamplerType::BudgetLeafAlias
         );
 
         void bindShaderData(const ShaderVar& var) const override;
@@ -103,6 +104,8 @@ namespace Falcor
         std::vector<float> mSrcLuminance;
 
         uint32_t mLeafBudget = kDefaultLeafBudget;
+        uint32_t mAlignBlock = 1; ///< TOG major revision: statistics and tree splits on a block grid, see QuadLight::setBudgetLeafAliasBlock().
+        ref<Buffer> mpTree;       ///< BudgetLeafTree only: per-node child probabilities.
         uint32_t mNodeCount = 0;
         uint32_t mLeafCount = 0;
         double mWeightSum = 0.0;
