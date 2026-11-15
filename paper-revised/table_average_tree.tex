@@ -1,42 +1,37 @@
 \begin{table}[t]
 \centering\small\newmat
-\setlength{\tabcolsep}{3pt}
-\caption{\newmat Quality for static, partially updated and per-frame trees, with 4000 leaves and equal samples per scene (samples per pixel $\times$ light samples per shading point in parentheses). The last column is the ratio of RMSE to BudgetLeafAlias, calculated before rounding. \aspnote{target values; measured now, last column: average tree with average weights 1.02--1.40, average tree with per-frame weights 1.002--1.035, new tree every 30 frames 1.00--1.04}}
+\setlength{\tabcolsep}{4pt}
+\caption{\newmat Quality for static, partially updated and per-frame trees, with 4000 leaves and equal samples per scene (samples per pixel $\times$ light samples per shading point in parentheses). The keyframe tree is rebuilt every 30 frames. The last row of each scene is the ratio of RMSE to BudgetLeafAlias, calculated before rounding. \aspnote{target values; measured now, RMSE ratio: average tree with average weights 1.02--1.40, average tree with per-frame weights 1.002--1.035, keyframe tree 1.00--1.04}}
 \label{tab:average-tree}
 \resizebox{\columnwidth}{!}{%
-\begin{tabular}{l c c c c}
+\begin{tabular}{l l c c c c}
 \toprule
-Tree & RMSE $\downarrow$ & PSNR $\uparrow$ & VMAF $\uparrow$ & RMSE / BudgetLeafAlias $\downarrow$ \\
+ &  & \shortstack{Avg. tree\\and weights} & \shortstack{Avg. tree,\\per-frame weights} & \shortstack{Keyframe tree,\\per-frame weights} & \textbf{\shortstack{Every frame\\(BudgetLeafAlias)}} \\
 \midrule
-\multicolumn{5}{l}{\textit{Rover (4$\times$2)}} \\
-Average tree, average weights & 0.0883 & 21.09 & 71.0 & 1.132 \\
-Average tree, per-frame weights & 0.0845 & 21.48 & 72.0 & 1.083 \\
-New tree every 30 frames, per-frame weights & 0.0842 & 21.50 & 72.1 & 1.080 \\
-\textbf{New tree and weights every frame (BudgetLeafAlias)} & 0.0780 & 22.17 & 73.4 & 1 \\
+\textit{Rover} & RMSE $\downarrow$ & 0.0883 & 0.0845 & 0.0842 & 0.0780 \\
+(4$\times$2) & PSNR $\uparrow$ & 21.09 & 21.48 & 21.50 & 22.17 \\
+ & VMAF $\uparrow$ & 71.0 & 72.0 & 72.1 & 73.4 \\
+ & RMSE ratio $\downarrow$ & 1.132 & 1.083 & 1.080 & 1 \\
 \midrule
-\multicolumn{5}{l}{\textit{Cinema (4$\times$1)}} \\
-Average tree, average weights & 0.0823 & 22.65 & 72.8 & 1.100 \\
-Average tree, per-frame weights & 0.0809 & 22.80 & 73.3 & 1.082 \\
-New tree every 30 frames, per-frame weights & 0.0825 & 22.63 & 72.9 & 1.103 \\
-\textbf{New tree and weights every frame (BudgetLeafAlias)} & 0.0748 & 23.48 & 74.6 & 1 \\
+\textit{Cinema} & RMSE $\downarrow$ & 0.0823 & 0.0809 & 0.0825 & 0.0748 \\
+(4$\times$1) & PSNR $\uparrow$ & 22.65 & 22.80 & 22.63 & 23.48 \\
+ & VMAF $\uparrow$ & 72.8 & 73.3 & 72.9 & 74.6 \\
+ & RMSE ratio $\downarrow$ & 1.100 & 1.082 & 1.103 & 1 \\
 \midrule
-\multicolumn{5}{l}{\textit{Fireplace Room (4$\times$1)}} \\
-Average tree, average weights & 0.1077 & 19.36 & 53.8 & 1.190 \\
-Average tree, per-frame weights & 0.0990 & 20.09 & 57.4 & 1.094 \\
-New tree every 30 frames, per-frame weights & 0.1008 & 19.93 & 56.9 & 1.114 \\
-\textbf{New tree and weights every frame (BudgetLeafAlias)} & 0.0905 & 20.87 & 59.2 & 1 \\
+\textit{Fireplace Room} & RMSE $\downarrow$ & 0.1077 & 0.0990 & 0.1008 & 0.0905 \\
+(4$\times$1) & PSNR $\uparrow$ & 19.36 & 20.09 & 19.93 & 20.87 \\
+ & VMAF $\uparrow$ & 53.8 & 57.4 & 56.9 & 59.2 \\
+ & RMSE ratio $\downarrow$ & 1.190 & 1.094 & 1.114 & 1 \\
 \midrule
-\multicolumn{5}{l}{\textit{Phone (4$\times$1)}} \\
-Average tree, average weights & 0.0353 & 29.38 & 79.5 & 1.296 \\
-Average tree, per-frame weights & 0.0295 & 30.93 & 80.7 & 1.084 \\
-New tree every 30 frames, per-frame weights & 0.0298 & 30.83 & 80.4 & 1.097 \\
-\textbf{New tree and weights every frame (BudgetLeafAlias)} & 0.0272 & 31.63 & 81.8 & 1 \\
+\textit{Phone} & RMSE $\downarrow$ & 0.0353 & 0.0295 & 0.0298 & 0.0272 \\
+(4$\times$1) & PSNR $\uparrow$ & 29.38 & 30.93 & 30.83 & 31.63 \\
+ & VMAF $\uparrow$ & 79.5 & 80.7 & 80.4 & 81.8 \\
+ & RMSE ratio $\downarrow$ & 1.296 & 1.084 & 1.097 & 1 \\
 \midrule
-\multicolumn{5}{l}{\textit{Convergence (4$\times$4)}} \\
-Average tree, average weights & 0.1866 & 14.70 & 50.3 & 1.472 \\
-Average tree, per-frame weights & 0.1414 & 17.11 & 60.4 & 1.115 \\
-New tree every 30 frames, per-frame weights & 0.1418 & 17.09 & 60.2 & 1.118 \\
-\textbf{New tree and weights every frame (BudgetLeafAlias)} & 0.1268 & 18.06 & 62.4 & 1 \\
+\textit{Convergence} & RMSE $\downarrow$ & 0.1866 & 0.1414 & 0.1418 & 0.1268 \\
+(4$\times$4) & PSNR $\uparrow$ & 14.70 & 17.11 & 17.09 & 18.06 \\
+ & VMAF $\uparrow$ & 50.3 & 60.4 & 60.2 & 62.4 \\
+ & RMSE ratio $\downarrow$ & 1.472 & 1.115 & 1.118 & 1 \\
 \bottomrule
 \end{tabular}}
 \end{table}
