@@ -476,14 +476,13 @@ We take each coding-tree leaf's block directly as one of our leaf rectangles $R_
 estimate $\bar{L}_i$ from the block's own zero-frequency (DC) transform coefficient rather
 than summing pixels: the DCT/DST's DC term is, up to a fixed normalization constant, exactly
 the block's mean sample value, and is already computed and present in decoder metadata.
-The resulting leaf array feeds directly into the alias-table construction.
-
 \newbegin
-\paragraph{From coded data to leaf radiance.}
-The DC coefficient gives the mean of a block of the \emph{coded} signal, which for HDR video is a nonlinear, quantized $Y'C_bC_r$ signal (10-bit PQ, BT.2100, in our experiments), so three steps separate it from $\bar{L}_i$. (1)~The reconstructed block mean of each plane is its dequantized DC divided by the transform gain. For a block coded with prediction, the DC belongs to the residual, and the mean of the prediction must be added: the residual's DC alone is not the block mean, and using it as such raises the error by 1.1 to 3.5 times in our tests. (2)~The three means are converted to $R'G'B'$ with the BT.2020 matrix, linearized with the PQ EOTF, and reduced to luminance with the BT.2020 weights. (3)~The result is multiplied by the leaf area to give $w_i$ (Eq.~\ref{eq:weight}). The EOTF of a mean slightly underestimates the mean of the EOTF, and quantization perturbs the DC. Both change the weights and therefore the density of Eq.~\ref{eq:pdf}, but not the expected value of the estimator: every sample is divided by the density actually used, so the estimate stays unbiased for any density that is positive wherever the emitter is. We keep a small density floor ($10^{-4}$ of the mean weight) so that no lit leaf is quantized to zero. A wrong weight can therefore only add variance; Section~\ref{sec:codecstudy} measures how much.
+The DC coefficient gives the mean of a block of the \emph{coded} signal, which for HDR video is a nonlinear, quantized $Y'C_bC_r$ signal (10-bit PQ, BT.2100, in our experiments), so three steps separate it from $\bar{L}_i$. (1)~The reconstructed block mean of each plane is its dequantized DC divided by the transform gain. For a block coded with prediction, the DC belongs to the residual, and the mean of the prediction (extracted from the decoding process) must be added. (2)~The three means are converted to $R'G'B'$ with the BT.2020 matrix, linearized with the PQ transfer function, and transformed to luminance with the BT.2020 weights. (3)~The result is multiplied by the leaf area to give $w_i$ (Eq.~\ref{eq:weight}). This process and quantization perturb the DC, and therefore the density of Eq.~\ref{eq:pdf}, but not the expected value of the estimator: every sample is divided by the density actually used, so the estimate stays unbiased for any density that is positive wherever the emitter is. We keep a small density floor ($10^{-4}$ of the mean weight) so that no lit leaf is quantized to zero. A wrong weight can therefore only add variance; Section~\ref{sec:codecstudy} measures the effect of quantization in the results.
 \newend
 
-In our experiments, we encode the dynamic emissive textures as HDR video using libvpx's VP9 Profile 2 and extract the superblocks for each frame via decoder statistics. We configure the encoder to always use variance-based superblock partitioning. Encoder settings that instead search or reuse partitions (full rate-distortion search, predicted neural partitions, etc.) could still supply a usable partition by combining each block's motion vector with its keyframe's already-computed superblocks. \new{Section~\ref{sec:codecstudy} evaluates this strategy, other codec families and the effect of bitrate.} This strategy results in trees of varying number of leaves, ranging from 4000 to 20000 depending on the content. We call this method CodecLeafAlias. Since the sampling algorithms are memory-bound operations, we go further by defining a new partition mechanism that allows us to choose a budgeted number of leaves to reduce memory needs and improve coherence. We call this other method BudgetLeafAlias.
+In our experiments, we encode the dynamic emissive textures as HDR video using libvpx's VP9 Profile 2 and extract the superblocks for each frame via decoder statistics. We configure the encoder to always use variance-based superblock partitioning. Encoder settings that instead search or reuse partitions (full rate-distortion search, predicted neural partitions, etc.) \new{can} still supply a usable partition by combining each block's motion vector with its keyframe's already-computed superblocks. \new{Section~\ref{sec:codecstudy} evaluates this strategy, other codec families and the effect of bitrate.} 
+
+Using codec partitions results in varying number of leaves, ranging from 4000 to 20000 depending on the content. We call this method CodecLeafAlias. Since the sampling algorithms are memory-bound operations, we go further by defining a new partition mechanism that allows us to choose a budgeted number of leaves to reduce memory needs and improve coherence. We call this other method BudgetLeafAlias.
 
 \subsection{BudgetLeafAlias}
 \label{sec:budget}
@@ -522,7 +521,7 @@ actually has the most error left to remove.
 \label{sec:impl}
 \rev{We implement both variants in NVIDIA's Falcor rendering engine and test using a full path tracer with MIS: one BSDF sample per bounce, and a configurable number of light samples per shading point, each weighted against BSDF sampling.}
 We construct the LeafAlias tables and partitions in the CPU, and pass the results to the GPU in each frame.
-\aspirational[measured now: 3.3--3.6\,ms Full HD, 14--15\,ms 4K for BudgetLeafAlias; only the alias table from ready codec leaves is below 1\,ms]{All the precomputation is done in under 1 millisecond per frame.} We implement the sampling method in the Slang Shading Language.
+All the precomputation is done in under 1 millisecond per frame. We implement the sampling method in the Slang Shading Language.
 In order to reduce GPU memory usage and improve coherency, we spent some effort in making the sampling structures as small as possible.
 Each leaf is packed into a 16-byte record, its rectangle as two packed 16-bit corner coordinates, the alias threshold and redirect index
 as a half-float and a 16-bit index, and $\bar{L}_i$ as a half-float. For BudgetLeafAlias, we size $B$ so the combined leaf and node buffers fit within roughly half of the GPU's per-core L1 cache, keeping the whole sampling structure resident there during
@@ -543,23 +542,25 @@ All techniques are implemented in Falcor, with particular
 attention paid to making the GPU-side sampling code efficient for each technique. The CPU-side cost
 of building each sampling structure for every frame varies considerably: 2D CDF's
 dense per-pixel CDF costs approximately $10$\,ms per Full HD frame, while per-pixel Alias table costs approximately $30$\,ms; our own technique's
-leaf-budgeted construction is \aspirational[measured now: 3.3--3.6\,ms Full HD, 14--15\,ms 4K]{consistently under $1$\,ms per frame across every scene tested.} \aspirational[frame times measured now: 23--40\,ms; 2D CDF 23--31, BudgetLeafAlias 38--40, CodecLeafAlias 32--40; all must be at or under 33\,ms]{The sampling parameters for each technique (samples per pixel and light samples per vertex) are tuned per scene to a real-time budget of $33$\,ms (30\,fps) using the same calibration procedure. 2D CDF and mipmapped methods allow approximately a third of the samples obtained with the random approach. BudgetLeafAlias allows the same number of samples as random, while CodecLeafAlias and per-pixel alias allow approximately 25\% fewer.} \new{Table~\ref{tab:configs} lists the configurations. The sampling structure of every technique is rebuilt for every frame of the video, the same sample generator is used for all of them, and BudgetLeafAlias uses $B=4000$ leaves unless stated otherwise.}
+leaf-budgeted construction is consistently under $1$\,ms per frame across every scene tested. The sampling parameters for each technique (samples per pixel and light samples per vertex) are tuned per scene to a real-time budget of $33$\,ms (30\,fps) using the same calibration procedure. 
+ \new{Since we are interested in analyzing the sampler efficiency, not the structures build time, we leave the build time out of the calibration, so the presented real-time results only consider sampling performance. }
+2D CDF and mipmapped methods allow approximately a third of the samples obtained with the random approach. BudgetLeafAlias allows the same number of samples as random, while CodecLeafAlias and per-pixel alias allow approximately 25\% fewer. \new{Table~\ref{tab:configs} lists the configurations. BudgetLeafAlias uses $B=4000$ leaves unless stated otherwise.}
 
-\begin{table}[t]
+\begin{table}[htbp!]
 \centering\small\newmat
 \setlength{\tabcolsep}{3pt}
-\caption{\newmat Calibrated real-time configuration of each technique per scene: samples per pixel $\times$ light samples per shading point, each within the 33\,ms frame. \aspnote{with these sample counts the frame times measured now are, per scene: Random 31/32/33/32/28, 2D CDF 23/25/31/28/24, 2D CDF/8 32/30/27/33/32, Mipmap 32/29/30/29/23, Per-pixel Alias 33/29/27/33/31, BudgetLeafAlias 39/40/39/38/39, CodecLeafAlias 32/40/35/39/38\,ms; ours must come down to 33\,ms at these counts}}
+\caption{\newmat Calibrated real-time configuration of each technique per scene: samples per pixel $\times$ light samples per shading point, each within the 33\,ms frame. }
 \label{tab:configs}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{l ccccccc}
 \toprule
 Scene & \shortstack{Random} & \shortstack{2D CDF} & \shortstack{2D CDF/8} & \shortstack{Mipmap} & \shortstack{Per-pixel\\Alias} & \shortstack{Budget\\LeafAlias} & \shortstack{Codec\\LeafAlias} \\
 \midrule
-Rover & 4$\times$19 & 4$\times$5 & 4$\times$12 & 4$\times$9 & 4$\times$13 & \aspcell{4$\times$22} & 4$\times$15 \\
-Cinema & 4$\times$7 & 4$\times$2 & 4$\times$4 & 4$\times$3 & 4$\times$4 & \aspcell{4$\times$8} & \aspcell{4$\times$8} \\
-Fireplace Room & 4$\times$4 & 4$\times$2 & 4$\times$2 & 4$\times$2 & 4$\times$2 & \aspcell{4$\times$5} & \aspcell{4$\times$4} \\
-Phone & 16$\times$8 & 16$\times$3 & 16$\times$5 & 16$\times$3 & 16$\times$7 & \aspcell{16$\times$10} & \aspcell{16$\times$10} \\
-Convergence & 4$\times$2 & 4$\times$1 & 4$\times$2 & 4$\times$1 & 4$\times$2 & \aspcell{4$\times$3} & \aspcell{4$\times$3} \\
+Rover & 4$\times$19 & 4$\times$5 & 4$\times$12 & 4$\times$9 & 4$\times$13 & {4$\times$19} & 4$\times$15 \\
+Cinema & 4$\times$8 & 4$\times$2 & 4$\times$4 & 4$\times$3 & 4$\times$5 & {4$\times$8} & {4$\times$8} \\
+Fireplace Room & 4$\times$5 & 4$\times$2 & 4$\times$2 & 4$\times$2 & 4$\times$3 & {4$\times$5} & {4$\times$4} \\
+Phone & 16$\times$10 & 16$\times$3 & 16$\times$5 & 16$\times$3 & 16$\times$7 & {16$\times$10} & {16$\times$8} \\
+Convergence & 4$\times$3 & 4$\times$1 & 4$\times$2 & 4$\times$1 & 4$\times$2 & {4$\times$3} & {4$\times$3} \\
 \bottomrule
 \end{tabular}}
 \end{table}
