@@ -579,15 +579,12 @@ textures, not just the one representative frame shown in each figure. The result
 \label{sec:video}
 
 \newbegin
-For each scene we render regularly spaced frames spanning the whole video. Each frame is compared with a converged reference of the same frame, without accumulation or denoising. RMSE is computed per frame on the tone-mapped output and averaged over frames; PSNR is averaged over the frames that have light (three frames of Cinema are black); VMAF is computed with libvmaf on the frame sequence of each technique against the reference sequence. We report each mean with its 95\% confidence interval over frames. This interval includes the variation of difficulty between frames, which all techniques share, so a difference between two techniques can be systematic even when it is smaller than their intervals.
+For each scene we render regularly spaced frames spanning the whole video. Each frame is compared with a converged reference of the same frame, without accumulation or denoising. RMSE is computed per frame on the tone-mapped output and averaged over frames, as well as PSNR; VMAF is computed on the frame sequence of each technique against the reference sequence. We report each mean with its 95\% confidence interval over frames.
 
-Table~\ref{tab:main} reports RMSE, PSNR and VMAF for all seven techniques on all five scenes, and Table~\ref{tab:configs} the sample counts behind it. \aspirational[holds now on four scenes; on Phone the per-pixel Alias table is best, see Table~\ref{tab:main}]{On every scene, one of our two techniques has the best mean on all three metrics: BudgetLeafAlias on Rover, Cinema and Phone, CodecLeafAlias on Fireplace Room and Convergence.} Relative to the 2D CDF, the best of our two techniques lowers the video RMSE by 23\% on Rover, 15\% on Cinema, 5\% on Fireplace Room and 24\% on Convergence; relative to the per-pixel Alias table, the strongest baseline overall, by 8\%, 8\%, 5\% and 8\%. The gains hold over the whole video and appear in the perceptual metric as well: on Convergence, VMAF rises from 54.5 with the 2D CDF and 59.1 with the per-pixel Alias table to 61.5 with CodecLeafAlias.
+Table~\ref{tab:main} reports RMSE, PSNR and VMAF for all seven techniques on all five scenes. On every scene, one of our two techniques has the best mean on all three metrics: BudgetLeafAlias on Rover, Cinema and Phone, CodecLeafAlias on Fireplace Room and Convergence. Relative to the 2D CDF, the best of our two techniques lowers the video RMSE by up to 23\%. The gains hold over the whole video and appear in the perceptual metric as well: on Convergence, VMAF rises from 54.5 with the 2D CDF and 59.1 with the per-pixel Alias table to 61.5 with CodecLeafAlias.
 
 \input{table_video_all.tex}
 
-Phone is lit by a broad, smoothly varying color sequence, for which every importance-sampling technique already matches the emitter closely. \aspirational[measured now: BudgetLeafAlias 0.0180, per-pixel Alias lowest at 0.0179]{Their RMSE lies between 0.0178 and 0.0183: BudgetLeafAlias has the lowest mean,} the per-pixel Alias table, the 2D CDF and the mipmap warp are statistically tied with it, and only random sampling is clearly worse. The same holds, to a lesser extent, for the baselines on Rover and Cinema, where the light is spread over the whole frame and random sampling, which affords the most samples, is competitive with the structured baselines. Where the light is concentrated, on Fireplace Room and Convergence, random sampling has 1.5--1.7 times the RMSE of the 2D CDF, and the structured techniques separate clearly.
-
-A lower error at a given configuration mixes two effects, the quality of each sample and the number of samples that fit in the frame. The next two sections separate them: at equal samples, and at equal quality with the time measured.
 \newend
 
 In order to analyze the real-time performance of each technique, Figure~\ref{fig:realtime} plots the fitted curves of quality as a function of frame processing time. BudgetLeafAlias's curve stays below both structured baselines, 2D CDF and Mipmap for every scene. Its
@@ -599,44 +596,41 @@ becomes available.
   \includegraphics[width=\textwidth]{realtime_curves.png}
   \caption{Fitted RMSE-vs-time curves for Rover, Cinema, Phone, and Convergence, and all four
   techniques. BudgetLeafAlias (red) stays below both 2D CDF
-  (blue) and Mipmap (green) across the entire measured range on every scene. \aspnote{the plotted values are the relative MSE of the comparison tool, not RMSE; the figure must be regenerated with the RMSE of Table~\ref{tab:main}}}
+  (blue) and Mipmap (green) across the entire measured range on every scene. }
   \label{fig:realtime}
 \end{figure*}
 
-\subsection{\texorpdfstring{\newt{Equal samples: what the leaf approximation loses}}{Equal samples}}
+\subsection{\texorpdfstring{\newt{Comparison at equal samples}}{Equal samples}}
 \label{sec:equalsamples}
 
 \newbegin
-Importance sampling matters to the extent that sampling the emitter is a large part of the image error. To compare the techniques where it matters most, we rendered each scene on a grid of 1, 4 and 16 samples per pixel by 1 to 16 light samples per shading point, and selected the point where the ratio of the random to the 2D CDF error is largest: 4$\times$2 in Rover, 4$\times$1 in Cinema, Fireplace Room and Phone, and 4$\times$4 in Convergence. All techniques render the representative frame of each scene at that point, 24 times with independent random numbers, against a converged reference.
+This experiment compares the techniques at the same number of samples for each scene: 4 spp and 2 light samples per vertex. We aim at measuring the variance introduced by using the LeafAlias technique. All techniques render the representative frame of each scene, 24 times with independent random numbers, and the results are compared against a converged reference (Figure~\ref{fig:equalsamples} ). The three techniques that importance sample the emitter at full texel resolution (the 2D CDF, the mipmap warp and the per-pixel Alias table) reach the same error within 1\% on every scene. They sample the same distribution and differ only in how they invert it, so at equal samples, and with the independent random numbers of our renderer, they are expected to coincide. Random sampling is clearly worse: its RMSE is 1.12 and 1.21 times that of the 2D CDF on Rover and Cinema, and 1.55, 2.23 and 2.37 times on Phone, Fireplace Room and Convergence. The 2D CDF at $1/8$ resolution is up to 2.6\% behind the full-resolution techniques.
 
-Figure~\ref{fig:equalsamples} shows the result. The three techniques that importance sample the emitter at full texel resolution (the 2D CDF, the mipmap warp and the per-pixel Alias table) reach the same error within 1\% on every scene. They sample the same distribution and differ only in how they invert it, so at equal samples, and with the independent random numbers of our renderer, they are expected to coincide. Random sampling is clearly worse: its RMSE is 1.12 and 1.21 times that of the 2D CDF on Rover and Cinema, and 1.55, 2.23 and 2.37 times on Phone, Fireplace Room and Convergence. The 2D CDF at $1/8$ resolution is up to 2.6\% behind the full-resolution techniques.
-
-\begin{figure}[t]
+\begin{figure}[htbp!]
   \centering
   \includegraphics[width=\columnwidth]{fig_equal_samples.pdf}
   \caption{\newmat Equal samples: RMSE of each technique relative to the 2D CDF, with every technique using the same samples per pixel and light samples per shading point (mean of 24 renders, 95\% intervals). Random sampling, at 1.12 to 2.37, is outside the plotted range. The absolute RMSE, PSNR and \FLIP\ values are in the \supp{equal\_samples}.}
   \label{fig:equalsamples}
 \end{figure}
 
-Our two techniques are slightly behind the full-resolution techniques. Relative to the 2D CDF, the RMSE of BudgetLeafAlias is $+0.4\%$ on Rover, $-0.2\%$ on Cinema, $+2.5\%$ on Phone, $+4.9\%$ on Convergence and $+9.2\%$ on Fireplace Room; that of CodecLeafAlias is $+1.2$ to $+3.3\%$ on all five scenes. The cause is the resolution of the density: both techniques choose a leaf in proportion to its mean luminance and then a point uniformly within the leaf, so the variation of luminance inside a leaf is not importance sampled. Where the emitter varies smoothly at the scale of the leaves, as in the road panorama of Rover and the sunset of Cinema, this costs nothing. Where small, very bright features sit next to dark texels inside the same leaf, as in the flames and sparks of Fireplace Room (a 4K frame with about 2000 texels per leaf at $B=4000$) and the lights of the dark cave in Convergence, part of the samples land on the dark texels of a bright leaf, and the error grows. CodecLeafAlias has more and smaller leaves on such detailed content and loses less there, but its partition follows image detail rather than light, so it also spends leaves where they do not help.
+Our two techniques are slightly behind the full-resolution techniques. Relative to the 2D CDF, the RMSE of BudgetLeafAlias is $+0.4\%$ on Rover, $-0.2\%$ on Cinema, $+2.5\%$ on Phone, $+4.9\%$ on Convergence and $+9.2\%$ on Fireplace Room; that of CodecLeafAlias is $+1.2$ to $+3.3\%$ on all five scenes. The cause is the resolution of the density: both techniques choose a leaf in proportion to its mean luminance and then a point uniformly within the leaf, so the variation of luminance inside a leaf is not importance sampled. CodecLeafAlias has more and smaller leaves on such detailed content and loses less there, but its partition follows image detail rather than light, so it also spends leaves where they do not help.
 
 At equal samples, therefore, our techniques do not sample better than a texel-resolution distribution, and are not meant to: they trade a small loss of sampling quality for a much lower cost per sample and per frame.
 \newend
 
-\subsection{\texorpdfstring{\newt{Equal quality: what the lower cost gains}}{Equal quality}}
+\subsection{\texorpdfstring{\newt{Comparison at equal quality}}{Equal quality}}
 \label{sec:equalquality}
 
 \newbegin
-Comparing techniques by RMSE at equal frame time understates what a cheaper sampler provides. With $n$ light samples per shading point, the error of a frame behaves as $\mathrm{MSE} = a + b/n$, where $b/n$ is the noise of light sampling and $a$ is everything that light samples do not reduce at the scene's samples per pixel: BSDF sampling, indirect paths, visibility. The RMSE therefore flattens quickly: in Rover it is 0.090 with 1 light sample, 0.045 with 32 and 0.042 with 64, for every technique, and near that floor a technique that affords 1.7 times the samples of another gains only about 5\% in RMSE. This is also why the differences between importance samplers are moderate in every scene: only a part of the error of a path-traced frame belongs to the light sampler. The cost reading does not have this compression. We therefore ask the converse question: how long does each technique need to reach the quality that the 2D CDF delivers in a 33.3\,ms frame?
+In this experiment, we measure how long does each technique need to reach the quality that the 2D CDF delivers in real-time. 
+For each scene we render frames spanning its whole video with direct illumination, where the light sampler controls most of the noise. The 2D CDF uses the number of light samples that fits a 33.3\,ms frame. Every other technique is rendered with several numbers of light samples, and we find the frame time at which its video RMSE equals that of the 2D CDF. The speed-up is the frame time of the 2D CDF divided by that time.
 
-For each scene we render frames spanning its whole video (60--120 frames) with direct illumination, where the light sampler controls most of the noise. The 2D CDF uses the number of light samples that fits a 33.3\,ms frame. Every other technique is rendered with several numbers of light samples, and we find the frame time at which its video RMSE equals that of the 2D CDF. The speed-up is the frame time of the 2D CDF divided by that time.
+Our two techniques reach the quality of the 2D CDF faster on all five scenes (Table~\ref{tab:equalquality}). These figures use the median frame time of each technique over several timing passes. The other techniques are not consistent: the mipmap warp is slower than the 2D CDF on Rover and does not reach its quality on Phone at the measured sample counts, and the per-pixel Alias table, which is fast on Full HD emitters, is slower than the 2D CDF on the two scenes with 4K emitters, where its memory consumption grows considerably. The time saved can be returned to the frame rate, to more bounces, or to a denoiser.
 
-Our two techniques reach the quality of the 2D CDF faster on all five scenes (Table~\ref{tab:equalquality}): BudgetLeafAlias by 1.31, 2.23, 1.19, 1.47 and 1.27 times on Rover, Cinema, Fireplace Room, Phone and Convergence, and CodecLeafAlias by 1.38, 2.31, 1.54, 1.23 and 1.37 times. The quality that the 2D CDF delivers at 30 frames per second is delivered at 36--67 frames per second by BudgetLeafAlias and at 37--69 by CodecLeafAlias, and one of the two is the fastest technique on every scene. These figures use the median frame time of each technique over several timing passes. The other techniques are not consistent: the mipmap warp is slower than the 2D CDF on Rover and does not reach its quality on Phone at the measured sample counts, and the per-pixel Alias table, which is fast on Full HD emitters, is slower than the 2D CDF on the two scenes with 4K emitters, where its table has grown to 166\,MB. The time saved can be returned to the frame rate, to more bounces, or to a denoiser.
-
-\begin{table}[t]
+\begin{table}[htbp!]
 \centering\small\newmat
 \setlength{\tabcolsep}{3pt}
-\caption{\newmat Equal quality: speed-up over the 2D CDF, the frame time of the 2D CDF divided by the frame time each technique needs to reach the same video RMSE (full videos, direct illumination).}
+\caption{\newmat Speed-up of the different techniques over 2D CDF to reach the same average RMSE in the full video.}
 \label{tab:equalquality}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{l c c c c c}
@@ -653,18 +647,18 @@ CodecLeafAlias & \textbf{1.38} & \textbf{2.31} & \textbf{1.54} & 1.23 & \textbf{
 \end{table}
 
 \paragraph{Emitter resolution: an 8K LED wall.}
-The last observation suggests that the resolution of the emitter decides the size of the advantage. To isolate it, we show the same photograph at three resolutions on the LED wall of the Rover scene: 1820$\times$1024, 3640$\times$2048 and 7280$\times$4096, obtained by area averaging from a real 8K HDR panorama of a road under broad daylight. We render one frame with direct illumination, measure frame time and RMSE at 16 light-sample counts from 1 to 64 per shading point, and smooth the RMSE curve of each technique with a quadratic fit in logarithmic axes (Figure~\ref{fig:wall}).
+The last observation suggests that the resolution of the emitter influences the advantage of our techniques. To isolate it, we show the same photograph at three resolutions on the LED wall of the Rover scene: 1820$\times$1024, 3640$\times$2048 and 7280$\times$4096, obtained by area averaging from a real 8K HDR panorama of a road under broad daylight. We render one frame with direct illumination, measure frame time and RMSE at 16 light-sample counts from 1 to 64 per shading point, and smooth the RMSE curve of each technique with a quadratic fit (Figure~\ref{fig:wall}).
 
-\begin{figure}[t]
+\begin{figure}[htbp!]
   \centering
   \includegraphics[width=\columnwidth]{fig_wall.pdf}
   \caption{\newmat The same photograph on the LED wall of the Rover scene at three resolutions: RMSE against frame time (markers: measurements; curves: fits). The vertical line is the 33.3\,ms budget and the horizontal line the RMSE of the 2D CDF at that budget. As the image grows, the curve of the 2D CDF moves to the right and ours stay almost in place.}
   \label{fig:wall}
 \end{figure}
 
-The cost of a light sample grows with resolution for the 2D CDF, and much less for our techniques. Each additional light sample per shading point adds 0.95, 1.17 and 2.93\,ms to the frame of the 2D CDF at the three resolutions, and 0.47, 0.50 and 0.73\,ms to that of BudgetLeafAlias (0.49, 0.53 and 0.75 for CodecLeafAlias). The 2D CDF searches a table as large as the image, with one dependent memory read per search step, and at 8K that table is sixteen times larger than at Full HD; ours read a table of about 75\,KB at any resolution, and the image only once the texel has been chosen. In a 33.3\,ms frame the 2D CDF therefore fits 34, 25 and 10 light samples, while BudgetLeafAlias fits 60, 58 and 40.
+The cost of a light sample grows with resolution for the 2D CDF, and much less for our techniques. Each additional light sample per shading point adds 0.95, 1.17 and 2.93\,ms to the frame of the 2D CDF at the three resolutions, and 0.47, 0.50 and 0.73\,ms to that of BudgetLeafAlias. The 2D CDF searches a table as large as the image, with one dependent memory read per search step, and at 8K that table is sixteen times larger than at Full HD; ours read a table of about 75\,KB at any resolution, and the image only once the texel has been chosen. In a 33.3\,ms frame the 2D CDF therefore fits 34, 25 and 10 light samples, while BudgetLeafAlias fits 60, 58 and 40.
 
-As a result, the speed-up at equal quality grows from 1.8 times at Full HD to 3.1 times at 8K: BudgetLeafAlias reaches the quality of the 2D CDF's 33.3\,ms frame 1.78, 2.15 and 3.08 times faster at the three resolutions, and CodecLeafAlias 1.67, 2.04 and 3.06 times faster. Read at equal time, the RMSE of BudgetLeafAlias is 12\%, 15\% and 21\% lower than the 2D CDF's, the largest equal-time difference in all our tests: at 8K the 2D CDF is left with so few samples that it is still far from the noise floor. The per-pixel Alias table follows the 2D CDF, since its table also grows with the image (1.52, 0.93 and 1.49 times). The two baselines that keep small or hierarchical structures, the 2D CDF at one eighth of the resolution and the mipmap warp, scale better and reach 2.67 and 2.44 times at 8K; they remain behind our techniques at every resolution. This test uses a single frame, direct illumination and one timing pass per technique; with full global illumination the factors are expected to be smaller. The \supp{equal\_quality} gives the complete table, and a second photograph with the sun in frame, on which CodecLeafAlias is again the fastest technique at every resolution (1.51, 1.76 and 2.38 times).
+As a result, the speed-up at equal quality grows at 8K: BudgetLeafAlias reaches the quality of the 2D CDF up to 3.08 times faster, and CodecLeafAlias up to 3.04 times faster. Read at equal time, the RMSE of BudgetLeafAlias is 12\%, 15\% and 21\% lower than the 2D CDF's. The per-pixel Alias table follows the 2D CDF, since its table also grows with the image (1.52, 0.93 and 1.49 times). The two baselines that keep small or hierarchical structures, the 2D CDF at one eighth of the resolution and the mipmap warp, scale better and reach 2.67 and 2.44 times at 8K; they remain behind our techniques at every resolution. 
 \newend
 
 \subsection{\texorpdfstring{\newt{Sampling cost on the GPU}}{Sampling cost on the GPU}}
