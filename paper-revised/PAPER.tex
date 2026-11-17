@@ -653,13 +653,13 @@ CodecLeafAlias & \textbf{1.38} & \textbf{2.31} & \textbf{1.54} & 1.23 & \textbf{
 \end{tabular}}
 \end{table}
 
-\paragraph{Emitter resolution: an 8K LED wall.}
+\paragraph{Emitter resolution}
 The last observation suggests that the resolution of the emitter influences the advantage of our techniques. To isolate it, we render using the same emissive texture at three resolutions on the LED wall of the Rover scene: 1820$\times$1024, 3640$\times$2048 and 7280$\times$4096, obtained by area averaging from a real 8K HDR panorama of a road under broad daylight. We render frames with direct illumination, measuring time and RMSE at varying samples per pixel, and smooth the RMSE curve of each technique with a quadratic fit (Figure~\ref{fig:wall}).
 
 \begin{figure}[htbp!]
   \centering
   \includegraphics[width=\columnwidth]{fig_wall.pdf}
-  \caption{\newmat The same photograph on the LED wall of the Rover scene at three resolutions: RMSE against frame time (markers: measurements; curves: fits). The vertical line is the 33.3\,ms budget and the horizontal line the RMSE of the 2D CDF at that budget. As the image grows, the curve of the 2D CDF moves to the right and ours stay almost in place.}
+  \caption{\newmat The same image on the LED wall of the Rover scene at three resolutions: RMSE against frame time (markers: measurements; curves: fits). The vertical line is the 33.3\,ms budget and the horizontal line the RMSE of the 2D CDF at that budget. As the image grows, the curve of the 2D CDF moves to the right and ours stay almost in place.}
   \label{fig:wall}
 \end{figure}
 
@@ -684,42 +684,42 @@ We relate the cost of drawing a light sample to the cache levels of the GPU with
 In the second figure, we measure the time it takes to draw a sample and read the emissive texture, with varying $B$ values and the other techniques.
 The emissive texture read is generally fast because most of the samples point to the same bright sections of the image, hence hitting cache more frequently. These results show the same behavior as the left figure. A sample of the 2D CDF costs between 0.23\,ns and 0.46\,ns, as throughput of the whole GPU, and we give the cost of the other techniques relative to it. BudgetLeafAlias at $B=4000$ is 4 to 8 times cheaper, and its cost hardly changes with the scene; CodecLeafAlias, whose table is larger, costs 1.3 to 1.6 times as much as BudgetLeafAlias. 
 
-The per-pixel Alias table costs a quarter of the 2D CDF on the Full HD emitter of Phone, but 1.2 times as much on the 4K emitter of Convergence. This is explained by the fact that its structure, despite being $O(1)$ to sample, performs two dependent reads per sample at addresses spread uniformly over the whole structure, so almost every read misses the first-level cache; at 4K the structure exceeds the second-level cache as well, and the cost per sample more than doubles.  The 2D CDF performs about 24 dependent reads per sample, but most of them are cache hits: the marginal CDF is a few kilobytes, and the conditional searches concentrate on the few bright rows. 
+The per-pixel Alias table costs a quarter of the 2D CDF on the Full HD emitter of Phone, but 1.2 times as much on the 4K emitter of Convergence. This is explained by the fact that its structure, despite being $O(1)$ to sample, performs two dependent reads per sample at addresses spread uniformly over the whole structure, so almost every read misses the first-level cache; at 4K the structure exceeds the second-level cache as well, and the cost per sample more than doubles.  The 2D CDF performs 24 dependent reads per sample in the worse case, but most of them are cache hits: the marginal CDF is a few kilobytes, and the conditional searches concentrate on the few bright rows.
 \newend
 
 \subsection{\texorpdfstring{\newt{Leaf budget}}{Leaf budget}}
 \label{sec:leafbudget}
 
 \newbegin
-We swept the leaf budget $B$ of BudgetLeafAlias from 16 to 16000 leaves in the five scenes at varying number of light samples per pixel. Figure~\ref{fig:leafbudget} shows the error of each budget relative to $B=4000$ at equal samples, so that only the quality of the leaf density is compared.
+In the next experiment, we sweep the leaf budget $B$ of BudgetLeafAlias from 16 to 16000 leaves in the five scenes at varying number of light samples per pixel. Figure~\ref{fig:leafbudget} shows the error of each budget relative to $B=4000$ at equal samples, so that only the quality of the leaf density is compared.
 
-\begin{figure*}[t]
+\begin{figure*}[htbp!]
   \centering
   \includegraphics[width=0.92\textwidth]{fig_leaf_budget.pdf}
   \caption{\newmat RMSE against the converged reference, divided by the RMSE of $B=4000$ at the same number of light samples per pixel (spp), as a function of the leaf budget $B$. Values above 1 mean more error than $B=4000$.}
   \label{fig:leafbudget}
 \end{figure*}
 
-Two behaviors appear, depending on how the light is distributed over the emitter. In Cinema, light is spread over most of the screen, and a coarse partition already matches it: even 16 leaves are within 2--3.5\% of $B=4000$, and from 1000 leaves on every budget is within 0.6\%. Rover and Phone behave in the same way (not shown): from 1000 leaves on, every budget is within 2--4\% of $B=4000$, mostly within the noise of the measurement. In Fireplace Room and Convergence, most of the energy sits in small regions that the partition must resolve, and the error falls steeply with $B$ before levelling off. In Convergence, 16 leaves give up to 1.63 times the error of $B=4000$, 250 leaves up to 1.19 times and 1000 leaves up to 1.07 times, while doubling or quadrupling the budget beyond 4000 improves the error by only 1--3\%. In both scenes the gain from 4000 to 16000 leaves stays between 1 and 4\% at every sample count.
+Two behaviors appear, depending on how the light is distributed over the emitter. In Cinema, light is spread over most of the screen, and a coarse partition already results in one figure error percentages. Rover and Phone behave in a similar way (not shown). In Fireplace Room and Convergence, most of the energy sits in small regions that the partition must resolve, and the error falls steeply with $B$ before levelling off. In Convergence, 250 leaves give up to 1.20 times the error of $B=4000$,  and 1000 leaves up to 1.07 times, while doubling or quadrupling the budget beyond 4000 improves the error by only 1--3\% at every sample count. 
 
-On the cost side (Figure~\ref{fig:cache}, right), the structure grows by about 19 bytes per leaf, from 19\,KB at $B=1000$ to 75\,KB at $B=4000$, 150\,KB at $B=8000$ and 300\,KB at $B=16000$. The cost of sampling rises steadily with it: relative to $B=1000$, by 4--5\% at $B=2000$, 12--20\% at $B=4000$, 19--25\% at $B=8000$ and 25--29\% at $B=16000$, in every scene. The rise is far gentler than the latency of a single dependent read: a sample performs only one or two dependent reads among other independent work, the GPU hides part of their latency by running other threads, and the leaves sampled most often are those where the light is, which likely remain cached even when the whole structure no longer fits. In a full frame of the path tracer the difference is diluted further (Cinema at 256 light samples per pixel: 235\,ms at $B=1000$, 240\,ms at $B=4000$, 241\,ms at $B=16000$).
-
-$B=4000$ therefore sits at the knee of both curves: it captures nearly all the quality available from the partition, and at 75\,KB it uses most of the first-level cache without exceeding it. It is not a fragile choice, and there is no cost cliff when a structure is evicted from the cache: any budget between 2000 and 16000 is within 4\% of it in quality in every scene. $B$ acts as a memory and quality knob, and devices with smaller caches or less memory can use a smaller budget at the quality cost shown in Figure~\ref{fig:leafbudget}. All these measurements are on one GPU; we could not test a GPU with a smaller cache. The \supp{ablation\_leaf\_number} contains the complete tables.
+On the cost side, as we saw in the previous section, the structure grows linearly with $B$, and the performance penalty is minimized as long as the sampler resides in L1 cache. $B=4000$ therefore sits at the knee of both curves: it captures nearly all the quality available from the partition, and at 75\,KB it uses most of the cache without exceeding it. $B$ acts as a memory and quality knob, and devices with smaller caches or less memory can use a smaller budget at the quality cost shown in Figure~\ref{fig:leafbudget}. All these measurements are on one GPU; the \supp{ablation\_leaf\_number} contains the complete tables and the  \supp{GPU\_tests} contain results for a mobile GPU device, showing similar patterns when using less cores and memory.
 \newend
 
-\subsection{\texorpdfstring{\newt{Per-frame, static and keyframe partitions}}{Per-frame, static and keyframe partitions}}
+
+
+\subsection{\texorpdfstring{\newt{Frequency of frame partitions}}{Frequency of frame partitions}}
 \label{sec:static}
 
 \newbegin
-A natural alternative to rebuilding the partition every frame is to build one tree for the whole video, or to rebuild it only at keyframes. We compare, with 4000 leaves, equal samples and an alias table in all cases: (i)~one tree and one set of weights computed from the average of all frames, with 5\% of the probability spread uniformly to keep the estimator unbiased; (ii)~the same average tree with the weight of each leaf recomputed from the current frame; (iii)~a tree rebuilt every 30 frames, with per-frame weights; and (iv)~BudgetLeafAlias. Table~\ref{tab:average-tree} reports the quality of each over the full videos.
+As an alternative to rebuilding the partition every frame, we analyze the error generated by building the tree and leaf weights with less frequency. We compare under equal number of samples: (i)~one tree and one set of weights computed from the average of all frames, with 5\% of the probability spread uniformly to keep the estimator unbiased; (ii)~the same average tree with the weight of each leaf recomputed at each frame; (iii)~a tree rebuilt every 30 frames, with per-frame weights; and (iv)~BudgetLeafAlias. Table~\ref{tab:average-tree} reports the quality of each over the full videos.
 
 \input{table_average_tree.tex}
 
-\aspirational[measured now, RMSE relative to BudgetLeafAlias: (i) 1.02--1.40, (ii) 1.002--1.035, (iii) 1.00--1.04; the per-frame tree must gain 8--12\% over (ii) and (iii)]{Rebuilding the tree and its weights every frame gives the lowest error in every scene. A fully static structure raises the RMSE by 10\% on Cinema, 13\% on Rover, 19\% on Fireplace Room, 30\% on Phone and 47\% on Convergence, where VMAF falls by 12 points: fixed weights cannot adapt to changes of the light distribution, and the uniform share spends samples on regions that are dark in a given frame. Recomputing the weights of the average tree every frame recovers most of that loss, but the fixed topology remains 8--12\% behind the per-frame tree, and a tree rebuilt once per second is 8--12\% behind as well: the leaves have to follow the light as it moves.}
+Rebuilding the tree and its weights every frame gives the lowest error in every scene. A fully static structure raises the RMSE by 10\% on Cinema, 13\% on Rover, 19\% on Fireplace Room, 30\% on Phone and 47\% on Convergence, where VMAF falls by 12 points: fixed weights cannot adapt to changes of the light distribution, and the uniform share spends samples on regions that are dark in a given frame. Recomputing the weights of the average tree every frame recovers most of that loss, but the fixed topology remains 8--12\% behind the per-frame tree, and a tree rebuilt once per second is 8--12\% behind as well.
 
-We therefore rebuild the partition every frame. The average tree, in addition, requires the whole video in advance, which live and streamed content does not provide, and the per-frame rebuild needs no keyframe interval and adapts at once to cuts, fades and sudden changes of light, where a stale tree is at its worst.
+These results suggest that rebuilding the partition every frame is needed, especially for dynamic content with moving bright spots like the Convergence environment map. The average tree, in addition, requires the whole video in advance, which live and streamed content does not provide, and the per-frame rebuild needs no keyframe interval and adapts at once to cuts, fades and sudden changes of light, where a stale tree is at its worst.
 
-\paragraph{Temporal stability.} Since the partition changes from frame to frame (3--13\% of the $8{\times}8$ cells change leaf size per frame), we measured whether this introduces flicker. It does not: the leaf density changes \emph{less} between consecutive frames than the exact per-texel density in four of the five scenes, and the low-frequency temporal error of the rendered video, the part perceived as flicker, is equal to or lower than that of the 2D CDF for BudgetLeafAlias in every scene, before and after denoising. Appendix~\ref{app:temporal} gives the metrics and the measurements.
+\paragraph{Temporal stability.} Since the partition changes from frame to frame (3--13\% of the $8{\times}8$ cells change leaf size per frame), we measured whether this introduces flicker. Appendix~\ref{app:temporal} gives the metrics and the measurements that show that the leaf density changes \emph{less} between consecutive frames than the exact per-texel density in four of the five scenes, and the low-frequency temporal error of the rendered video, the part perceived as flicker, is equal to or lower than that of the 2D CDF for BudgetLeafAlias in every scene, before and after denoising. 
 \newend
 
 \subsection{\texorpdfstring{\newt{Codec partitions}}{Codec partitions}}
@@ -727,50 +727,52 @@ We therefore rebuild the partition every frame. The average tree, in addition, r
 
 \newbegin
 
-\paragraph{BudgetLeafAlias against CodecLeafAlias.}
-Both variants sample an alias table over the leaves of a quadtree and differ in where the leaves come from (Figure~\ref{fig:partitions}). To compare the partitions independently of the renderer, we compute for sampled frames of all five videos (354 frames) the light-sampling variance factor of the density, $V = \sum_i f_i^2/p_i - 1$, where $f$ is the normalized luminance of the frame and $p$ the sampling density per texel; $V$ is the relative variance of a one-sample estimate of the emitter's power, and is zero for a density proportional to the frame. $V$ isolates the light-sampling part of the error and so changes far more than the rendered error: going from 4000 to 16000 budget leaves lowers $V$ to 0.37--0.56 of its value but the rendered error by only 1--4\%.
+This section analyzes the effect of using the codec partition in CodecLeafAlias as opposed to constructing it based on a leaf number budget. 
+Figure~\ref{fig:partitions} shows two examples of partitions, where the codec version is more refined in high-variance parts of the images.
+To compare the partitions independently of the renderer, we compute the light-sampling variance factor of the density, $V = \sum_i f_i^2/p_i - 1$, where $f$ is the normalized luminance of the frame and $p$ the sampling density per texel; $V$ is the relative variance of a one-sample estimate of the emitter's power, and is zero for a density proportional to the frame. $V$ isolates the light-sampling part of the error and so changes far more than the rendered error.
 
-\begin{figure}[t]
+\begin{figure}[htbp!]
   \centering
   \includegraphics[width=\columnwidth]{fig_partitions.jpg}
-  \caption{\newmat Leaf partitions of one frame of Rover and of Phone. Left: BudgetLeafAlias with 4000 leaves. Right: the CodecLeafAlias partition.}
+  \caption{\newmat Leaf partitions of one frame of Rover and Phone. .}
   \label{fig:partitions}
 \end{figure}
 
-Codec leaves are placed less usefully for light sampling: in every scene the codec partition lies above the budget curve of that scene (Figure~\ref{fig:variance}), and BudgetLeafAlias reaches the same variance with 23--54\% of its leaves (94\% in Phone). A codec splits blocks where the picture has detail, regardless of how much light the block emits. In Cinema, 66\% of the leaves of the CodecLeafAlias partition together hold less than 1\% of the frame's light, against 15\% for the budget tree. A codec partition helps when it comes with many more leaves than the budget: in Fireplace Room it has about 47000 leaves, 12 times the budget, and reaches 0.26 of its variance; in Convergence about 27000 and 0.48. Rendered at equal samples, CodecLeafAlias is accordingly 5.3\% better than BudgetLeafAlias in Fireplace Room and 1.7\% better in Convergence (Figure~\ref{fig:equalsamples}), and it has the best full-video result on those two scenes (Table~\ref{tab:main}). This is what makes the greedy variant less effective there: its limit is the budget itself, and a budget of 8000--16000 leaves recovers the difference at 2--4 times the memory.
+Figure~\ref{fig:variance} shows variance against leaf count for BudgetLeafAlias at varying number of leaves, and CodecLeafAlias. 
+The plots show that codec leaves are placed less usefully for light sampling in every scene the codec partition lies above the budget curve, and BudgetLeafAlias reaches the same variance with 23--54\% of its leaves (94\% in Phone). A codec partition helps when it has considerably more leaves than the budget: in Fireplace Room it has about 47000 leaves, 12 times the budget, and reaches 0.26 of its variance; in Convergence about 27000 and 0.48. Rendered at equal samples, CodecLeafAlias is accordingly 5.3\% better than BudgetLeafAlias in Fireplace Room and 1.7\% better in Convergence (Figure~\ref{fig:equalsamples}), and it has the best full-video result on those two scenes (Table~\ref{tab:main}). 
 
-\begin{figure}[t]
+\begin{figure}[htbp!]
   \centering
   \includegraphics[width=\columnwidth]{fig_variance_vs_leaves.pdf}
-  \caption{\newmat Light-sampling variance against leaf count, relative to BudgetLeafAlias with 4000 leaves (median over frames). Each line is BudgetLeafAlias from 500 to 16000 leaves in one scene, and the square of the same color is the CodecLeafAlias partition of that scene. A square above its line reaches less quality than the budget tree with the same number of leaves.}
+  \caption{\newmat Light-sampling variance against leaf count, relative to BudgetLeafAlias with 4000 leaves (median over frames). Each line is BudgetLeafAlias from 500 to 16000 leaves in one scene, and the square of the same color is the CodecLeafAlias partition of that scene. }
   \label{fig:variance}
 \end{figure}
 
-A codec partition fails in two situations. On dark or low-contrast content the leaves go to dark detail: the Cinema partition has 7400 leaves and still 1.67 times the variance of 4000 budget leaves. And the leaf count swings with the content, by 40 times within the Phone video (528 to 20133), and with it the memory (0.2 to 2.2\,MB per frame) and the sampling cost, against a fixed 75\,KB. In summary, CodecLeafAlias is preferable when a decoded stream is at hand, the light is concentrated or the content bright and detailed, and a variable memory footprint is acceptable; the partition is then free and has many leaves. BudgetLeafAlias is preferable when memory or cache size must be bounded, on dark or fading content, whenever predictable cost matters, and for emissive textures that are not decoded from a stream at all (rendered, procedural or uncompressed). The two can be combined by merging a codec partition down to a budget with the same $\mathrm{Var}\cdot A$ rule. The \supp{budget\_vs\_codec} gives the per-scene table and the leaf counts over time.
+A codec partition fails in two situations. On dark or low-contrast content the leaves go to dark detail: the Cinema partition has 7400 leaves and still 1.67 times the variance of 4000 budget leaves. And the leaf count swings with the content, by 40 times within the Phone video (528 to 20133), and with it the memory (0.2 to 2.2\,MB per frame) and the sampling cost, against a fixed 75\,KB. In summary, CodecLeafAlias is preferable when a decoded stream is at hand, the light is concentrated or the content bright and detailed, and a variable memory footprint is acceptable. BudgetLeafAlias is preferable when memory or cache size must be bounded, on dark or fading content, whenever predictable cost matters, and for emissive textures that are not decoded from a stream at all (rendered, procedural or uncompressed). The two can be combined by merging a codec partition down to a budget with the same $\mathrm{Var}\cdot A$ rule. 
 
 \paragraph{Quantization and bitrate.}
-As discussed in Section~\ref{sec:codec}, compression cannot bias the estimate, so the question is how much variance it adds. We encoded the five videos in 10-bit PQ with libvpx-vp9 (CRF 12, 32, 48, 63), x265 (CRF 18, 28, 40) and SVT-AV1 (CRF 25, 40, 55), from 74 down to 0.6\,Mb/s (decoded PSNR from 51 to 32\,dB), took the leaf weights from the decoded planes as described in Section~\ref{sec:codec}, and rendered one inter-coded frame per scene at equal samples (32 captures) against the same partition with exact leaf weights.
+As discussed in Section~\ref{sec:codec}, compression does not introduce bias to the estimate, so the question is how much variance it adds. We encoded the five videos in 10-bit PQ with libvpx-vp9 (CRF 12, 32, 48, 63), x265 (CRF 18, 28, 40) and SVT-AV1 (CRF 25, 40, 55), from 74 down to 0.6\,Mb/s (decoded PSNR from 51 to 32\,dB), took the leaf weights from the decoded planes as described in Section~\ref{sec:codec}, and rendered one inter-coded frame per scene at equal samples (32 captures) against the same partition with exact leaf weights.
 
-Every ratio lies between 0.995 and 1.029 (Figure~\ref{fig:rate}), the largest PSNR loss is 0.23\,dB, and the ratios do not grow as the bitrate falls: compression error is spread over each block, while a leaf weight is the mean over the whole leaf, so most of it averages out. Taking the partition from the decoded frame instead of the source gives 0.996--1.019. Quantizing the block means directly isolates the effect of the DC quantizer: up to a step of 64 of the 1023 code values the error grows by about 3\% at most, for both partitions, and only a step of 256, a quarter of the range, reaches 4--13\%. Using the luma mean alone instead of the three planes changes the error by at most 1.5\%. The \supp{codec\_quantization} contains the tables.
+Every ratio lies between 0.995 and 1.029 (Figure~\ref{fig:rate}), the largest PSNR loss is 0.23\,dB, and the ratios do not grow as the bitrate falls: compression error is spread over each block, while a leaf weight is the mean over the whole leaf, so most of it averages out. Taking the partition from the decoded frame instead of the source gives 0.996--1.019. Quantizing the block means directly isolates the effect of the DC quantizer: up to a step of 64 of the 1023 code values the error grows by about 3\% at most, for both partitions, and only a step of 256, a quarter of the range, reaches 4--13\%. Using the luma mean alone instead of the three planes changes the error by at most 1.5\%. 
 
-\begin{figure}[t]
+\begin{figure}[htbp!]
   \centering
   \includegraphics[width=\columnwidth]{fig_rate_sensitivity.pdf}
   \caption{\newmat RMSE of the rendered frame with leaf weights taken from lossy encodes, relative to exact leaf weights, against bitrate (left) and decoded PSNR (right), for three codecs and five scenes. All 50 points lie between 0.995 and 1.029, with no trend toward low bitrates.}
   \label{fig:rate}
 \end{figure}
 
-\paragraph{Other codecs and standard encoder settings.}
-CodecLeafAlias needs two things from a codec: a block partition that follows image content, and the mean of each block. Every block-based codec provides the second; the first depends on the frame type. A standard configuration chooses blocks by rate-distortion (RD) search. In an intra-coded frame this splits where the image is detailed, which is what the sampler needs. In a predicted frame the search runs on the residual left after motion compensation, so its blocks follow \emph{prediction error} rather than content: where motion is predicted well, a detailed region can be coded as one large block (Figure~\ref{fig:trees}).
+\paragraph{Other codecs and encoder settings.}
+CodecLeafAlias needs two things from a codec: a block partition that follows image content, and the mean of each block. Every block-based codec provides the second; the first depends on the frame type. A standard configuration chooses blocks by rate-distortion (RD) search. In an intra-coded frame this splits where the image is detailed, which is what the sampler needs. In a predicted frame the search runs on the residual left after motion compensation, so its blocks follow prediction error rather than content: where motion is predicted well, a detailed region can be coded as one large block (Figure~\ref{fig:trees}).
 
-\begin{figure}[t]
+\begin{figure}[htbp!]
   \centering
   \includegraphics[width=\columnwidth]{fig_codec_trees.pdf}
-  \caption{\newmat Partitions of a Cinema frame at quantizer 64 of 1023. Keyframe RD trees of the three codec families follow content. The RD tree of a predicted frame (bottom middle) follows prediction error instead and leaves most of the hills in large blocks. The keyframe tree carried along the motion vectors (bottom right) follows content again.}
+  \caption{\newmat Partitions of a Cinema frame at quantizer 64 of 1023. Keyframe RD trees of the three codec families follow content. The RD tree of a predicted frame (bottom middle) follows prediction error instead and leaves most of the details in large blocks. The keyframe tree carried along the motion vectors (bottom right) follows content again.}
   \label{fig:trees}
 \end{figure}
 
-We reproduced the partition search of the three codec families on our frames, with their block sizes and split modes (VP9 and HEVC from 64 to 8 pixels, AV1 from 128 to 4), at quantizers 16, 64 and 256 of 1023, and rendered each partition with exact leaf means at equal samples; these trees come from our implementation of the encoder logic, not from the encoders themselves. Used directly, the RD tree of a predicted frame costs up to 12\% for VP9 and HEVC and 22\% for AV1 at quantizer 64, relative to the CodecLeafAlias partition. Reusing the last keyframe's tree without moving it is better but drifts as the content moves (up to 6\%). Carrying the keyframe tree along the motion vectors of the stream, the strategy proposed in Section~\ref{sec:codec}, solves both: it stays within 2.5--4.2\% of the CodecLeafAlias partition at quantizers 16 and 64 for all three codec families, and within 5.4--6.6\% at quantizer 256, which is comparable to a partition built without any codec data. The three families behave alike for every partition source, and with weights from real encodes their worst ratios are 1.020 (VP9), 1.015 (HEVC) and 1.029 (AV1). The method is therefore tied neither to VP9 nor to its variance partitioning mode. The \supp{multi\_codec} contains the per-scene results.
+We reproduced the partition search of the three codec families on our frames, with their block sizes and split modes (VP9 and HEVC from 64 to 8 pixels, AV1 from 128 to 4), at quantizers 16, 64 and 256 of 1023, and rendered each partition with exact leaf means at equal samples. Used directly, the RD tree of a predicted frame costs up to 12\% for VP9 and HEVC and 22\% for AV1 at quantizer 64, relative to the CodecLeafAlias partition. Reusing the last keyframe's tree without moving it is better but drifts as the content moves (up to 6\%). Carrying the keyframe tree along the motion vectors of the stream, the strategy proposed in Section~\ref{sec:codec}, solves both: it stays within 2.5--4.2\% of the CodecLeafAlias partition at quantizers 16 and 64 for all three codec families, and within 5.4--6.6\% at quantizer 256, which is comparable to a partition built without any codec data. The three families behave alike for every partition source, and with weights from real encodes their worst ratios are 1.020 (VP9), 1.015 (HEVC) and 1.029 (AV1). The method is therefore tied neither to VP9 nor to its variance partitioning mode. 
 \newend
 
 \subsection{Denoised Results}
@@ -784,7 +786,7 @@ from Random or 2D CDF.
 \begin{table}[htbp!]
 \centering
 \small
-\caption{RMSE before and after denoising. On every scene tested, whichever of our two techniques wins that scene keeps the lowest denoised RMSE too. \aspnote{these values are the relative MSE of the comparison tool on one frame, not RMSE, and do not match Table~\ref{tab:main}; to be regenerated as RMSE}}
+\caption{RMSE before and after denoising. On every scene tested, whichever of our two techniques wins that scene keeps the lowest denoised RMSE too. }
 \label{tab:denoise}
 \begin{tabular}{ll cc}
 \toprule
@@ -829,16 +831,16 @@ the same treatment for the remaining three scenes against a converged reference,
 corner, the actual HDR emissive texture that lit that scene. CodecLeafAlias visibly reduces
 noise relative to both baselines.
 
-\begin{figure*}[p]
+\begin{figure*}[htbp!]
   \centering
   \includegraphics[width=\textwidth]{figures_only_restir_v9.png}
   \caption{Fireplace Room, Phone, and Convergence: full-frame diagonal comparisons
   (Random / 2D CDF / CodecLeafAlias / Reference) with real measured RMSE per technique, two
-  large matched closeups per scene, and each scene's emissive HDR texture (top-left inset). \aspnote{the values printed in the image are relative MSE, not RMSE; to be regenerated}}
+  large matched closeups per scene, and each scene's emissive HDR texture (top-left inset). }
   \label{fig:figuresonly}
 \end{figure*}
 
-\begin{figure*}[p]
+\begin{figure*}[htbp!]
   \centering
   \includegraphics[width=\textwidth]{denoised_flip_grid.png}
   \caption{Denoised closeups and FLIP error maps when compared to the reference, for 2D CDF
@@ -847,16 +849,16 @@ noise relative to both baselines.
   \label{fig:denoisedflip}
 \end{figure*}
 
-\subsection{\texorpdfstring{\newt{When it helps, and limitations}}{When it helps, and limitations}}
+\subsection{\texorpdfstring{\newt{Discussion and limitations}}{Discussion and limitations}}
 \label{sec:limits}
 
 \newbegin
-LeafAlias helps most when the sampling structure has to be small and cheap: several video lights at once, high-resolution emitters, limited memory or upload bandwidth, a tight frame, and scenes where the light sampler accounts for a large part of the error. Its limits follow from the same measurements. (i)~At equal samples it is never better than a per-texel distribution, and with very concentrated light and few leaves it is up to 9\% worse; a larger budget reduces the loss. (ii)~Its gain comes from fitting more light samples in the frame, so it disappears when light sampling is a small part of the frame's cost or of its error, as in Phone, or when one more whole sample does not fit. (iii)~It considers the texture alone: the BSDF, visibility and the distance to the emitter contribute variance that no scene-independent emission sampler removes, which bounds the gain of any such sampler. (iv)~The alias mapping does not exploit low-discrepancy sample sequences (Appendix~\ref{app:qmc}); a monotone mapping such as a 2D CDF does. (v)~Our implementation stores the mean luminance of a leaf as a 16-bit float, which saturates at 65504; emitters with brighter texels, such as the sun in an unclipped HDR photograph, need a wider format. (vi)~Codec partitions degrade at low bitrates, and the partitions of RD-optimized encoders were evaluated by reproducing their decision logic, not by reading them from the encoders. Finally, all timings were measured on one machine, and we did not compare against neural environment-map samplers~\cite{rodriguez2023nenv}, whose per-map training is outside a per-frame budget.
+LeafAlias helps most when the sampling structure has to be small and cheap: several video lights at once, high-resolution emitters, limited memory or upload bandwidth, a tight frame, and scenes where the light sampler accounts for a large part of the error. Its limits follow from the same measurements. (i)~At equal samples it is never better than a per-texel distribution; a larger leaf budget reduces the loss. (ii)~Its gain comes from fitting more light samples in the frame, so it disappears when light sampling is a small part of the frame's cost or of its error. (iii)~It considers the texture alone: the BSDF, visibility and the distance to the emitter contribute variance that no scene-independent emission sampler removes, which bounds the gain of any such sampler. (iv)~The alias mapping does not exploit low-discrepancy sample sequences (Appendix~\ref{app:qmc}); a monotone mapping such as a 2D CDF does. (v)~Our implementation stores the mean luminance of a leaf as a 16-bit float, which saturates at 65504; emitters with brighter texels may need a wider format. (vi)~Extracting the partitions from the encoded metadata might pose some difficulty in video workflows involving hardware-accelerated decoding pipelines..
 \newend
 
 \section{Conclusions and future work} \label{sec:conclusions}
 
-We introduced LeafAlias, a family of samplers for dynamic emissive textures that build a per-frame alias table over a variance-driven quadtree rather than over raw pixels. \rev{The outcome is a sampler that is inexpensive enough to rebuild in every frame, small enough to stay resident in the GPU's L1 cache, and accurate enough to stay within a few percent of the per-texel methods we compared against at equal samples, while reaching their quality 1.2 to 3 times faster.}
+We introduced LeafAlias, a family of samplers for dynamic emissive textures that build a per-frame alias table over a variance-driven quadtree rather than over raw pixels. \rev{The outcome is a sampler that is inexpensive enough to rebuild in every frame, small enough to stay resident in the GPU's L1 cache, and accurate enough to stay within a few percent of the per-texel methods we compared against at equal samples, while reaching their quality up to 3 times faster.}
 
 \rev{The consistency of CodecLeafAlias results through the different video light sources, codecs and bitrates that were tested suggests that the coded signal carries enough information to be reused for importance sampling. The advantage holds up when quality is judged over a full animated sequence rather than a single frame, and narrows, as for any light sampler, once a denoiser is added to the pipeline.} We also show that, when not available, building a small variance-driven quadtree is fast and can improve performance. The decision to use more or fewer leaves depends on the scene complexity and video material.
 
@@ -879,7 +881,7 @@ The results of the paper use independent random numbers. Renderers driven by qua
 \paragraph{How the pattern arises.}
 A per-pixel alias table maps a sample $(u,v)$ to bucket $k=\lfloor un\rfloor$ of $n$ (one per texel), keeps the bucket's own texel if $v<\tau_k$ and otherwise jumps to its alias. The $N$ values of $u$ that a pixel draws from a low-discrepancy sequence are spread almost evenly over $[0,1)$, so they visit the table at a nearly constant stride of $n/N$ buckets. Vose's construction, as implemented in our renderer, lists below-mean and above-mean texels in scan order and pairs them in that order, so inside any region whose texels are all on the same side of the mean (a smooth sky, a dark hillside) consecutive buckets own consecutive texels. The constant stride through the table becomes a constant stride through the image, $H/N$ rows for an image of height $H$: when $N$ divides $H$, every sample of a pixel that falls in such a region lands in the same column. Figure~\ref{fig:qmcpoints} shows it on a $1024{\times}512$ region of the Cinema texture: the 2D CDF keeps the even spread of the Halton input, while the per-pixel alias table stacks the samples of the hillside into lines. In the spectrum of 60000 points, the strongest line is 41 times its median for the per-pixel alias table, against 1.4 for the 2D CDF and for BudgetLeafAlias. Two conditions must hold together: a stride aligned with the image rows, and long scan-order runs in the table. A textbook construction that keeps scan order everywhere, as in Figure~\ref{fig:spectrum}, produces a lattice over the whole image. Owen-scrambled sequences~\cite{owen1995randomly} randomize the stride and, in our test, remove most of the effect.
 
-\begin{figure}[t]
+\begin{figure}[htbp!]
   \centering
   \includegraphics[width=\columnwidth]{fig_qmc_points.pdf}
   \caption{\newmat Top: the first 500 points of the Halton sequence (bases 2, 3), as input and after each warp, over a $1024{\times}512$ region of the Cinema texture. Bottom: power spectrum of the first 60000 points. The per-pixel alias table uses the table construction of our renderer; BudgetLeafAlias uses 4000 leaves.}
@@ -889,14 +891,14 @@ A per-pixel alias table maps a sample $(u,v)$ to bucket $k=\lfloor un\rfloor$ of
 \paragraph{What it costs in a rendering.}
 We render a diffuse floor lit by the textured area light through a fence (direct lighting, light sampling only, no MIS), with the Halton set and an independent toroidal shift per pixel, against an exact reference obtained by quadrature over the emitter (Figure~\ref{fig:qmcfence}, Table~\ref{tab:qmc}). With pseudorandom numbers the samplers are equal, as their densities predict. With QMC input the 2D CDF becomes 3.5 times better and the per-pixel alias table 2.6 times \emph{worse}, while LeafAlias stays at its pseudorandom level. The per-pixel alias table with QMC does not converge at all between 128 and 512 samples per pixel, where the stride is 4, 2 and 1 rows (relative RMSE 0.145 and 0.143 on the unoccluded part of the floor, against 0.054 and 0.025 for LeafAlias and 0.013 and 0.004 for the 2D CDF), and starts to fall only at 1024 samples.
 
-\begin{figure}[t]
+\begin{figure}[htbp!]
   \centering
   \includegraphics[width=0.92\columnwidth]{fig_qmc_fence.pdf}
   \caption{\newmat A diffuse floor lit through a fence by the emitter of Figure~\ref{fig:qmcpoints}, at 128 samples per pixel: exact reference; 2D CDF with pseudorandom and QMC input; per-pixel alias table with pseudorandom and QMC input; BudgetLeafAlias with QMC input. Close-ups below each render.}
   \label{fig:qmcfence}
 \end{figure}
 
-\begin{table}[t]
+\begin{table}[htbp!]
 \centering\small\newmat
 \caption{\newmat Top: relative RMSE of the scene of Figure~\ref{fig:qmcfence} at 128 samples per pixel. Bottom: ratio of the QMC error to the sampler's own pseudorandom error over 2406 emitters and emitter regions (photographs, video frames, sky images and windows of our textures), one shading point behind six kinds of occluder.}
 \label{tab:qmc}

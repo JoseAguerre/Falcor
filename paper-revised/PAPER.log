@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.9.7)  15 NOV 2026 13:07
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.9.7)  17 NOV 2026 13:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1166,105 +1166,97 @@ Package pdftex.def Info: images/quadtree.png  used on input line 266.
 Class acmart Warning: A possible image without description on input line 270.
 
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 9.0pt on input line 274.
+(Font)              scaled to size 9.0pt on input line 338.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 9.0pt on input line 277.
+(Font)              scaled to size 9.0pt on input line 338.
 
 Package natbib Warning: Citation `wyman2021rearchitecting' on page 2 undefined 
-on input line 277.
+on input line 338.
 
 
 Package natbib Warning: Citation `zeng2025restirpg' on page 2 undefined on inpu
-t line 282.
+t line 338.
 
 
 Package natbib Warning: Citation `kozlowski2023cyberpunk' on page 2 undefined o
-n input line 285.
+n input line 338.
 
 
 Package natbib Warning: Citation `wright2022lumen' on page 2 undefined on input
- line 288.
+ line 338.
 
 
 Package natbib Warning: Citation `narkowicz2025megalights' on page 2 undefined 
-on input line 290.
+on input line 338.
 
 
 Package natbib Warning: Citation `nvidia2026ptwhitepaper' on page 2 undefined o
-n input line 293.
+n input line 338.
 
 
 Package natbib Warning: Citation `chen2026lightopt' on page 2 undefined on inpu
-t line 295.
-
-
-Underfull \vbox (badness 7203) has occurred while \output is active []
-
-
-
-Package natbib Warning: Citation `debevec2002lighting' on page 2 undefined on i
-nput line 300.
+t line 338.
 
 
 Package natbib Warning: Citation `debevec2022dilation' on page 2 undefined on i
-nput line 300.
+nput line 338.
 
 
 Package natbib Warning: Citation `legendre2022jointly' on page 2 undefined on i
-nput line 300.
+nput line 338.
 
 
 Package natbib Warning: Citation `bengtsson2022ibl' on page 2 undefined on inpu
-t line 301.
+t line 338.
 
 
 Package natbib Warning: Citation `kadner2023stages' on page 2 undefined on inpu
-t line 307.
+t line 338.
 
 
 Package natbib Warning: Citation `zwerman2023ves' on page 2 undefined on input 
-line 307.
+line 338.
 
 
 Package natbib Warning: Citation `failes2024hotd' on page 2 undefined on input 
-line 308.
+line 338.
 
 
 Package natbib Warning: Citation `nash2025integration' on page 2 undefined on i
-nput line 309.
-
-
-Package natbib Warning: Citation `seymour2013gravity' on page 2 undefined on in
-put line 312.
-
-
-Package natbib Warning: Citation `hamon2014gravity' on page 2 undefined on inpu
-t line 312.
+nput line 338.
 
 
 Package natbib Warning: Citation `bunish2017rogueone' on page 2 undefined on in
-put line 314.
+put line 338.
+
+
+Package natbib Warning: Citation `seymour2013gravity' on page 2 undefined on in
+put line 338.
+
+
+Package natbib Warning: Citation `hamon2014gravity' on page 2 undefined on inpu
+t line 338.
 
 
 Package natbib Warning: Citation `kadner2021fieldguide' on page 2 undefined on 
-input line 316.
+input line 338.
 
 
 Package natbib Warning: Citation `failes2022hotd' on page 2 undefined on input 
-line 318.
+line 338.
 
 
 Package natbib Warning: Citation `azzarelli2026relightable' on page 2 undefined
- on input line 320.
+ on input line 338.
 
 
 Package natbib Warning: Citation `zhang2026pixelcube' on page 2 undefined on in
-put line 322.
+put line 338.
 
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 7.0pt on input line 324.
+(Font)              scaled to size 7.0pt on input line 338.
 LaTeX Font Info:    Trying to load font information for TS1+LinuxBiolinumT-TLF 
-on input line 324.
+on input line 338.
 
 (C:\Users\Jose\AppData\Local\Programs\MiKTeX\tex/latex/libertine\ts1linuxbiolin
 umt-tlf.fd
@@ -1272,7 +1264,7 @@ File: TS1LinuxBiolinumT-TLF.fd 2017/03/20 (autoinst) Font definitions for TS1/L
 inuxBiolinumT-TLF.
 )
 LaTeX Font Info:    Font shape `TS1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 7.0pt on input line 324.
+(Font)              scaled to size 7.0pt on input line 338.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxBiolinumT-TLF' (encoding: TS1).
 (microtype)             For optimal results, create family-specific settings.
@@ -1282,55 +1274,55 @@ n_afusau.enc}{C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/liber
 tine/lbtn_oexx6f.enc} <./images/quadtree.png>]
 
 Package natbib Warning: Citation `legendre2019deeplight' on page 3 undefined on
- input line 329.
+ input line 338.
 
 
 Package natbib Warning: Citation `somanath2021hdr' on page 3 undefined on input
- line 329.
+ line 338.
 
 
 Package natbib Warning: Citation `zhao2021xihe' on page 3 undefined on input li
-ne 329.
+ne 338.
 
 
 Package natbib Warning: Citation `li2023spatiotemporally' on page 3 undefined o
-n input line 330.
+n input line 338.
 
 
 Package natbib Warning: Citation `shen2025stglight' on page 3 undefined on inpu
-t line 330.
+t line 338.
 
 
 Package natbib Warning: Citation `bolduc2026limo' on page 3 undefined on input 
-line 330.
+line 338.
 
 
 Package natbib Warning: Citation `rhee2017mr360' on page 3 undefined on input l
-ine 332.
+ine 338.
 
 
 Package natbib Warning: Citation `rhee2018mr360live' on page 3 undefined on inp
-ut line 332.
+ut line 338.
 
 
 Package natbib Warning: Citation `walton2018dynamic' on page 3 undefined on inp
-ut line 332.
+ut line 338.
 
 
 Package natbib Warning: Citation `kronander2015photorealistic' on page 3 undefi
-ned on input line 334.
+ned on input line 338.
 
 
 Package natbib Warning: Citation `alhakamy2020realtime' on page 3 undefined on 
-input line 334.
+input line 338.
 
 
 Package natbib Warning: Citation `cheng2023environment' on page 3 undefined on 
-input line 336.
+input line 338.
 
 
 Package natbib Warning: Citation `wu2024panoramic' on page 3 undefined on input
- line 336.
+ line 338.
 
 
 Package natbib Warning: Citation `taibo2024immersive' on page 3 undefined on in
@@ -1338,62 +1330,47 @@ put line 338.
 
 
 Package natbib Warning: Citation `saito2024relightable' on page 3 undefined on 
-input line 340.
+input line 338.
 
-<images/fig_spectrum_paper_color.png, id=158, 481.9095pt x 246.7035pt>
+<images/fig_spectrum_paper_color.png, id=159, 481.9095pt x 246.7035pt>
 File: images/fig_spectrum_paper_color.png Graphic file (type png)
 <use images/fig_spectrum_paper_color.png>
 Package pdftex.def Info: images/fig_spectrum_paper_color.png  used on input lin
-e 352.
+e 344.
 (pdftex.def)             Requested size: 243.14749pt x 124.47322pt.
 
-Class acmart Warning: A possible image without description on input line 359.
+Class acmart Warning: A possible image without description on input line 351.
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Underfull \vbox (badness 6708) has occurred while \output is active []
-
- [3.3 <./images/fig_spectrum_paper_color.png>]
-Overfull \hbox (16.39084pt too wide) in paragraph at lines 380--385
+[3.3 <./images/fig_spectrum_paper_color.png>]
+Overfull \hbox (16.39084pt too wide) in paragraph at lines 372--377
 []\T1/LinuxLibertineT-TLF/m/n/9 (-20) Modern pro-duc-tion ren-der-ers mostly re
 ly on dense CDF or mipmapped
  []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 6.6pt on input line 402.
+(Font)              scaled to size 6.6pt on input line 394.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 5.5pt on input line 402.
+(Font)              scaled to size 5.5pt on input line 394.
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 420.
+put line 412.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 9.0pt on input line 427.
+(Font)              scaled to size 9.0pt on input line 419.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 6.6pt on input line 427.
+(Font)              scaled to size 6.6pt on input line 419.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 5.5pt on input line 427.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
+(Font)              scaled to size 5.5pt on input line 419.
 [4.4{C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn
 _kijugd.enc}]
-LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/n' will be
-(Font)              scaled to size 9.0pt on input line 533.
- [5.5]
-LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 8.0pt on input line 559.
-LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 6.0pt on input line 559.
-LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/n' will be
-(Font)              scaled to size 8.0pt on input line 559.
-
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
+
+Underfull \vbox (badness 2503) has occurred while \output is active []
+
+ [5.5]
+LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
+(Font)              scaled to size 8.0pt on input line 552.
+LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
+(Font)              scaled to size 6.0pt on input line 552.
 
 (table_video_all.tex
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
@@ -1416,192 +1393,212 @@ LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
 (Font)              scaled to size 6.5pt on input line 22.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
 (Font)              scaled to size 6.0pt on input line 22.
- [6.6])
-<images/realtime_curves.png, id=334, 1036.089pt x 235.5345pt>
+)
+<images/realtime_curves.png, id=323, 1036.089pt x 235.5345pt>
 File: images/realtime_curves.png Graphic file (type png)
 <use images/realtime_curves.png>
-Package pdftex.def Info: images/realtime_curves.png  used on input line 606.
+Package pdftex.def Info: images/realtime_curves.png  used on input line 596.
 (pdftex.def)             Requested size: 510.295pt x 116.0059pt.
 
 
-Class acmart Warning: A possible image without description on input line 611.
+Class acmart Warning: A possible image without description on input line 601.
 
-<images/fig_equal_samples.pdf, id=338, 257.23277pt x 158.63062pt>
+<images/fig_equal_samples.pdf, id=325, 257.23277pt x 158.63062pt>
 File: images/fig_equal_samples.pdf Graphic file (type pdf)
 <use images/fig_equal_samples.pdf>
-Package pdftex.def Info: images/fig_equal_samples.pdf  used on input line 623.
+Package pdftex.def Info: images/fig_equal_samples.pdf  used on input line 611.
 (pdftex.def)             Requested size: 243.14749pt x 149.95029pt.
-LaTeX Font Info:    Trying to load font information for T1+zi4 on input line 62
-4.
+
+Class acmart Warning: A possible image without description on input line 614.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [6.6]
+<images/closeup_examples.pdf, id=335, 240.65909pt x 119.9682pt>
+File: images/closeup_examples.pdf Graphic file (type pdf)
+<use images/closeup_examples.pdf>
+Package pdftex.def Info: images/closeup_examples.pdf  used on input line 620.
+(pdftex.def)             Requested size: 243.14749pt x 121.20901pt.
+
+
+Class acmart Warning: A possible image without description on input line 623.
+
+[7.7 <./images/realtime_curves.png> <./images/fig_equal_samples.pdf> <./images/
+closeup_examples.pdf>]
+<images/fig_wall.pdf, id=386, 253.67143pt x 160.16618pt>
+File: images/fig_wall.pdf Graphic file (type pdf)
+<use images/fig_wall.pdf>
+Package pdftex.def Info: images/fig_wall.pdf  used on input line 661.
+(pdftex.def)             Requested size: 243.14749pt x 153.52805pt.
+
+
+Class acmart Warning: A possible image without description on input line 664.
+
+<images/fig_gpu_cost2.pdf, id=388, 256.70845pt x 156.21964pt>
+File: images/fig_gpu_cost2.pdf Graphic file (type pdf)
+<use images/fig_gpu_cost2.pdf>
+Package pdftex.def Info: images/fig_gpu_cost2.pdf  used on input line 679.
+(pdftex.def)             Requested size: 243.14749pt x 147.96921pt.
+
+Class acmart Warning: A possible image without description on input line 682.
+
+[8.8 <./images/fig_wall.pdf> <./images/fig_gpu_cost2.pdf>]
+Overfull \hbox (4.62323pt too wide) in paragraph at lines 694--695
+\T1/LinuxLibertineT-TLF/m/n/9 (-20) In the next ex-per-i-ment, we sweep the lea
+f bud-get $\OML/nxlmi/m/it/9 B$ \T1/LinuxLibertineT-TLF/m/n/9 (-20) of Bud-getL
+eafAlias
+ []
+
+<images/fig_leaf_budget.pdf, id=489, 745.59885pt x 209.86365pt>
+File: images/fig_leaf_budget.pdf Graphic file (type pdf)
+<use images/fig_leaf_budget.pdf>
+Package pdftex.def Info: images/fig_leaf_budget.pdf  used on input line 698.
+(pdftex.def)             Requested size: 469.47046pt x 132.14114pt.
+
+Class acmart Warning: A possible image without description on input line 701.
+
+LaTeX Font Info:    Trying to load font information for T1+zi4 on input line 70
+5.
 (C:\Users\Jose\AppData\Local\Programs\MiKTeX\tex/latex/inconsolata\t1zi4.fd
 File: t1zi4.fd 2018/01/14 T1/zi4 (Inconsolata)
 )
 LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
-(Font)              scaled to size 8.0pt on input line 624.
+(Font)              scaled to size 9.0pt on input line 705.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `zi4' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
+(table_average_tree.tex
+LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/n' will be
+(Font)              scaled to size 8.0pt on input line 4.
 
-Class acmart Warning: A possible image without description on input line 626.
+Underfull \vbox (badness 1137) has occurred while \output is active []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [7.7]
-<images/fig_wall.pdf, id=350, 253.67143pt x 160.16618pt>
-File: images/fig_wall.pdf Graphic file (type pdf)
-<use images/fig_wall.pdf>
-Package pdftex.def Info: images/fig_wall.pdf  used on input line 667.
-(pdftex.def)             Requested size: 243.14749pt x 153.52805pt.
-
-
-Class acmart Warning: A possible image without description on input line 670.
-
-LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
-(Font)              scaled to size 9.0pt on input line 674.
-[8.8{C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/inconsolata/i4
--t1-4.enc} <./images/realtime_curves.png> <./images/fig_equal_samples.pdf>]
-<images/fig_gpu_cost.pdf, id=372, 253.17825pt x 144.13037pt>
-File: images/fig_gpu_cost.pdf Graphic file (type pdf)
-<use images/fig_gpu_cost.pdf>
-Package pdftex.def Info: images/fig_gpu_cost.pdf  used on input line 685.
-(pdftex.def)             Requested size: 243.14749pt x 138.42296pt.
-
-
-Class acmart Warning: A possible image without description on input line 688.
-
-<images/fig_leaf_budget.pdf, id=374, 745.59885pt x 209.86365pt>
-File: images/fig_leaf_budget.pdf Graphic file (type pdf)
-<use images/fig_leaf_budget.pdf>
-Package pdftex.def Info: images/fig_leaf_budget.pdf  used on input line 703.
-(pdftex.def)             Requested size: 469.47046pt x 132.14114pt.
-
-Class acmart Warning: A possible image without description on input line 706.
-
-[9.9 <./images/fig_wall.pdf> <./images/fig_gpu_cost.pdf>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-(table_average_tree.tex) [10.10 <./images/fig_leaf_budget.pdf>]
-<images/fig_partitions.jpg, id=468, 515.61865pt x 315.76431pt>
+)
+LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/n' will be
+(Font)              scaled to size 9.0pt on input line 716.
+<images/fig_partitions.jpg, id=494, 515.61865pt x 315.76431pt>
 File: images/fig_partitions.jpg Graphic file (type jpg)
 <use images/fig_partitions.jpg>
-Package pdftex.def Info: images/fig_partitions.jpg  used on input line 740.
+Package pdftex.def Info: images/fig_partitions.jpg  used on input line 733.
 (pdftex.def)             Requested size: 243.14749pt x 148.90552pt.
 
 
-Class acmart Warning: A possible image without description on input line 743.
+Class acmart Warning: A possible image without description on input line 736.
 
-<images/fig_variance_vs_leaves.pdf, id=472, 247.53864pt x 117.77838pt>
+[9.9{C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/inconsolata/i4
+-t1-4.enc}]
+<images/fig_variance_vs_leaves.pdf, id=510, 247.53864pt x 117.77838pt>
 File: images/fig_variance_vs_leaves.pdf Graphic file (type pdf)
 <use images/fig_variance_vs_leaves.pdf>
 Package pdftex.def Info: images/fig_variance_vs_leaves.pdf  used on input line 
-749.
+742.
 (pdftex.def)             Requested size: 243.14749pt x 115.69159pt.
 
-Underfull \hbox (badness 1137) in paragraph at lines 750--750
-[]\T1/LinuxBiolinumT-TLF/m/n/8 (+20) Fig. 10.|[]Light-sampling vari-ance agains
+Underfull \hbox (badness 1137) in paragraph at lines 743--743
+[]\T1/LinuxBiolinumT-TLF/m/n/8 (+20) Fig. 11.|[]Light-sampling vari-ance agains
 t leaf count, rel-a-tive to Bud-
  []
 
 
-Class acmart Warning: A possible image without description on input line 752.
+Class acmart Warning: A possible image without description on input line 745.
 
-[11.11 <./images/fig_partitions.jpg> <./images/fig_variance_vs_leaves.pdf>]
-<images/fig_rate_sensitivity.pdf, id=497, 491.436pt x 187.902pt>
+[10.10 <./images/fig_leaf_budget.pdf> <./images/fig_partitions.jpg> <./images/f
+ig_variance_vs_leaves.pdf>]
+<images/fig_rate_sensitivity.pdf, id=563, 491.436pt x 187.902pt>
 File: images/fig_rate_sensitivity.pdf Graphic file (type pdf)
 <use images/fig_rate_sensitivity.pdf>
-Package pdftex.def Info: images/fig_rate_sensitivity.pdf  used on input line 76
-3.
+Package pdftex.def Info: images/fig_rate_sensitivity.pdf  used on input line 75
+6.
 (pdftex.def)             Requested size: 243.14749pt x 92.9702pt.
 
 
-Class acmart Warning: A possible image without description on input line 766.
+Class acmart Warning: A possible image without description on input line 759.
 
-<images/fig_codec_trees.pdf, id=499, 505.89pt x 231.26399pt>
+<images/fig_codec_trees.pdf, id=565, 505.89pt x 231.26399pt>
 File: images/fig_codec_trees.pdf Graphic file (type pdf)
 <use images/fig_codec_trees.pdf>
-Package pdftex.def Info: images/fig_codec_trees.pdf  used on input line 773.
+Package pdftex.def Info: images/fig_codec_trees.pdf  used on input line 766.
 (pdftex.def)             Requested size: 243.14749pt x 111.15366pt.
 
-Class acmart Warning: A possible image without description on input line 776.
+Class acmart Warning: A possible image without description on input line 769.
 
-[12.12 <./images/fig_rate_sensitivity.pdf> <./images/fig_codec_trees.pdf>]
-Overfull \hbox (1.04639pt too wide) in paragraph at lines 828--829
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \hbox (1.04639pt too wide) in paragraph at lines 821--822
 [][]\T1/LinuxLibertineT-TLF/m/n/9 (-20) The dif-fer-ences be-tween tech-niques 
 are nev-er-the-less much smaller
  []
 
-<images/figures_only_restir_v9.png, id=645, 4240.84375pt x 3262.1875pt>
+[11.11 <./images/fig_rate_sensitivity.pdf> <./images/fig_codec_trees.pdf>]
+<images/figures_only_restir_v9.png, id=712, 4240.84375pt x 3262.1875pt>
 File: images/figures_only_restir_v9.png Graphic file (type png)
 <use images/figures_only_restir_v9.png>
 Package pdftex.def Info: images/figures_only_restir_v9.png  used on input line 
-839.
+832.
 (pdftex.def)             Requested size: 510.295pt x 392.49094pt.
 
-Class acmart Warning: A possible image without description on input line 844.
 
-<images/denoised_flip_grid.png, id=646, 4117.3825pt x 1067.99pt>
+Class acmart Warning: A possible image without description on input line 837.
+
+<images/denoised_flip_grid.png, id=713, 4117.3825pt x 1067.99pt>
 File: images/denoised_flip_grid.png Graphic file (type png)
 <use images/denoised_flip_grid.png>
-Package pdftex.def Info: images/denoised_flip_grid.png  used on input line 848.
+Package pdftex.def Info: images/denoised_flip_grid.png  used on input line 841.
 
 (pdftex.def)             Requested size: 510.295pt x 132.35768pt.
 
-Class acmart Warning: A possible image without description on input line 853.
+Class acmart Warning: A possible image without description on input line 846.
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- (PAPER.bbl
+(PAPER.bbl
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
 (Font)              scaled to size 7.0pt on input line 45.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
 (Font)              scaled to size 7.3pt on input line 74.
-[13.13] [14.14 <./images/figures_only_restir_v9.png (PNG copy)> <./images/denoi
-sed_flip_grid.png (PNG copy)>]
+ [12.12] [13.13 <./images/figures_only_restir_v9.png (PNG copy)> <./images/deno
+ised_flip_grid.png (PNG copy)>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 )
-<images/fig_qmc_points.pdf, id=690, 495.77222pt x 153.56387pt>
+<images/fig_qmc_points.pdf, id=755, 495.77222pt x 153.56387pt>
 File: images/fig_qmc_points.pdf Graphic file (type pdf)
 <use images/fig_qmc_points.pdf>
-Package pdftex.def Info: images/fig_qmc_points.pdf  used on input line 889.
+Package pdftex.def Info: images/fig_qmc_points.pdf  used on input line 882.
 (pdftex.def)             Requested size: 243.14749pt x 75.3149pt.
 
 
-Class acmart Warning: A possible image without description on input line 892.
+Class acmart Warning: A possible image without description on input line 885.
 
-<images/fig_qmc_fence.pdf, id=693, 240.65909pt x 228.91522pt>
+[14.14]
+<images/fig_qmc_fence.pdf, id=774, 240.65909pt x 228.91522pt>
 File: images/fig_qmc_fence.pdf Graphic file (type pdf)
 <use images/fig_qmc_fence.pdf>
-Package pdftex.def Info: images/fig_qmc_fence.pdf  used on input line 899.
+Package pdftex.def Info: images/fig_qmc_fence.pdf  used on input line 892.
 (pdftex.def)             Requested size: 223.69524pt x 212.78065pt.
 
-Class acmart Warning: A possible image without description on input line 902.
 
+Class acmart Warning: A possible image without description on input line 895.
 
-Underfull \vbox (badness 1584) has occurred while \output is active []
-
- [15.15]
-<images/fig_temporal.pdf, id=715, 251.66335pt x 223.9952pt>
+[15.15 <./images/fig_qmc_points.pdf> <./images/fig_qmc_fence.pdf>]
+<images/fig_temporal.pdf, id=916, 251.66335pt x 223.9952pt>
 File: images/fig_temporal.pdf Graphic file (type pdf)
 <use images/fig_temporal.pdf>
-Package pdftex.def Info: images/fig_temporal.pdf  used on input line 949.
+Package pdftex.def Info: images/fig_temporal.pdf  used on input line 942.
 (pdftex.def)             Requested size: 243.14749pt x 216.4206pt.
 
 
-Class acmart Warning: A possible image without description on input line 952.
+Class acmart Warning: A possible image without description on input line 945.
 
 
-Overfull \hbox (16.7197pt too wide) in paragraph at lines 954--955
+Overfull \hbox (16.7197pt too wide) in paragraph at lines 947--948
  []\T1/LinuxLibertineT-TLF/m/it/9 (-20) Rendered flicker.[] \T1/LinuxLibertineT
 -TLF/m/n/9 (-20) The low-frequency tem-po-ral er-ror of Bud-getLeafAlias
  []
 
-[16.16 <./images/fig_qmc_points.pdf> <./images/fig_qmc_fence.pdf>]
 
 Package natbib Warning: There were undefined citations.
 
@@ -1621,31 +1618,32 @@ rtant steps when creating your papers will ensure that the widest possible audi
 ence can ingest your work..
 
 
-Overfull \vbox (1.27829pt too high) has occurred while \output is active []
-
-
 (C:\Users\Jose\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\se-pdfdoc.de
 f
 File: se-pdfdoc.def 2019/11/29 v1.12 stringenc: PDFDocEncoding
 )
 (C:\Users\Jose\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\se-utf8.def
 File: se-utf8.def 2019/11/29 v1.12 stringenc: UTF-8
-) [17.17 <./images/fig_temporal.pdf>] (PAPER.aux)
+) [16.16 <./images/fig_temporal.pdf>] (PAPER.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package rerunfilecheck Info: File `PAPER.out' has not changed.
 (rerunfilecheck)             Checksum: 7CE03D081A2F813773D25DE4C6E3D922;3642.
  ) 
 Here is how much of TeX's memory you used:
- 23072 strings out of 467871
- 385325 string characters out of 5418861
- 881735 words of memory out of 5000000
- 50479 multiletter control sequences out of 15000+600000
- 862235 words of font info for 625 fonts, out of 8000000 for 9000
+ 23064 strings out of 467871
+ 385250 string characters out of 5418861
+ 881683 words of memory out of 5000000
+ 50487 multiletter control sequences out of 15000+600000
+ 860551 words of font info for 614 fonts, out of 8000000 for 9000
  1302 hyphenation exceptions out of 8191
- 90i,17n,131p,1678b,835s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,16n,131p,1678b,833s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/public/inconsolata/I
 nconsolata-zi4r.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/pu
 blic/newtx/LibertineMathMI.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fon
@@ -1661,9 +1659,9 @@ type1/public/libertine/LinLibertineTI.pfb><C:/Users/Jose/AppData/Local/Programs
 ams/MiKTeX/fonts/type1/public/newtx/txexs.pfb><C:/Users/Jose/AppData/Local/Prog
 rams/MiKTeX/fonts/type1/public/newtx/txmiaX.pfb><C:/Users/Jose/AppData/Local/Pr
 ograms/MiKTeX/fonts/type1/public/newtx/txsys.pfb>
-Output written on PAPER.pdf (17 pages, 32218636 bytes).
+Output written on PAPER.pdf (16 pages, 33041908 bytes).
 PDF statistics:
- 978 PDF objects out of 1000 (max. 8388607)
- 153 named destinations out of 1000 (max. 500000)
- 132382 words of extra memory for PDF output out of 154059 (max. 10000000)
+ 1045 PDF objects out of 1200 (max. 8388607)
+ 152 named destinations out of 1000 (max. 500000)
+ 131875 words of extra memory for PDF output out of 154059 (max. 10000000)
 
