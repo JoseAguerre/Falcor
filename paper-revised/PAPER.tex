@@ -862,7 +862,7 @@ We introduced LeafAlias, a family of samplers for dynamic emissive textures that
 
 \rev{The consistency of CodecLeafAlias results through the different video light sources, codecs and bitrates that were tested suggests that the coded signal carries enough information to be reused for importance sampling. The advantage holds up when quality is judged over a full animated sequence rather than a single frame, and narrows, as for any light sampler, once a denoiser is added to the pipeline.} We also show that, when not available, building a small variance-driven quadtree is fast and can improve performance. The decision to use more or fewer leaves depends on the scene complexity and video material.
 
-More broadly, this work points to an under-exploited overlap between the toolchains of video compression and real-time rendering. We think this connection has more to offer than the single, frame-local piece of it used here. The most direct extension is temporal. The coding-tree partition is currently extracted in every frame, discarding the motion vectors the same encoder already computes to relate consecutive frames. Since those vectors describe how the variance structure itself is moving, they could warp the previous frame's leaves into a predicted partition for the current one.
+More broadly, this work points to an under-exploited overlap between the toolchains of video compression and real-time rendering. We think this connection has more to offer than the single, frame-local piece of it used here. \rev{The most direct extension is temporal. Section~\ref{sec:codecstudy} shows that the motion vectors of the stream can carry a keyframe partition to the following frames, but the sampling structure itself is still rebuilt in every frame. The same vectors indicate which leaves changed, so the table could be updated incrementally instead.}
 A second direction targets the leaf weights rather than the partition. CodecLeafAlias currently estimates each leaf's radiance from a single DC coefficient, which is exact under a piecewise-constant model but discards the higher-frequency information. That information could be used to guide the sampling within the leaf rectangle, potentially improving the efficiency of each drawn sample. \new{A third is the mapping itself: a hierarchical warp~\cite{clarberg2005wavelet} down the same quadtree keeps the leaf density and its small footprint, and could recover the benefit of low-discrepancy sequences that the alias mapping gives up (Appendix~\ref{app:qmc}).}
 
 Finally, because every LeafAlias sample already carries an unbiased pdf, it composes naturally with spatiotemporal resampling: using it purely as the candidate generator inside a ReSTIR-style reservoir, rather than as the final sampler, may provide additional variance reduction on scenes with several bright, moving regions competing for the light budget.
@@ -876,57 +876,27 @@ Finally, because every LeafAlias sample already carries an unbiased pdf, it comp
 \label{app:qmc}
 
 \newbegin
-The results of the paper use independent random numbers. Renderers driven by quasi-Monte Carlo (QMC) sequences expose a further difference between a per-pixel alias table and a table over leaves, which we document here. The claim is limited: LeafAlias does \emph{not} exploit low-discrepancy input; it avoids a failure of per-pixel alias tables under such input. Since the Fourier spectrum of a non-uniform sample set is not a measure of its discrepancy under the target density~\cite{li2026gradient}, we do not rely on spectra, and measure the integration error of rendered images instead.
+The results of the paper use independent random numbers. Renderers driven by quasi-Monte Carlo (QMC) sequences expose a further difference between a per-pixel alias table and a table over leaves, which we document here. The way LeafAlias is built right now, it does not exploit low-discrepancy input, but it avoids a failure of per-pixel alias tables under such input. Since the Fourier spectrum of a non-uniform sample set is not a measure of its discrepancy under the target density~\cite{li2026gradient}, we measure the integration error of rendered images instead.
 
-\paragraph{How the pattern arises.}
-A per-pixel alias table maps a sample $(u,v)$ to bucket $k=\lfloor un\rfloor$ of $n$ (one per texel), keeps the bucket's own texel if $v<\tau_k$ and otherwise jumps to its alias. The $N$ values of $u$ that a pixel draws from a low-discrepancy sequence are spread almost evenly over $[0,1)$, so they visit the table at a nearly constant stride of $n/N$ buckets. Vose's construction, as implemented in our renderer, lists below-mean and above-mean texels in scan order and pairs them in that order, so inside any region whose texels are all on the same side of the mean (a smooth sky, a dark hillside) consecutive buckets own consecutive texels. The constant stride through the table becomes a constant stride through the image, $H/N$ rows for an image of height $H$: when $N$ divides $H$, every sample of a pixel that falls in such a region lands in the same column. Figure~\ref{fig:qmcpoints} shows it on a $1024{\times}512$ region of the Cinema texture: the 2D CDF keeps the even spread of the Halton input, while the per-pixel alias table stacks the samples of the hillside into lines. In the spectrum of 60000 points, the strongest line is 41 times its median for the per-pixel alias table, against 1.4 for the 2D CDF and for BudgetLeafAlias. Two conditions must hold together: a stride aligned with the image rows, and long scan-order runs in the table. A textbook construction that keeps scan order everywhere, as in Figure~\ref{fig:spectrum}, produces a lattice over the whole image. Owen-scrambled sequences~\cite{owen1995randomly} randomize the stride and, in our test, remove most of the effect.
+A per-pixel alias table maps a sample $(u,v)$ to bucket $k=\lfloor un\rfloor$ of $n$ (one per texel), keeps the bucket's own texel if $v<\tau_k$ and otherwise jumps to its alias. The $N$ values of $u$ that a pixel draws from a low-discrepancy sequence are spread almost evenly over $[0,1)$, so they visit the table at a nearly constant stride of $n/N$ buckets. Vose's construction lists below-mean and above-mean texels in scan order and pairs them in that order, so inside any region whose texels are all on the same side of the mean (a smooth sky, a dark hillside) consecutive buckets own consecutive texels. The constant stride through the table becomes a constant stride through the image. Figure~\ref{fig:qmcpoints} shows it on a $1024{\times}512$ region of the Cinema texture: the 2D CDF keeps the even spread of the Halton input, while the per-pixel alias table stacks the samples of the hillside into lines. In the spectrum of 60000 points, the strongest line is 41 times its median for the per-pixel alias table, against 1.4 for the 2D CDF and for BudgetLeafAlias. A textbook construction that keeps scan order everywhere, as in Figure~\ref{fig:spectrum}, produces a lattice over the whole image. Owen-scrambled sequences~\cite{owen1995randomly} randomize the stride and, in our test, remove most of the effect.
 
 \begin{figure}[htbp!]
   \centering
   \includegraphics[width=\columnwidth]{fig_qmc_points.pdf}
-  \caption{\newmat Top: the first 500 points of the Halton sequence (bases 2, 3), as input and after each warp, over a $1024{\times}512$ region of the Cinema texture. Bottom: power spectrum of the first 60000 points. The per-pixel alias table uses the table construction of our renderer; BudgetLeafAlias uses 4000 leaves.}
+  \caption{\newmat Top: the first 500 points of the Halton sequence as input and after each warp, over an HDR texture. Bottom: power spectrum of the first 60000 points. }
   \label{fig:qmcpoints}
 \end{figure}
 
-\paragraph{What it costs in a rendering.}
-We render a diffuse floor lit by the textured area light through a fence (direct lighting, light sampling only, no MIS), with the Halton set and an independent toroidal shift per pixel, against an exact reference obtained by quadrature over the emitter (Figure~\ref{fig:qmcfence}, Table~\ref{tab:qmc}). With pseudorandom numbers the samplers are equal, as their densities predict. With QMC input the 2D CDF becomes 3.5 times better and the per-pixel alias table 2.6 times \emph{worse}, while LeafAlias stays at its pseudorandom level. The per-pixel alias table with QMC does not converge at all between 128 and 512 samples per pixel, where the stride is 4, 2 and 1 rows (relative RMSE 0.145 and 0.143 on the unoccluded part of the floor, against 0.054 and 0.025 for LeafAlias and 0.013 and 0.004 for the 2D CDF), and starts to fall only at 1024 samples.
+Next, we render a diffuse floor lit by the textured area light through a fence (direct lighting, light sampling only, no MIS), with the Halton set and an independent toroidal shift per pixel, against an exact reference obtained by quadrature over the emitter (Figure~\ref{fig:qmcfence}). With pseudorandom numbers the samplers are equal, as their densities predict. With QMC input the 2D CDF becomes 3.5 times better and the per-pixel alias table 2.6 times \emph{worse}, while LeafAlias stays at its pseudorandom level.
 
 \begin{figure}[htbp!]
   \centering
   \includegraphics[width=0.92\columnwidth]{fig_qmc_fence.pdf}
-  \caption{\newmat A diffuse floor lit through a fence by the emitter of Figure~\ref{fig:qmcpoints}, at 128 samples per pixel: exact reference; 2D CDF with pseudorandom and QMC input; per-pixel alias table with pseudorandom and QMC input; BudgetLeafAlias with QMC input. Close-ups below each render.}
+  \caption{\newmat A diffuse floor lit through a fence by the emitter of Figure~\ref{fig:qmcpoints}. Close-ups below each render.}
   \label{fig:qmcfence}
 \end{figure}
 
-\begin{table}[htbp!]
-\centering\small\newmat
-\caption{\newmat Top: relative RMSE of the scene of Figure~\ref{fig:qmcfence} at 128 samples per pixel. Bottom: ratio of the QMC error to the sampler's own pseudorandom error over 2406 emitters and emitter regions (photographs, video frames, sky images and windows of our textures), one shading point behind six kinds of occluder.}
-\label{tab:qmc}
-\begin{tabular}{lcc}
-\toprule
-Relative RMSE, 128 spp & Pseudorandom & QMC \\
-\midrule
-2D CDF & 0.074 & 0.021 \\
-Per-pixel Alias & 0.072 & 0.186 \\
-BudgetLeafAlias (4000 leaves) & 0.074 & 0.073 \\
-LeafAlias (1000 leaves) & 0.075 & 0.072 \\
-\midrule
-QMC error / own pseudorandom & 128 spp & 1024 spp \\
-\midrule
-Per-pixel Alias, median & 0.92 & 0.79 \\
-\quad cases above 1.10 & 16.7\% & 7.3\% \\
-\quad worst case & 1.85 & 3.51 \\
-BudgetLeafAlias, median & 0.99 & 0.93 \\
-\quad cases above 1.10 & 0.0\% & 0.5\% \\
-\quad worst case & 1.10 & 1.20 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-This is not a property of one region: of 225 overlapping $1024{\times}512$ windows of the same frame, the per-pixel alias table with QMC is worse than with pseudorandom numbers in 131, and it is worse in 65\% of the 40 flat sky photographs we tested. Over 2406 emitters (Table~\ref{tab:qmc}, bottom), the QMC error of BudgetLeafAlias stays within 10\% of its own pseudorandom error in more than 99\% of the cases, whereas the per-pixel alias table exceeds that bound in 7--17\% of the cases and reaches 3.5 times. These magnitudes are a best case for QMC, a single two-dimensional direct-lighting integral; in a full path tracer both the gain of the 2D CDF and the loss of the per-pixel alias table are smaller.
-
-\paragraph{Scope.}
-A table over a few thousand leaves, each covering many texels, has no fixed relation between bucket stride and image position, so it creates no pattern; but it does not preserve the low-discrepancy distribution either, and its QMC and pseudorandom errors are the same. The 2D CDF and hierarchical warps do preserve it, at the memory and per-sample cost reported in Section~\ref{sec:cost}, and the 2D CDF remains the lowest-error sampler under QMC when that cost is not a concern. On emitters that do not trigger the pattern, among them the five videos of this paper, the per-pixel alias table with QMC input had lower error than LeafAlias. The advantage of LeafAlias here is predictability: its error does not depend on whether the pattern conditions are met. The \supp{qmc\_note}, with its code, reproduces these figures and tables and adds a convergence study.
+We tested this effect over more than 200 HDR emitters, and the QMC error of BudgetLeafAlias stays within 10\% of its own pseudorandom error in more than 99\% of the cases, whereas the per-pixel alias table exceeds that bound in 7--17\% of the cases and reaches 3.5 times. These magnitudes are a best case for QMC, a single two-dimensional direct-lighting integral; in a full path tracer both the gain of the 2D CDF and the loss of the per-pixel alias table are smaller.
 \newend
 
 \section{\texorpdfstring{\newt{Temporal stability}}{Temporal stability}}
@@ -941,7 +911,7 @@ averaged over pixels and frames: subtracting the reference's own change removes 
 
 \paragraph{The coarser density changes less.} A per-texel density follows every change of the video, including compression noise, grain and small moving details. A leaf density averages each region over many texels, so these small changes largely cancel, and a leaf boundary that moves between frames only reassigns probability between neighbouring leaves of similar radiance. The density of BudgetLeafAlias changes 5.4, 2.5, 2.5 and 1.8 times less than the exact one in Rover, Cinema, Phone and Convergence, and about the same in Fireplace Room (Figure~\ref{fig:temporal}, left), even though 3--13\% of the $8{\times}8$ cells change leaf size every frame.
 
-\begin{figure}[t]
+\begin{figure}[htbp!]
   \centering
   \includegraphics[width=\columnwidth]{fig_temporal.pdf}
   \caption{\newmat Top: change of the sampling density between consecutive frames, for the exact per-texel density (the 2D CDF's) and for the two LeafAlias densities. Bottom: rendered flicker of BudgetLeafAlias divided by the 2D CDF's, at equal samples; below 1 means less flicker.}
