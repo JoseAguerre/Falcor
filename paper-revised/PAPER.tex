@@ -263,7 +263,7 @@ of the texture is performed, recursively choosing one of four children at each l
 
 A less common but well-known technique for sampling emissive textures is the alias method \cite{burke2004bidirectional}. This technique draws from an arbitrary discrete distribution in $O(1)$ time after an $O(N)$ one-time build, at the cost of losing the CDF's implicit spatial coherence: two adjacent table buckets can alias to two arbitrary, unrelated locations in the original distribution. This fact is known to disrupt stratification or discrepancy reduction of the input point set. It also requires $O(N)$ memory to store the correlation between every pixel. The process for building the alias table, despite being $O(N)$, is difficult to optimize for real-time construction \cite{lehmann2021weighted}.
 
-We present a new sampling method that is fast to build, produces a sampler that is tiny, \rev{is $O(1)$ to sample, and does not create the structured sample patterns that the per-pixel alias method can produce.} The core idea is to reuse the variance-driven image partition that is already present in modern video codecs, which already compute hierarchical spatial partitions that adapt to local signal variance \cite{uhrina2024performance}. These structures implicitly encode the spatial distribution
+We present a new sampling method that is fast to build, produces a sampler that is tiny, \rev{is $O(1)$ to sample, and does not create the structured sample patterns that the per-pixel alias method can produce.} The core idea is to reuse the variance-driven image partition that is already present in modern video codecs, which compute hierarchical spatial partitions that adapt to local signal variance \cite{uhrina2024performance}. These structures implicitly encode the spatial distribution
 of luminance and high-frequency content (see Fig. \ref{fig:quadtree}). We also propose a variant that builds the partition tree on a budgeted number of leaves, using a  Greedy/best-first tree-structured resource allocation strategy \cite{MINASNY2007383,Zhou2024}. \rev{Both techniques render video light textures in real time (33 milliseconds per frame) with consistent gains, because each of their samples is cheaper and more of them fit in the frame.}
 
 \newbegin
@@ -345,13 +345,13 @@ path trace under a live panorama on a head-mounted display report that the resul
 be denoised \cite{cheng2023environment,wu2024panoramic}, and that in a headset Monte
 Carlo noise is more than a quality problem, since its temporal flicker aggravates
 cybersickness \cite{taibo2024immersive}. Most real-time systems therefore avoid
-sampling: they prefilter the map or reduce it to a few dominant lights\cite{saito2024relightable}. A sampling structure that can be rebuilt at
+sampling: they prefilter the map or reduce it to a few dominant lights \cite{saito2024relightable}. A sampling structure that can be rebuilt at
 the rate of the display, and that is small enough to keep one per light, is a
 precondition for moving these applications from prefiltered shading to path tracing
 with correct shadows and interreflections.
 }
 \section{Previous work}\label{sec:prev}
-Importance sampling of emissive textures is a well-studied problem in the graphics literature in the context of image-based lighting. Most work focuses on preprocessing the images to allow for exact or near-exact sampling without introducing bias \cite{lawrence2005adaptive}. Several methods choose to simplify the textured light into a set of point or area lights ~\cite{agarwal2003structured}, allowing for real-time sampling and faster convergence but at the cost of more error in the solution. \cite{cline2009tabular} compare several tabular inversion methods, noting the computational order of building each sampler structure and sampling each point. They analyze the 2D CDF inversion via binary search and the per-pixel alias method, where they flag the disruption of the stratification of the input point set. \rev{With a low-discrepancy input, the raster-flattened table of the per-pixel alias method can produce a measurable periodic banding pattern (Figure~\ref{fig:spectrum}) that becomes clear in the power spectrum of the sample set. Appendix~\ref{app:qmc} analyzes these effects and their consequence in a rendering for our proposed methods and compares it with per-pixel alias.}
+Importance sampling of emissive textures is a well-studied problem in the graphics literature in the context of image-based lighting. Most work focuses on preprocessing the images to allow for exact or near-exact sampling without introducing bias \cite{lawrence2005adaptive}. Several methods choose to simplify the textured light into a set of point or area lights~\cite{agarwal2003structured}, allowing for real-time sampling and faster convergence but at the cost of more error in the solution. \cite{cline2009tabular} compare several tabular inversion methods, noting the computational order of building each sampler structure and sampling each point. They analyze the 2D CDF inversion via binary search and the per-pixel alias method, where they flag the disruption of the stratification of the input point set. \rev{With a low-discrepancy input, the raster-flattened table of the per-pixel alias method can produce a measurable periodic banding pattern (Figure~\ref{fig:spectrum}) that becomes clear in the power spectrum of the sample set. Appendix~\ref{app:qmc} analyzes these effects and their consequence in a rendering for our proposed methods and compares them with per-pixel alias.}
 
 \begin{figure}[htbp!]
   \centering
@@ -392,7 +392,7 @@ kind of dense marginal/conditional CDF over a downsampled background map.
 \section{Method}\label{sec:method}
 
 The LeafAlias technique applies to any light source described by a 2D radiance texture $L(u,v)$ over
-a parameter domain $(u,v)\in[0,1)^2$, e.g. an environment map, or the emission texture of an
+a parameter domain $(u,v)\in[0,1)^2$, e.g.\ an environment map, or the emission texture of an
 area light. As with any textured light, variance is minimized when the sampling density
 matches radiance, $p(u,v)\propto L(u,v)$. We approximate this with a piecewise-constant density
 over a partition of the domain into disjoint leaf rectangles $\{R_i\}_{i=1}^N$, for now
@@ -667,7 +667,7 @@ CodecLeafAlias & \textbf{1.38} & \textbf{2.31} & \textbf{1.54} & 1.23 & \textbf{
 \end{tabular}}
 \end{table}
 
-\paragraph{Emitter resolution}
+\paragraph{Emitter resolution.}
 The last observation suggests that the resolution of the emitter influences the advantage of our techniques. To isolate it, we render using the same emissive texture at three resolutions on the LED wall of the Rover scene: 1820$\times$1024, 3640$\times$2048 and 7280$\times$4096, obtained by area averaging from a real 8K HDR panorama of a road under broad daylight. We render frames with direct illumination, measuring time and RMSE at varying samples per pixel, and smooth the RMSE curve of each technique with a quadratic fit (Figure~\ref{fig:wall}).
 
 \begin{figure}[htbp!]
@@ -716,7 +716,7 @@ In the next experiment, we sweep the leaf budget $B$ of BudgetLeafAlias from 16 
 
 Two behaviors appear, depending on how the light is distributed over the emitter. In Cinema, light is spread over most of the screen, and a coarse partition already gives single-digit error percentages. Rover and Phone behave in a similar way (not shown). In Fireplace Room and Convergence, most of the energy sits in small regions that the partition must resolve, and the error falls steeply with $B$ before levelling off. In Convergence, 250 leaves give up to 1.20 times the error of $B=4000$,  and 1000 leaves up to 1.07 times, while doubling or quadrupling the budget beyond 4000 improves the error by only 1--3\% at every sample count. 
 
-On the cost side, as we saw in the previous section, the structure grows linearly with $B$, and the performance penalty is minimized as long as the sampler resides in L1 cache. $B=4000$ therefore sits at the knee of both curves: it captures nearly all the quality available from the partition, and at 75\,KB it uses most of the cache without exceeding it. $B$ acts as a memory and quality knob, and devices with smaller caches or less memory can use a smaller budget at the quality cost shown in Figure~\ref{fig:leafbudget}. All these measurements are on one GPU; the \supp{ablation\_leaf\_number} contains the complete tables and the  \supp{GPU\_tests} contains results for a mobile GPU device, showing similar patterns when using fewer cores and memory.
+On the cost side, as we saw in the previous section, the structure grows linearly with $B$, and the performance penalty is minimized as long as the sampler resides in L1 cache. $B=4000$ therefore sits at the knee of both curves: it captures nearly all the quality available from the partition, and at 75\,KB it uses most of the cache without exceeding it. $B$ acts as a memory and quality knob, and devices with smaller caches or less memory can use a smaller budget at the quality cost shown in Figure~\ref{fig:leafbudget}. All these measurements are on one GPU; the \supp{ablation\_leaf\_number} contains the complete tables and the  \supp{GPU\_tests} contains results for a mobile GPU device, showing similar patterns when using fewer cores and less memory.
 \newend
 
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.9.7)  17 NOV 2026 22:56
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.9.7)  17 NOV 2026 23:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1630,17 +1630,13 @@ File: se-utf8.def 2019/11/29 v1.12 stringenc: UTF-8
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
 Package rerunfilecheck Info: File `PAPER.out' has not changed.
 (rerunfilecheck)             Checksum: BE91180EC4FDFBA8C68A6DDC58A71204;3548.
  ) 
 Here is how much of TeX's memory you used:
  23007 strings out of 467871
- 383840 string characters out of 5418861
- 878548 words of memory out of 5000000
+ 383843 string characters out of 5418861
+ 878547 words of memory out of 5000000
  50493 multiletter control sequences out of 15000+600000
  846190 words of font info for 580 fonts, out of 8000000 for 9000
  1302 hyphenation exceptions out of 8191
@@ -1659,7 +1655,7 @@ libertine/LinLibertineTI.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts
 nts/type1/public/newtx/txexs.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/f
 onts/type1/public/newtx/txmiaX.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX
 /fonts/type1/public/newtx/txsys.pfb>
-Output written on PAPER.pdf (15 pages, 32977891 bytes).
+Output written on PAPER.pdf (15 pages, 32977869 bytes).
 PDF statistics:
  1021 PDF objects out of 1200 (max. 8388607)
  143 named destinations out of 1000 (max. 500000)
