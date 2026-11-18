@@ -1,0 +1,212 @@
+{
+ "chase_ps": {
+  "4096": 14.404296875,
+  "8192": 16.265869140625,
+  "16384": 17.303466796875,
+  "32768": 17.852783203125,
+  "65536": 18.096923828125,
+  "131072": 20.20263671875,
+  "163840": 24.35302734375,
+  "196608": 31.829774379730225,
+  "229376": 37.017762660980225,
+  "262144": 40.740966796875,
+  "524288": 52.61242389678955,
+  "1048576": 58.044493198394775,
+  "2097152": 60.668885707855225,
+  "4194304": 62.34735250473022,
+  "8388608": 63.81213665008544,
+  "16777216": 65.73498249053955,
+  "20971520": 66.65050983428955,
+  "25165824": 67.68792867660522,
+  "29360128": 133.54480266571045,
+  "33554432": 210.54089069366455,
+  "41943040": 301.20909214019775,
+  "50331648": 352.4482250213623,
+  "67108864": 409.1799259185791,
+  "134217728": 482.94067382812494,
+  "268435456": 514.984130859375,
+  "536870912": 530.0909280776978
+ },
+ "sampler_ms": {
+  "convergence|AliasCtu|0": {
+   "median": 98.516,
+   "lo": 90.8104,
+   "hi": 113.727,
+   "n": 7
+  },
+  "convergence|AliasPerPixel|0": {
+   "median": 291.801,
+   "lo": 279.95,
+   "hi": 354.019,
+   "n": 7
+  },
+  "convergence|BudgetLeafAlias|1000": {
+   "median": 67.0966,
+   "lo": 66.1883,
+   "hi": 73.0153,
+   "n": 7
+  },
+  "convergence|BudgetLeafAlias|16000": {
+   "median": 79.7921,
+   "lo": 68.354,
+   "hi": 93.9653,
+   "n": 7
+  },
+  "convergence|BudgetLeafAlias|2000": {
+   "median": 69.8788,
+   "lo": 68.2598,
+   "hi": 79.3979,
+   "n": 7
+  },
+  "convergence|BudgetLeafAlias|4000": {
+   "median": 72.6528,
+   "lo": 67.9813,
+   "hi": 74.6117,
+   "n": 7
+  },
+  "convergence|BudgetLeafAlias|8000": {
+   "median": 76.9731,
+   "lo": 67.1611,
+   "hi": 89.2273,
+   "n": 7
+  },
+  "convergence|Cdf2DDiv8|0": {
+   "median": 133.631,
+   "lo": 114.648,
+   "hi": 157.171,
+   "n": 7
+  },
+  "convergence|Cdf2D|0": {
+   "median": 285.759,
+   "lo": 283.688,
+   "hi": 321.16,
+   "n": 7
+  },
+  "convergence|HierarchicalMip|0": {
+   "median": 181.297,
+   "lo": 175.278,
+   "hi": 215.914,
+   "n": 7
+  },
+  "fireplace_room|AliasCtu|0": {
+   "median": 134.811,
+   "lo": 111.423,
+   "hi": 143.134,
+   "n": 7
+  },
+  "fireplace_room|AliasPerPixel|0": {
+   "median": 335.729,
+   "lo": 335.248,
+   "hi": 351.106,
+   "n": 7
+  },
+  "fireplace_room|BudgetLeafAlias|1000": {
+   "median": 101.173,
+   "lo": 100.4,
+   "hi": 105.11,
+   "n": 7
+  },
+  "fireplace_room|BudgetLeafAlias|16000": {
+   "median": 85.8102,
+   "lo": 85.1354,
+   "hi": 95.318,
+   "n": 7
+  },
+  "fireplace_room|BudgetLeafAlias|2000": {
+   "median": 94.0042,
+   "lo": 93.9602,
+   "hi": 95.2248,
+   "n": 7
+  },
+  "fireplace_room|BudgetLeafAlias|4000": {
+   "median": 89.0675,
+   "lo": 89.0214,
+   "hi": 91.6224,
+   "n": 7
+  },
+  "fireplace_room|BudgetLeafAlias|8000": {
+   "median": 86.0303,
+   "lo": 85.7518,
+   "hi": 88.578,
+   "n": 7
+  },
+  "fireplace_room|Cdf2DDiv8|0": {
+   "median": 149.595,
+   "lo": 137.693,
+   "hi": 180.728,
+   "n": 7
+  },
+  "fireplace_room|Cdf2D|0": {
+   "median": 396.026,
+   "lo": 388.59,
+   "hi": 420.5,
+   "n": 7
+  },
+  "fireplace_room|HierarchicalMip|0": {
+   "median": 196.565,
+   "lo": 188.568,
+   "hi": 252.682,
+   "n": 7
+  },
+  "phonehand|AliasCtu|0": {
+   "median": 76.7304,
+   "lo": 63.7399,
+   "hi": 91.6818,
+   "n": 7
+  },
+  "phonehand|AliasPerPixel|0": {
+   "median": 215.094,
+   "lo": 212.466,
+   "hi": 230.269,
+   "n": 7
+  },
+  "phonehand|BudgetLeafAlias|1000": {
+   "median": 48.2806,
+   "lo": 33.3476,
+   "hi": 69.4487,
+   "n": 7
+  },
+  "phonehand|BudgetLeafAlias|16000": {
+   "median": 63.3047,
+   "lo": 48.9236,
+   "hi": 72.3128,
+   "n": 7
+  },
+  "phonehand|BudgetLeafAlias|2000": {
+   "median": 52.2127,
+   "lo": 49.7213,
+   "hi": 62.5111,
+   "n": 7
+  },
+  "phonehand|BudgetLeafAlias|4000": {
+   "median": 57.599,
+   "lo": 43.3889,
+   "hi": 85.4149,
+   "n": 7
+  },
+  "phonehand|BudgetLeafAlias|8000": {
+   "median": 60.6249,
+   "lo": 49.8053,
+   "hi": 82.8027,
+   "n": 7
+  },
+  "phonehand|Cdf2DDiv8|0": {
+   "median": 109.706,
+   "lo": 71.9514,
+   "hi": 122.165,
+   "n": 7
+  },
+  "phonehand|Cdf2D|0": {
+   "median": 371.682,
+   "lo": 365.066,
+   "hi": 441.971,
+   "n": 7
+  },
+  "phonehand|HierarchicalMip|0": {
+   "median": 179.411,
+   "lo": 173.914,
+   "hi": 213.47,
+   "n": 7
+  }
+ }
+}

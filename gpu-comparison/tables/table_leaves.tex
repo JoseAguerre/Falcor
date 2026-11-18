@@ -1,0 +1,20 @@
+\begin{table}[H]
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\caption{Leaf budget of BudgetLeafAlias. Left: speed-up over the 2D CDF at equal quality in a 33.3\,ms frame, measured here on the RTX 4050 Laptop. Right: the cost of light sampling alone, relative to that GPU's own $B=1000$, on both GPUs --- the one measurement in this note made with an identical protocol on each. $B=250$ was not run in the sampling benchmark.}
+\label{tab:leaves}
+\begin{tabular}{l ccc cc cc cc}
+\toprule
+ & \multicolumn{3}{c}{Speed-up at equal quality (4050)} & \multicolumn{2}{c}{Phone} & \multicolumn{2}{c}{Fireplace Room} & \multicolumn{2}{c}{Convergence} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}\cmidrule(lr){9-10}
+Budget & Phone & Fireplace Room & Convergence & 4050 & 4080S & 4050 & 4080S & 4050 & 4080S \\
+\midrule
+$B$=250 & -- & 0.88 & 1.60 & -- & -- & -- & -- & -- & -- \\
+$B$=1000 & 1.89 & 1.40 & 1.76 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\
+$B$=2000 & 2.08 & 1.58 & 1.82 & 1.08 & 1.05 & 0.93 & 1.05 & 1.04 & 1.03 \\
+$B$=4000 & 2.26 & 1.71 & 1.86 & 1.19 & 1.16 & 0.88 & 1.15 & 1.08 & 1.12 \\
+$B$=8000 & 2.27 & 1.88 & 1.79 & 1.26 & 1.23 & 0.85 & 1.22 & 1.15 & 1.21 \\
+$B$=16000 & 2.35 & 1.97 & 1.88 & 1.31 & 1.27 & 0.85 & 1.26 & 1.19 & 1.26 \\
+\bottomrule
+\end{tabular}
+\end{table}

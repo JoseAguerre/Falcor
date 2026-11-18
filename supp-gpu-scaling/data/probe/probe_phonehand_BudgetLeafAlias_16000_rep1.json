@@ -1,0 +1,1 @@
+{"mode":"sampler","frames":60,"warmup":15,"samples_per_dispatch":265420800,"sampler":"BudgetLeafAlias","leaf_budget":16000,"a_median_ms":63.0794,"a_mean_ms":63.227,"a_p05_ms":61.7923,"a_p95_ms":66.2917,"b_median_ms":null,"b_mean_ms":null,"c_median_ms":null,"c_mean_ms":null}

@@ -1,0 +1,20 @@
+\begin{table}[H]
+\centering\small
+\setlength{\tabcolsep}{5pt}
+\caption{The same 33.3\,ms frame on the RTX 4050 Laptop, read at equal \emph{time} instead of equal quality. \emph{samples}: light samples per shading point that fit in the budget (64 is the engine's limit). \emph{RMSE}: error at that point relative to the 2D CDF's, where below 1 is better.}
+\label{tab:op}
+\begin{tabular}{l cc cc cc}
+\toprule
+ & \multicolumn{2}{c}{Phone} & \multicolumn{2}{c}{Fireplace Room} & \multicolumn{2}{c}{Convergence} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+Technique & samples & RMSE & samples & RMSE & samples & RMSE \\
+\midrule
+2D CDF & 34 & 1.000 & 9 & 1.000 & 10 & 1.000 \\
+2D CDF/8 & 64 & 0.783 & 17 & 0.794 & 14 & 0.889 \\
+Mipmap & 52 & 0.817 & 14 & 0.828 & 13 & 0.907 \\
+Alias per pixel & 58 & 0.771 & 11 & 0.916 & 12 & 0.930 \\
+\textbf{BudgetLeafAlias} & 64 & 0.847 & 26 & 0.756 & 25 & 0.690 \\
+\textbf{CodecLeafAlias} & 64 & 0.809 & 23 & 0.704 & 22 & 0.714 \\
+\bottomrule
+\end{tabular}
+\end{table}

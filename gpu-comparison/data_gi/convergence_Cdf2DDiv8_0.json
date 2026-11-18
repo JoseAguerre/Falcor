@@ -1,0 +1,88 @@
+{
+ "scene": "convergence",
+ "sampler": "Cdf2DDiv8",
+ "leaf": 0,
+ "spp": 4,
+ "ladder": [
+  {
+   "lspv": 1,
+   "frame_ms": 114.854,
+   "n_frames": 29,
+   "capture_frame": 40,
+   "mse": 0.03883971709351658,
+   "rmse": 0.1970779467457396
+  },
+  {
+   "lspv": 2,
+   "frame_ms": 160.623,
+   "n_frames": 29,
+   "capture_frame": 80,
+   "mse": 0.024340636695703455,
+   "rmse": 0.15601486049637533
+  },
+  {
+   "lspv": 3,
+   "frame_ms": 201.109,
+   "n_frames": 29,
+   "capture_frame": 120,
+   "mse": 0.018731392439873554,
+   "rmse": 0.1368626773078532
+  },
+  {
+   "lspv": 4,
+   "frame_ms": 239.35600000000002,
+   "n_frames": 29,
+   "capture_frame": 160,
+   "mse": 0.015832784873813965,
+   "rmse": 0.125828394545166
+  },
+  {
+   "lspv": 6,
+   "frame_ms": 310.592,
+   "n_frames": 29,
+   "capture_frame": 200,
+   "mse": 0.012814123962392591,
+   "rmse": 0.11319948746523807
+  },
+  {
+   "lspv": 8,
+   "frame_ms": 380.295,
+   "n_frames": 29,
+   "capture_frame": 240,
+   "mse": 0.0113129538259264,
+   "rmse": 0.10636237034744196
+  },
+  {
+   "lspv": 12,
+   "frame_ms": 517.532,
+   "n_frames": 29,
+   "capture_frame": 280,
+   "mse": 0.009855871168971098,
+   "rmse": 0.09927674032204672
+  },
+  {
+   "lspv": 16,
+   "frame_ms": 654.482,
+   "n_frames": 29,
+   "capture_frame": 320,
+   "mse": 0.008993974683091181,
+   "rmse": 0.09483656827981062
+  },
+  {
+   "lspv": 24,
+   "frame_ms": 931.4879999999999,
+   "n_frames": 29,
+   "capture_frame": 360,
+   "mse": 0.008234652994831839,
+   "rmse": 0.09074498881388349
+  },
+  {
+   "lspv": 32,
+   "frame_ms": 1208.28,
+   "n_frames": 29,
+   "capture_frame": 400,
+   "mse": 0.007819654099384852,
+   "rmse": 0.08842880808528887
+  }
+ ]
+}

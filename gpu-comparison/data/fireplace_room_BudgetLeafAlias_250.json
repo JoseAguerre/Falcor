@@ -1,0 +1,104 @@
+{
+ "scene": "fireplace_room",
+ "sampler": "BudgetLeafAlias",
+ "leaf": 250,
+ "spp": 1,
+ "ladder": [
+  {
+   "lspv": 1,
+   "frame_ms": 6.5745,
+   "n_frames": 29,
+   "capture_frame": 40,
+   "mse": 0.025762682008977234,
+   "rmse": 0.1605075761731428
+  },
+  {
+   "lspv": 2,
+   "frame_ms": 7.7553,
+   "n_frames": 29,
+   "capture_frame": 80,
+   "mse": 0.015547506790479445,
+   "rmse": 0.12468964187325042
+  },
+  {
+   "lspv": 3,
+   "frame_ms": 8.9844,
+   "n_frames": 29,
+   "capture_frame": 120,
+   "mse": 0.011444487741538155,
+   "rmse": 0.10697891260214863
+  },
+  {
+   "lspv": 4,
+   "frame_ms": 9.4262,
+   "n_frames": 29,
+   "capture_frame": 160,
+   "mse": 0.009168177273935476,
+   "rmse": 0.09575059933982386
+  },
+  {
+   "lspv": 6,
+   "frame_ms": 11.4162,
+   "n_frames": 29,
+   "capture_frame": 200,
+   "mse": 0.006715250487803045,
+   "rmse": 0.0819466319491109
+  },
+  {
+   "lspv": 8,
+   "frame_ms": 13.9049,
+   "n_frames": 29,
+   "capture_frame": 240,
+   "mse": 0.005385217424388056,
+   "rmse": 0.07338404066544753
+  },
+  {
+   "lspv": 12,
+   "frame_ms": 18.8017,
+   "n_frames": 29,
+   "capture_frame": 280,
+   "mse": 0.0038911728291231764,
+   "rmse": 0.0623792660194329
+  },
+  {
+   "lspv": 16,
+   "frame_ms": 23.5518,
+   "n_frames": 29,
+   "capture_frame": 320,
+   "mse": 0.0031037894202807404,
+   "rmse": 0.05571166323383947
+  },
+  {
+   "lspv": 24,
+   "frame_ms": 32.879400000000004,
+   "n_frames": 29,
+   "capture_frame": 360,
+   "mse": 0.0022301748753644924,
+   "rmse": 0.04722472737205047
+  },
+  {
+   "lspv": 32,
+   "frame_ms": 41.556000000000004,
+   "n_frames": 29,
+   "capture_frame": 400,
+   "mse": 0.001740969893464527,
+   "rmse": 0.04172493131767297
+  },
+  {
+   "lspv": 48,
+   "frame_ms": 59.132,
+   "n_frames": 29,
+   "capture_frame": 440,
+   "mse": 0.0012392226527704602,
+   "rmse": 0.03520259440397057
+  },
+  {
+   "lspv": 64,
+   "frame_ms": 75.5376,
+   "n_frames": 29,
+   "capture_frame": 480,
+   "mse": 0.0009835414036307654,
+   "rmse": 0.031361463671690536
+  }
+ ]
+}

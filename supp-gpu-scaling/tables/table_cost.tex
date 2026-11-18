@@ -1,0 +1,24 @@
+\begin{table}[H]
+\centering\small
+\setlength{\tabcolsep}{4.5pt}
+\caption{GPU time of light sampling alone, without ray tracing or shading, for one $1920\times1080$ frame at 128 light samples per pixel, in milliseconds. \emph{4050}: measured on the RTX 4050 Laptop (median of seven rounds). \emph{4080S}: the same measurement on the RTX 4080 SUPER, quoted from Table~2 of the leaf-budget supplement. $\times$: the ratio between the two. The emitter resolution is given per scene.}
+\label{tab:cost}
+\begin{tabular}{l ccc ccc ccc}
+\toprule
+ & \multicolumn{3}{c}{Phone (1080p)} & \multicolumn{3}{c}{Fireplace (4K)} & \multicolumn{3}{c}{Convergence (4K)} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+Technique & 4050 & 4080S & $\times$ & 4050 & 4080S & $\times$ & 4050 & 4080S & $\times$ \\
+\midrule
+BudgetLeafAlias $B$=1000 & 48.3 & 11.5 & 4.2 & 101.2 & 11.5 & 8.8 & 67.1 & 11.7 & 5.7 \\
+BudgetLeafAlias $B$=2000 & 52.2 & 12.1 & 4.3 & 94.0 & 12.1 & 7.8 & 69.9 & 12.1 & 5.8 \\
+BudgetLeafAlias $B$=4000 & 57.6 & 13.3 & 4.3 & 89.1 & 13.2 & 6.7 & 72.7 & 13.1 & 5.5 \\
+BudgetLeafAlias $B$=8000 & 60.6 & 14.2 & 4.3 & 86.0 & 14.0 & 6.1 & 77.0 & 14.1 & 5.5 \\
+BudgetLeafAlias $B$=16000 & 63.3 & 14.6 & 4.3 & 85.8 & 14.5 & 5.9 & 79.8 & 14.7 & 5.4 \\
+CodecLeafAlias & 76.7 & -- & -- & 134.8 & -- & -- & 98.5 & -- & -- \\
+2D CDF/8 & 109.7 & -- & -- & 149.6 & -- & -- & 133.6 & -- & -- \\
+Mipmap & 179.4 & -- & -- & 196.6 & -- & -- & 181.3 & -- & -- \\
+Per-pixel alias & 215.1 & 22.9 & 9.4 & 335.7 & 75.7 & 4.4 & 291.8 & 69.9 & 4.2 \\
+2D CDF & 371.7 & 114.8 & 3.2 & 396.0 & 63.8 & 6.2 & 285.8 & 62.1 & 4.6 \\
+\bottomrule
+\end{tabular}
+\end{table}

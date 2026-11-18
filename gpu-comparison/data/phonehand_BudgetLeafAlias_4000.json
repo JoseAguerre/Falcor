@@ -1,0 +1,104 @@
+{
+ "scene": "phonehand",
+ "sampler": "BudgetLeafAlias",
+ "leaf": 4000,
+ "spp": 1,
+ "ladder": [
+  {
+   "lspv": 1,
+   "frame_ms": 3.1403,
+   "n_frames": 29,
+   "capture_frame": 40,
+   "mse": 0.0033929633323009664,
+   "rmse": 0.0582491487688959
+  },
+  {
+   "lspv": 2,
+   "frame_ms": 3.3057,
+   "n_frames": 29,
+   "capture_frame": 80,
+   "mse": 0.0019133071147849118,
+   "rmse": 0.04374136617419387
+  },
+  {
+   "lspv": 3,
+   "frame_ms": 3.3821,
+   "n_frames": 29,
+   "capture_frame": 120,
+   "mse": 0.0013592882896219086,
+   "rmse": 0.03686852708777377
+  },
+  {
+   "lspv": 4,
+   "frame_ms": 3.697,
+   "n_frames": 29,
+   "capture_frame": 160,
+   "mse": 0.0010629421475279372,
+   "rmse": 0.03260279355404897
+  },
+  {
+   "lspv": 6,
+   "frame_ms": 4.2455,
+   "n_frames": 29,
+   "capture_frame": 200,
+   "mse": 0.0007440953681157769,
+   "rmse": 0.02727811152033397
+  },
+  {
+   "lspv": 8,
+   "frame_ms": 4.8361,
+   "n_frames": 29,
+   "capture_frame": 240,
+   "mse": 0.0005791041560858993,
+   "rmse": 0.02406458302331248
+  },
+  {
+   "lspv": 12,
+   "frame_ms": 6.0689,
+   "n_frames": 29,
+   "capture_frame": 280,
+   "mse": 0.00039910194253001775,
+   "rmse": 0.019977535947408972
+  },
+  {
+   "lspv": 16,
+   "frame_ms": 7.2023,
+   "n_frames": 29,
+   "capture_frame": 320,
+   "mse": 0.0003084932388896009,
+   "rmse": 0.01756397560034746
+  },
+  {
+   "lspv": 24,
+   "frame_ms": 9.2103,
+   "n_frames": 29,
+   "capture_frame": 360,
+   "mse": 0.00021140685344984438,
+   "rmse": 0.014539836775213276
+  },
+  {
+   "lspv": 32,
+   "frame_ms": 11.613,
+   "n_frames": 29,
+   "capture_frame": 400,
+   "mse": 0.00016256047106367764,
+   "rmse": 0.012749920433621444
+  },
+  {
+   "lspv": 48,
+   "frame_ms": 15.4014,
+   "n_frames": 29,
+   "capture_frame": 440,
+   "mse": 0.00011191969929261142,
+   "rmse": 0.010579210712175621
+  },
+  {
+   "lspv": 64,
+   "frame_ms": 19.505499999999998,
+   "n_frames": 29,
+   "capture_frame": 480,
+   "mse": 8.497291471861883e-05,
+   "rmse": 0.009218075434634869
+  }
+ ]
+}

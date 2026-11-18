@@ -1,0 +1,88 @@
+{
+ "scene": "fireplace_room",
+ "sampler": "Cdf2DDiv8",
+ "leaf": 0,
+ "spp": 4,
+ "ladder": [
+  {
+   "lspv": 1,
+   "frame_ms": 110.999,
+   "n_frames": 29,
+   "capture_frame": 40,
+   "mse": 0.007326199218743819,
+   "rmse": 0.08559321946710394
+  },
+  {
+   "lspv": 2,
+   "frame_ms": 151.381,
+   "n_frames": 29,
+   "capture_frame": 80,
+   "mse": 0.005738908928071349,
+   "rmse": 0.07575558677794891
+  },
+  {
+   "lspv": 3,
+   "frame_ms": 188.032,
+   "n_frames": 29,
+   "capture_frame": 120,
+   "mse": 0.00523112326564411,
+   "rmse": 0.07232650458610668
+  },
+  {
+   "lspv": 4,
+   "frame_ms": 222.804,
+   "n_frames": 29,
+   "capture_frame": 160,
+   "mse": 0.004853239858186072,
+   "rmse": 0.06966519832876436
+  },
+  {
+   "lspv": 6,
+   "frame_ms": 291.233,
+   "n_frames": 29,
+   "capture_frame": 200,
+   "mse": 0.004513939389804175,
+   "rmse": 0.0671858570668275
+  },
+  {
+   "lspv": 8,
+   "frame_ms": 358.62300000000005,
+   "n_frames": 29,
+   "capture_frame": 240,
+   "mse": 0.004287852527438798,
+   "rmse": 0.06548169612524403
+  },
+  {
+   "lspv": 12,
+   "frame_ms": 495.17,
+   "n_frames": 29,
+   "capture_frame": 280,
+   "mse": 0.004526140661117993,
+   "rmse": 0.06727659816844185
+  },
+  {
+   "lspv": 16,
+   "frame_ms": 630.4739999999999,
+   "n_frames": 29,
+   "capture_frame": 320,
+   "mse": 0.004101453871611583,
+   "rmse": 0.06404259419801467
+  },
+  {
+   "lspv": 24,
+   "frame_ms": 900.88,
+   "n_frames": 29,
+   "capture_frame": 360,
+   "mse": 0.004121709514819403,
+   "rmse": 0.06420054139039173
+  },
+  {
+   "lspv": 32,
+   "frame_ms": 1172.95,
+   "n_frames": 29,
+   "capture_frame": 400,
+   "mse": 0.004213849772187177,
+   "rmse": 0.06491417235232362
+  }
+ ]
+}

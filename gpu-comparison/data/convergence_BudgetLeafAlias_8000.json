@@ -1,0 +1,104 @@
+{
+ "scene": "convergence",
+ "sampler": "BudgetLeafAlias",
+ "leaf": 8000,
+ "spp": 1,
+ "ladder": [
+  {
+   "lspv": 1,
+   "frame_ms": 6.4021,
+   "n_frames": 29,
+   "capture_frame": 40,
+   "mse": 0.1253821713623519,
+   "rmse": 0.3540934500415842
+  },
+  {
+   "lspv": 2,
+   "frame_ms": 7.7313,
+   "n_frames": 29,
+   "capture_frame": 80,
+   "mse": 0.0908428071003476,
+   "rmse": 0.30140140527268217
+  },
+  {
+   "lspv": 3,
+   "frame_ms": 8.6296,
+   "n_frames": 29,
+   "capture_frame": 120,
+   "mse": 0.07151309498275829,
+   "rmse": 0.26741932425080706
+  },
+  {
+   "lspv": 4,
+   "frame_ms": 9.562899999999999,
+   "n_frames": 29,
+   "capture_frame": 160,
+   "mse": 0.058649125012558485,
+   "rmse": 0.2421758142601331
+  },
+  {
+   "lspv": 6,
+   "frame_ms": 11.5843,
+   "n_frames": 29,
+   "capture_frame": 200,
+   "mse": 0.04251245235440865,
+   "rmse": 0.20618548046457744
+  },
+  {
+   "lspv": 8,
+   "frame_ms": 13.8409,
+   "n_frames": 29,
+   "capture_frame": 240,
+   "mse": 0.03290017203882884,
+   "rmse": 0.18138404571193367
+  },
+  {
+   "lspv": 12,
+   "frame_ms": 19.9302,
+   "n_frames": 29,
+   "capture_frame": 280,
+   "mse": 0.022258508017354038,
+   "rmse": 0.149192855114962
+  },
+  {
+   "lspv": 16,
+   "frame_ms": 25.0447,
+   "n_frames": 29,
+   "capture_frame": 320,
+   "mse": 0.016693921952303875,
+   "rmse": 0.12920496102048046
+  },
+  {
+   "lspv": 24,
+   "frame_ms": 34.4941,
+   "n_frames": 29,
+   "capture_frame": 360,
+   "mse": 0.01109448065637939,
+   "rmse": 0.1053303406259535
+  },
+  {
+   "lspv": 32,
+   "frame_ms": 42.8381,
+   "n_frames": 29,
+   "capture_frame": 400,
+   "mse": 0.008298749086296343,
+   "rmse": 0.09109747025190294
+  },
+  {
+   "lspv": 48,
+   "frame_ms": 60.5958,
+   "n_frames": 29,
+   "capture_frame": 440,
+   "mse": 0.005600579734586888,
+   "rmse": 0.07483702114987534
+  },
+  {
+   "lspv": 64,
+   "frame_ms": 77.7099,
+   "n_frames": 29,
+   "capture_frame": 480,
+   "mse": 0.004275848033678088,
+   "rmse": 0.06538996890715033
+  }
+ ]
+}

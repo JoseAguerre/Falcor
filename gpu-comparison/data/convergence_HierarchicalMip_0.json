@@ -1,0 +1,104 @@
+{
+ "scene": "convergence",
+ "sampler": "HierarchicalMip",
+ "leaf": 0,
+ "spp": 1,
+ "ladder": [
+  {
+   "lspv": 1,
+   "frame_ms": 6.9204,
+   "n_frames": 29,
+   "capture_frame": 40,
+   "mse": 0.12430537016963243,
+   "rmse": 0.35256966711507165
+  },
+  {
+   "lspv": 2,
+   "frame_ms": 8.8898,
+   "n_frames": 29,
+   "capture_frame": 80,
+   "mse": 0.08996946505716384,
+   "rmse": 0.2999491041112873
+  },
+  {
+   "lspv": 3,
+   "frame_ms": 11.466099999999999,
+   "n_frames": 29,
+   "capture_frame": 120,
+   "mse": 0.07045798590345119,
+   "rmse": 0.2654392320352272
+  },
+  {
+   "lspv": 4,
+   "frame_ms": 13.1508,
+   "n_frames": 29,
+   "capture_frame": 160,
+   "mse": 0.056680081114437626,
+   "rmse": 0.23807578859354353
+  },
+  {
+   "lspv": 6,
+   "frame_ms": 18.3059,
+   "n_frames": 29,
+   "capture_frame": 200,
+   "mse": 0.04106494968746193,
+   "rmse": 0.20264488566816072
+  },
+  {
+   "lspv": 8,
+   "frame_ms": 22.324099999999998,
+   "n_frames": 29,
+   "capture_frame": 240,
+   "mse": 0.031736807941172514,
+   "rmse": 0.17814827515632173
+  },
+  {
+   "lspv": 12,
+   "frame_ms": 31.415499999999998,
+   "n_frames": 29,
+   "capture_frame": 280,
+   "mse": 0.021086401550705413,
+   "rmse": 0.1452115751264527
+  },
+  {
+   "lspv": 16,
+   "frame_ms": 40.2797,
+   "n_frames": 29,
+   "capture_frame": 320,
+   "mse": 0.015405235277208195,
+   "rmse": 0.12411782820049744
+  },
+  {
+   "lspv": 24,
+   "frame_ms": 58.0956,
+   "n_frames": 29,
+   "capture_frame": 360,
+   "mse": 0.01008474278302663,
+   "rmse": 0.10042282003123906
+  },
+  {
+   "lspv": 32,
+   "frame_ms": 82.5581,
+   "n_frames": 29,
+   "capture_frame": 400,
+   "mse": 0.007397289508981193,
+   "rmse": 0.08600749681848201
+  },
+  {
+   "lspv": 48,
+   "frame_ms": 118.645,
+   "n_frames": 29,
+   "capture_frame": 440,
+   "mse": 0.004997494721482558,
+   "rmse": 0.07069296090476447
+  },
+  {
+   "lspv": 64,
+   "frame_ms": 147.488,
+   "n_frames": 29,
+   "capture_frame": 480,
+   "mse": 0.0038149969127891613,
+   "rmse": 0.06176566127541388
+  }
+ ]
+}

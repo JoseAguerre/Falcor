@@ -1,0 +1,1 @@
+{"mode":"gpubuild","frames":80,"warmup":20,"width":1920,"height":1080,"a_is":"rows+guides","b_is":"marginal","c_is":"8x8 block stats","a_median_ms":3.47238,"a_mean_ms":4.08062,"a_p05_ms":3.44986,"a_p95_ms":4.79334,"b_median_ms":0.0256,"b_mean_ms":0.0289238,"b_p05_ms":0.023552,"b_p95_ms":0.034816,"c_median_ms":0.275456,"c_mean_ms":0.279518,"c_p05_ms":0.269312,"c_p95_ms":0.30208}

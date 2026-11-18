@@ -1,0 +1,1 @@
+{"mode":"chase","frames":70,"warmup":20,"bytes":16384,"total_hops":33554432,"a_median_ms":0.580608,"a_mean_ms":0.580267,"a_p05_ms":0.57856,"a_p95_ms":0.581632,"b_median_ms":null,"b_mean_ms":null,"c_median_ms":null,"c_mean_ms":null}

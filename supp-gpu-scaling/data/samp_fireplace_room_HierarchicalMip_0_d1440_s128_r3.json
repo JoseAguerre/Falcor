@@ -1,0 +1,1 @@
+{"mode":"sampler","frames":60,"warmup":15,"samples_per_dispatch":265420800,"sampler":"HierarchicalMip","leaf_budget":0,"a_median_ms":196.565,"a_mean_ms":196.409,"a_p05_ms":194.143,"a_p95_ms":197.482,"b_median_ms":null,"b_mean_ms":null,"c_median_ms":null,"c_mean_ms":null}

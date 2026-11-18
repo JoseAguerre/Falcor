@@ -1,0 +1,104 @@
+{
+ "scene": "convergence",
+ "sampler": "AliasPerPixel",
+ "leaf": 0,
+ "spp": 1,
+ "ladder": [
+  {
+   "lspv": 1,
+   "frame_ms": 6.5318,
+   "n_frames": 29,
+   "capture_frame": 40,
+   "mse": 0.12369914071313184,
+   "rmse": 0.35170888631527614
+  },
+  {
+   "lspv": 2,
+   "frame_ms": 8.9932,
+   "n_frames": 29,
+   "capture_frame": 80,
+   "mse": 0.08906864401927557,
+   "rmse": 0.2984437032662535
+  },
+  {
+   "lspv": 3,
+   "frame_ms": 11.5246,
+   "n_frames": 29,
+   "capture_frame": 120,
+   "mse": 0.06969890214154732,
+   "rmse": 0.2640054964229861
+  },
+  {
+   "lspv": 4,
+   "frame_ms": 13.2891,
+   "n_frames": 29,
+   "capture_frame": 160,
+   "mse": 0.05674355269093638,
+   "rmse": 0.23820905249577812
+  },
+  {
+   "lspv": 6,
+   "frame_ms": 18.4708,
+   "n_frames": 29,
+   "capture_frame": 200,
+   "mse": 0.040698150902114254,
+   "rmse": 0.2017378271473009
+  },
+  {
+   "lspv": 8,
+   "frame_ms": 24.382,
+   "n_frames": 29,
+   "capture_frame": 240,
+   "mse": 0.031109024892788148,
+   "rmse": 0.1763775067654267
+  },
+  {
+   "lspv": 12,
+   "frame_ms": 33.275600000000004,
+   "n_frames": 29,
+   "capture_frame": 280,
+   "mse": 0.020608617800232737,
+   "rmse": 0.1435570193345931
+  },
+  {
+   "lspv": 16,
+   "frame_ms": 43.4729,
+   "n_frames": 29,
+   "capture_frame": 320,
+   "mse": 0.01530370567647296,
+   "rmse": 0.12370814717096429
+  },
+  {
+   "lspv": 24,
+   "frame_ms": 62.1203,
+   "n_frames": 29,
+   "capture_frame": 360,
+   "mse": 0.009956701714717195,
+   "rmse": 0.09978327372218851
+  },
+  {
+   "lspv": 32,
+   "frame_ms": 80.8295,
+   "n_frames": 29,
+   "capture_frame": 400,
+   "mse": 0.007357541849901826,
+   "rmse": 0.08577611468177972
+  },
+  {
+   "lspv": 48,
+   "frame_ms": 117.445,
+   "n_frames": 29,
+   "capture_frame": 440,
+   "mse": 0.004911479255070462,
+   "rmse": 0.07008194671290505
+  },
+  {
+   "lspv": 64,
+   "frame_ms": 154.15699999999998,
+   "n_frames": 29,
+   "capture_frame": 480,
+   "mse": 0.0037328952327017302,
+   "rmse": 0.06109742410856394
+  }
+ ]
+}

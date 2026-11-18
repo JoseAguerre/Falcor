@@ -1,0 +1,1 @@
+{"mode":"sampler","frames":60,"warmup":15,"samples_per_dispatch":265420800,"sampler":"Cdf2DDiv8","leaf_budget":0,"a_median_ms":155.186,"a_mean_ms":155.486,"a_p05_ms":152.682,"a_p95_ms":160.342,"b_median_ms":null,"b_mean_ms":null,"c_median_ms":null,"c_mean_ms":null}

@@ -1,0 +1,104 @@
+{
+ "scene": "phonehand",
+ "sampler": "HierarchicalMip",
+ "leaf": 0,
+ "spp": 1,
+ "ladder": [
+  {
+   "lspv": 1,
+   "frame_ms": 3.364,
+   "n_frames": 29,
+   "capture_frame": 40,
+   "mse": 0.0029404355919019753,
+   "rmse": 0.054225783460471785
+  },
+  {
+   "lspv": 2,
+   "frame_ms": 3.7514,
+   "n_frames": 29,
+   "capture_frame": 80,
+   "mse": 0.0016609741173662235,
+   "rmse": 0.040755050206891213
+  },
+  {
+   "lspv": 3,
+   "frame_ms": 4.364,
+   "n_frames": 29,
+   "capture_frame": 120,
+   "mse": 0.0011337145079527815,
+   "rmse": 0.03367067727196442
+  },
+  {
+   "lspv": 4,
+   "frame_ms": 5.0466,
+   "n_frames": 29,
+   "capture_frame": 160,
+   "mse": 0.0008739270483772465,
+   "rmse": 0.029562257159717126
+  },
+  {
+   "lspv": 6,
+   "frame_ms": 6.258900000000001,
+   "n_frames": 29,
+   "capture_frame": 200,
+   "mse": 0.0005955908112660057,
+   "rmse": 0.024404729280735848
+  },
+  {
+   "lspv": 8,
+   "frame_ms": 7.7272,
+   "n_frames": 29,
+   "capture_frame": 240,
+   "mse": 0.00046935438678618376,
+   "rmse": 0.021664588313332515
+  },
+  {
+   "lspv": 12,
+   "frame_ms": 9.8641,
+   "n_frames": 29,
+   "capture_frame": 280,
+   "mse": 0.00031982044239869755,
+   "rmse": 0.01788352432823848
+  },
+  {
+   "lspv": 16,
+   "frame_ms": 12.6111,
+   "n_frames": 29,
+   "capture_frame": 320,
+   "mse": 0.0002525638979468169,
+   "rmse": 0.015892259057378122
+  },
+  {
+   "lspv": 24,
+   "frame_ms": 16.8676,
+   "n_frames": 29,
+   "capture_frame": 360,
+   "mse": 0.0001707999421123246,
+   "rmse": 0.013069045187477339
+  },
+  {
+   "lspv": 32,
+   "frame_ms": 21.644,
+   "n_frames": 29,
+   "capture_frame": 400,
+   "mse": 0.0001244972825227081,
+   "rmse": 0.01115783502847699
+  },
+  {
+   "lspv": 48,
+   "frame_ms": 30.876399999999997,
+   "n_frames": 29,
+   "capture_frame": 440,
+   "mse": 8.50178533145688e-05,
+   "rmse": 0.00922051263838236
+  },
+  {
+   "lspv": 64,
+   "frame_ms": 39.6145,
+   "n_frames": 29,
+   "capture_frame": 480,
+   "mse": 6.565359773781214e-05,
+   "rmse": 0.008102690771454391
+  }
+ ]
+}
