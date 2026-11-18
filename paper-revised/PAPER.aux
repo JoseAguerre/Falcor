@@ -115,8 +115,8 @@
 \@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces \color  {newcolor}Speed-up of the different techniques over 2D CDF to reach the same average RMSE in the full video. Median frame time of over several passes.}}{8}{table.caption.13}\protected@file@percent }
 \newlabel{tab:equalquality}{{3}{8}{\newmat Speed-up of the different techniques over 2D CDF to reach the same average RMSE in the full video. Median frame time of over several passes}{table.caption.13}{}}
 \@writefile{toc}{\contentsline {paragraph}{Emitter resolution.}{8}{section*.14}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces \color  {newcolor}The same image on the LED wall of the Rover scene at three resolutions: RMSE against frame time (markers: measurements; curves: fits). The vertical line is the 33.3\,ms budget and the horizontal line the RMSE of the 2D CDF at that budget. As the image grows, the curve of the 2D CDF moves to the right and ours stay almost in place.}}{8}{figure.caption.15}\protected@file@percent }
-\newlabel{fig:wall}{{7}{8}{\newmat The same image on the LED wall of the Rover scene at three resolutions: RMSE against frame time (markers: measurements; curves: fits). The vertical line is the 33.3\,ms budget and the horizontal line the RMSE of the 2D CDF at that budget. As the image grows, the curve of the 2D CDF moves to the right and ours stay almost in place}{figure.caption.15}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces \color  {newcolor}The same image on the LED wall of the Rover scene at three resolutions: RMSE against frame time. The vertical line is the 33.3\,ms budget and the horizontal line the RMSE of the 2D CDF at that budget.}}{8}{figure.caption.15}\protected@file@percent }
+\newlabel{fig:wall}{{7}{8}{\newmat The same image on the LED wall of the Rover scene at three resolutions: RMSE against frame time. The vertical line is the 33.3\,ms budget and the horizontal line the RMSE of the 2D CDF at that budget}{figure.caption.15}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.4}\newt  {Sampling cost on the GPU}}{8}{subsection.5.4}\protected@file@percent }
 \newlabel{sec:cost}{{5.4}{8}{\texorpdfstring {\newt {Sampling cost on the GPU}}{Sampling cost on the GPU}}{subsection.5.4}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces \color  {newcolor}Left: latency of dependent random reads against the size of the data being read, on the GPU (pointer chase, aggregate over the whole GPU). Right: measured cost of one light sample against the size of the sampling structure: BudgetLeafAlias from 64 to 32000 leaves (lines), CodecLeafAlias, and the 2D CDF, per-pixel alias and 2D CDF/8 (markers), in three scenes. }}{8}{figure.caption.16}\protected@file@percent }
@@ -168,6 +168,7 @@
 \bibcite{lehmann2021weighted}{{16}{2021}{{Lehmann et~al\mbox  {.}}}{{}}}
 \bibcite{li2026gradient}{{17}{2026}{{Li et~al\mbox  {.}}}{{}}}
 \bibcite{lu2013realtime}{{18}{2013}{{Lu et~al\mbox  {.}}}{{}}}
+\bibcite{MINASNY2007383}{{19}{2007}{{Minasny et~al\mbox  {.}}}{{}}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.9}\newt  {Discussion and limitations}}{12}{subsection.5.9}\protected@file@percent }
 \newlabel{sec:limits}{{5.9}{12}{\texorpdfstring {\newt {Discussion and limitations}}{Discussion and limitations}}{subsection.5.9}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {6}Conclusions and future work}{12}{section.6}\protected@file@percent }
@@ -177,7 +178,6 @@
 \newlabel{fig:figuresonly}{{14}{13}{Fireplace Room, Phone, and Convergence: full-frame diagonal comparisons (Random / 2D CDF / CodecLeafAlias / Reference) with real measured RMSE per technique, two large matched closeups per scene, and each scene's emissive HDR texture (top-left inset)}{figure.caption.27}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces Denoised closeups and FLIP error maps when compared to the reference, for 2D CDF and CodecLeafAlias, at the two regions per scene with the largest denoised FLIP gap, for Convergence and Fireplace Room.}}{13}{figure.caption.28}\protected@file@percent }
 \newlabel{fig:denoisedflip}{{15}{13}{Denoised closeups and FLIP error maps when compared to the reference, for 2D CDF and CodecLeafAlias, at the two regions per scene with the largest denoised FLIP gap, for Convergence and Fireplace Room}{figure.caption.28}{}}
-\bibcite{MINASNY2007383}{{19}{2007}{{Minasny et~al\mbox  {.}}}{{}}}
 \bibcite{moreau2019dynamic}{{20}{2019}{{Moreau et~al\mbox  {.}}}{{}}}
 \bibcite{morrical2021inverse}{{21}{2021}{{Morrical and Zellmann}}{{}}}
 \bibcite{nimierdavid2019mitsuba2}{{22}{2019}{{Nimier-David et~al\mbox  {.}}}{{}}}

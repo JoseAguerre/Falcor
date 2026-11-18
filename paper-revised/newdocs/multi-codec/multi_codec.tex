@@ -91,7 +91,7 @@ Quantizer & Codec family & Rover & Cinema & Fireplace & Phone & Convergence \\
 
 \textbf{Carrying the keyframe tree along the motion vectors solves both.} It is the best predicted-frame option, or tied for best, in every column of Table~\ref{tab:worst}: within 2.5--4.2\% of the paper's partition at quantizers 16 and 64 for all three codec families, and within 5.4--6.6\% at quantizer 256. Per scene (Table~\ref{tab:kfmv}), at quantizers 16 and 64 it stays within the range of BudgetLeafAlias, which uses no codec data at all. The motion vectors are part of every coded predicted frame, so this costs no extra analysis.
 
-\textbf{Real encodes.} Weights from real encodes behave the same across codec families. With leaf means from libvpx-vp9, x265 and SVT-AV1 encodes of the same scenes at ten rate points (0.6--74\,Mb/s, decoded PSNR 32--51\,dB), the RMSE stays within 3\% of exact weights, and the worst cases per codec are 1.020 (VP9), 1.015 (HEVC) and 1.029 (AV1) (see the companion note on compression).
+\textbf{Real encodes.} Weights from real encodes behave the same across codec families. With leaf means from libvpx-vp9, x265 and SVT-AV1 encodes of the same scenes at ten rate points (0.6--74\,Mb/s, decoded PSNR 32--51\,dB), the RMSE stays within 3\% of exact weights, and the worst cases per codec are 1.020 (VP9), 1.015 (HEVC) and 1.029 (AV1) (see Section 5.7 of the main paper).
 
 \section*{4\quad Conclusion}
 

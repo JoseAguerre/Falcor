@@ -23,8 +23,6 @@ New experiments
 
 [T7] Low-discrepancy input (Appendix A). Rendered integration error of each sampler with quasi-Monte Carlo sequences.
 
-Each experiment has a supplementary document with the complete data.
-
 Changes to the text
 
 [C1] Contribution and positioning (Sections 1 and 3). A list of contributions, the per-frame nature of the method stated plainly, and the related work suggested by the reviewers.
