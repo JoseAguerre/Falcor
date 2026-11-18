@@ -48,7 +48,7 @@ We have received four reviews. The reviewers recognize the practical value of re
 
 1) Clarify the technical contribution and its relation to prior adaptive and spatiotemporal sampling methods. Identify scenarios that benefit from real-time sampling and justify the 30 FPS target. (R1–R4)
 
-        RESPONSE: See C1 and C2. The 33 ms budget is a common real-time target and the conclusions do not depend on it, since T3 covers a range of frame times.
+        RESPONSE: See C1 and C2. The 33 ms budget is a common real-time target and the conclusions do not depend on it, since T3 covers a wider range of frame times that would allow 60fps, 120fps, etc.
 
 2) Separate the benefits of faster construction from those of better sampling. Add equal-sample rendering comparisons alongside the equal-time results, include stronger baselines such as optimized GPU samplers and a static quadtree, and report full-video results, stage timings, and actual sample counts. Discuss why gains diminish after denoising. (R2–R4)
 
@@ -87,19 +87,19 @@ The core idea is novel, well-motivated, and the construction-time result is comp
 
 Section 3.2 estimates leaf radiance from the DC transform coefficient rather than pixel averaging, and states this is exact “up to a fixed normalization constant.” This is true for a lossless DCT, but the paper encodes HDR video with libvpx VP9 under presumably lossy quantization. Since the alias table weights are used to construct the actual pdf (Eq. 2), quantization error in the DC coefficient directly biases the importance distribution (not just image quality). This should be discussed, and ideally the sensitivity of RMSE/PSNR to the chosen bitrate/QP should be reported.
 
-        RESPONSE: See C4 and T6. Every sample is divided by the density actually used, so quantization cannot bias the estimate; it can only add variance, which we measure to be small over a wide range of bitrates.
+        RESPONSE: See C4 and T6. Every sample is divided by the density actually used, so quantization does not bias the estimate; it can only add variance, which we measure to be small over a wide range of bitrates.
 
 2. Codec/encoder dependency and generality
 
 CodecLeafAlias's evaluation uses only VP9 Profile 2 with variance-based superblock partitioning forced on. The paper acknowledges (Sec. 3.2) that RD-optimized or neural-partition encoder modes would need the motion-vector-plus-keyframe workaround, but this is not evaluated. Given that most production pipelines will not disable RD search for encoding efficiency, a quantitative result (even limited) under a standard encoder configuration (or with HEVC/AV1) would substantially strengthen the generality claim.
 
-        RESPONSE: See T6. We evaluate VP9, HEVC and AV1 under standard rate-distortion search, and show that carrying the keyframe partition along the motion vectors of the stream gives a partition close to ours.
+        RESPONSE: See T6. We evaluate VP9, HEVC and AV1 under standard rate-distortion search, and show that carrying the keyframe partition along the motion vectors of the stream gives a useful partition.
 
 3. No temporal-coherence / flicker analysis
 
 Since the alias table topology (leaf boundaries, counts 4000–20000) can change from frame to frame, and Fig. 5/Table 1/2 report only per-frame or averaged-per-frame error, the paper does not address whether abrupt structural changes between frames introduce flicker or temporal noise that per-frame RMSE would not capture. This is a common concern for real-time video rendering reviewers will likely raise; a frame-to-frame variance/flicker metric (or at minimum a statement that the supplementary videos show no visible instability) would help.
 
-        RESPONSE: See T5. The leaf density changes less between frames than the per-texel one in most scenes, and we measure no additional flicker with respect to the 2D CDF.
+        RESPONSE: See T5. The leaf density changes less between frames than the per-texel one in most scenes, reducing the flicker with respect to the 2D CDF.
 
 4. Missing ablations
 
@@ -109,7 +109,7 @@ Since the alias table topology (leaf boundaries, counts 4000–20000) can change
 
 - No sweep of the leaf budget B for BudgetLeafAlias showing RMSE (or quality) as a function of B; only the single 4000-leaf configuration matched to L1 cache is shown. A budget-vs-quality curve would support the claim that B was chosen well rather than arbitrarily.
 
-        RESPONSE: See T4. The chosen budget is at the knee of the curve: larger budgets improve the error only marginally.
+        RESPONSE: See T4. The chosen budget is at the knee of the curve: larger budgets need much more leaves to get smaller error improvements.
 
 5. The following related paper should be referenced in the text:
 
@@ -172,11 +172,11 @@ While the results support that the proposed method can win a equal-time comparis
 
 4) The subdivision creteria is also something to dig deeper, the L2 error minimizer for piecewise constant approximation might be a good heuristic, but I suspect there could be a more precise cretria especially if we importance sample each quad in a variance aware way (https://cgg.mff.cuni.cz/publications/variance-aware-path-guiding/).
 
-        RESPONSE: Our criterion greedily minimizes the squared error of the piecewise-constant density. T6 compares it with the criterion of a codec, and it reaches the same light-sampling variance with considerably fewer leaves. Variance-aware criteria depend on the shading point; we cite them as complementary and see them as a promising extension.
+        RESPONSE: Our criterion greedily minimizes the squared error of the piecewise-constant density. T6 compares it with the criterion of a codec, and it reaches the same light-sampling variance with considerably fewer leaves. Variance-aware criteria is future work; we cite them as complementary and see them as a promising extension.
 
 5) The comaprison fairness is another concern, 10ms / 30ms construction time for baselines might be a bit underoptimized. Meanwhile people can also do GPU variant of these (https://research.nvidia.com/publication/2019-01_massively-parallel-construction-radix-tree-forests-efficient-sampling-discrete). Given in the comparison the proposed method is well-optimized, which even considers GPU caching etc, maybe a more competitive GPU baseline is more appropriate here.
 
-        RESPONSE: As stated in C3, no baseline is charged for its construction, so a faster GPU build would not change the reported results. We agree and are aware that a lot of effort can be put to make the structures build faster and in hardware, but we mainly focus on the GPU per-pixel sampling code of every technique, which was optimized. Binder and Keller are now cited: such methods build a per-texel structure faster, while ours makes the structure itself orders of magnitude smaller, which is what lowers the cost of each sample (T4).
+        RESPONSE: As stated in C3, no baseline is charged for its construction, so a faster GPU build would not change the reported results. We agree and are aware that a lot of effort can be put to make the structures build faster and in hardware, but we mainly focus on the GPU per-pixel sampling code of every technique, which was optimized for every technique in Slang shaders. Binder and Keller are now cited: such methods build a per-texel structure faster, while ours makes the structure itself orders of magnitude smaller, which is what lowers the cost of each sample (T4).
 
 Overall, I think the paper demonstrates a practical system and a useful implementation strategy for dynamic/video-driven lighting. My concern is that the algorithmic core is relatively simple, while several potentially deeper claims about QMC preservation, sampling quality, and subdivision optimality are not yet sufficiently established.
 
@@ -240,7 +240,7 @@ The exposition on the scope of this work is also vague and perhaps misleading. T
 
 The method is technically sound, while its elaboration and substantiation are too condensed for a journal submission, given no supplemental document is provided. Section 3.2 lacks detail on the conversion from frequency coefficients to radiance estimates, which confuses me during the intial read-through. The authors also do not clarify why VP9 is uniquely chosen among the modern codecs. For the budget variant, I doubt the choice to configure the budget as the GPU's L1 data cache. Cache lines can be evicted to reside other data. The authors would need an ablation to validate that the proposed budget is a good choice. It might also be of interest to test this variant on GPUs with a smaller cache, should they be available to the authors.
 
-        RESPONSE: Supplementary documents now accompany the paper. See C4 for the conversion. VP9 was an implementation choice, and T6 shows that the method is tied neither to it nor to its partitioning mode. For the budget, see T4: the cost per sample follows the cache limits that we measure on the GPU, and the supplementary material includes results for a mobile GPU.
+        RESPONSE: See C4 for the conversion. VP9 was an implementation choice, and T6 shows that the method is tied neither to it nor to its partitioning mode. For the budget, see T4: the cost per sample follows the cache limits that we measure on the GPU, and the supplementary material includes results for a laptop GPU.
 
 Experimental assessments. The manuscript compares with trivial baselines and ignores the mentioned works [Ergun et al. 2012; Lambers 2022; Rodriguez-Pardo et al. 2023]. As discussed above, the presented method also deals with one image at a time, and therefore it is reasonable to compare with those "static image" solutions. Nevertheless, the (sampling) performance improvements of the two proposed variant in Table 1 are not very significant compared to the baselines, although admittedly the construction cost of BudgetLeafAlias is much reduced. Visual comparisions in Figure 1 (Right) also indicate it being marginal. Together they raise serious concerns regarding the justification of the proposed method.
 

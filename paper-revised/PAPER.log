@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.9.7)  18 NOV 2026 12:03
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.9.7)  18 NOV 2026 13:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -41,7 +41,6 @@ Package acmart Info: Not using anonymous mode on input line 146.
 Package acmart Info: Not using timestamp mode on input line 154.
 Package acmart Info: Not using authordraft mode on input line 164.
 Package acmart Info: Using review mode on input line 179.
-Package acmart Info: Using anonymous mode on input line 179.
 Class acmart Info: Using format acmtog, number 3 on input line 179.
 Class acmart Info: Using fontsize 9pt on input line 281.
 
@@ -785,7 +784,7 @@ Package: balance 1999/02/23 4.3 (PWD)
 \oldvsize=\dimen268
 )
 Excluding comment 'screenonly' Include comment 'printonly'
-Excluding comment 'anonsuppress' Excluding comment 'acks'
+Include comment 'anonsuppress'
 (C:\Users\Jose\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdft
 ex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
@@ -1033,6 +1032,8 @@ LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
 (Font)              scaled to size 12.0pt on input line 255.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
 (Font)              scaled to size 12.0pt on input line 255.
+LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
+(Font)              scaled to size 10.0pt on input line 255.
 <images/teaser.png, id=98, 3864.4375pt x 1333.98375pt>
 File: images/teaser.png Graphic file (type png)
 <use images/teaser.png>
@@ -1111,8 +1112,6 @@ LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
 (Font)              scaled to size 8.0pt on input line 255.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
 (Font)              scaled to size 8.0pt on input line 255.
-LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 257.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
 (Font)              scaled to size 9.0pt on input line 262.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
@@ -1196,6 +1195,10 @@ n input line 352.
 
 Package natbib Warning: Citation `chen2026lightopt' on page 2 undefined on inpu
 t line 352.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
 
 
 Package natbib Warning: Citation `debevec2022dilation' on page 2 undefined on i
@@ -1632,18 +1635,14 @@ File: se-utf8.def 2019/11/29 v1.12 stringenc: UTF-8
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
 Package rerunfilecheck Info: File `PAPER.out' has not changed.
 (rerunfilecheck)             Checksum: BE91180EC4FDFBA8C68A6DDC58A71204;3548.
  ) 
 Here is how much of TeX's memory you used:
- 23007 strings out of 467871
- 383849 string characters out of 5418861
- 878838 words of memory out of 5000000
- 50493 multiletter control sequences out of 15000+600000
+ 23008 strings out of 467871
+ 383864 string characters out of 5418861
+ 888258 words of memory out of 5000000
+ 50494 multiletter control sequences out of 15000+600000
  846286 words of font info for 580 fonts, out of 8000000 for 9000
  1302 hyphenation exceptions out of 8191
  90i,16n,131p,1394b,894s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1661,7 +1660,7 @@ libertine/LinLibertineTI.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts
 nts/type1/public/newtx/txexs.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/f
 onts/type1/public/newtx/txmiaX.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX
 /fonts/type1/public/newtx/txsys.pfb>
-Output written on PAPER.pdf (15 pages, 32978520 bytes).
+Output written on PAPER.pdf (15 pages, 32983549 bytes).
 PDF statistics:
  1021 PDF objects out of 1200 (max. 8388607)
  143 named destinations out of 1000 (max. 500000)
