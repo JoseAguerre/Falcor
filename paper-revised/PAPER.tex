@@ -646,12 +646,12 @@ At equal samples, therefore, our techniques do not sample better than a texel-re
 In this experiment, we measure how long each technique needs to reach the quality that the 2D CDF delivers in real time. 
 For each scene we render the videos only with direct illumination, where the light sampler controls most of the noise. The 2D CDF uses the number of light samples that fits a 33.3\,ms frame. Every other technique is rendered with several numbers of light samples, and we find the frame time at which its video RMSE equals that of the 2D CDF. The speed-up is the frame time of the 2D CDF divided by that time.
 
-Our two techniques reach the quality of the 2D CDF faster on all five scenes (Table~\ref{tab:equalquality}). These figures use the median frame time of each technique over several timing passes. The other techniques are not consistent: the mipmap warp is slower than the 2D CDF on Rover and does not reach its quality on Phone at the measured sample counts, and the per-pixel alias table, which is fast on Full HD emitters, is slower than the 2D CDF on the two scenes with 4K emitters, where its memory consumption grows considerably. The time saved can be returned to the frame rate, to more bounces, or to a denoiser.
+Our two techniques reach the quality of the 2D CDF faster on all five scenes (Table~\ref{tab:equalquality}). The other techniques are not consistent: the mipmap warp is slower than the 2D CDF on Rover and does not reach its quality on Phone at the measured sample counts, and the per-pixel alias table, which is fast on Full HD emitters, is slower than the 2D CDF on the two scenes with 4K emitters, where its memory consumption grows considerably. The time saved can be returned to the frame rate, to more bounces, or to a denoiser. The  \supp{GPU\_tests} shows that the speed-ups are even larger on a mobile device (from about 1.4 times to about 1.9 times on average across three hardest scenes); the margin widens partly because the 2D CDF is itself penalised by the smaller cache.
 
 \begin{table}[htbp!]
 \centering\small\newmat
 \setlength{\tabcolsep}{3pt}
-\caption{\newmat Speed-up of the different techniques over 2D CDF to reach the same average RMSE in the full video.}
+\caption{\newmat Speed-up of the different techniques over 2D CDF to reach the same average RMSE in the full video. Median frame time of over several passes.}
 \label{tab:equalquality}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{l c c c c c}
@@ -667,13 +667,15 @@ CodecLeafAlias & \textbf{1.38} & \textbf{2.31} & \textbf{1.54} & 1.23 & \textbf{
 \end{tabular}}
 \end{table}
 
+\vspace{-0.3cm}
+
 \paragraph{Emitter resolution.}
-The last observation suggests that the resolution of the emitter influences the advantage of our techniques. To isolate it, we render using the same emissive texture at three resolutions on the LED wall of the Rover scene: 1820$\times$1024, 3640$\times$2048 and 7280$\times$4096, obtained by area averaging from a real 8K HDR panorama of a road under broad daylight. We render frames with direct illumination, measuring time and RMSE at varying samples per pixel, and smooth the RMSE curve of each technique with a quadratic fit (Figure~\ref{fig:wall}).
+The previous observation about 4K emitters suggests that the resolution influences the advantage of our techniques. To isolate it, we render using the same emissive texture at three resolutions on the LED wall of the Rover scene: 1820$\times$1024, 3640$\times$2048 and 7280$\times$4096, obtained by area averaging from a real 8K HDR panorama of a road under broad daylight. We render frames with direct illumination, measuring time and RMSE at varying samples per pixel, and smooth the RMSE curve of each technique with a quadratic fit (Figure~\ref{fig:wall}).
 
 \begin{figure}[htbp!]
   \centering
   \includegraphics[width=\columnwidth]{fig_wall.pdf}
-  \caption{\newmat The same image on the LED wall of the Rover scene at three resolutions: RMSE against frame time (markers: measurements; curves: fits). The vertical line is the 33.3\,ms budget and the horizontal line the RMSE of the 2D CDF at that budget. As the image grows, the curve of the 2D CDF moves to the right and ours stay almost in place.}
+  \caption{\newmat The same image on the LED wall of the Rover scene at three resolutions: RMSE against frame time. The vertical line is the 33.3\,ms budget and the horizontal line the RMSE of the 2D CDF at that budget.}
   \label{fig:wall}
 \end{figure}
 
@@ -686,7 +688,7 @@ As a result, the speed-up at equal quality grows at 8K: both techniques reach th
 \label{sec:cost}
 
 \newbegin
-We relate the cost of drawing a light sample to the cache levels of the GPU with two benchmarks (Figure~\ref{fig:cache}). In the left figure, a pointer chase reads memory in a chain of dependent random accesses as the working set grows from 4\,KB to 512\,MB. It shows a sharp limit: dependent reads cost about 3\,ps (in aggregate over the whole GPU) while the data fits in the first-level cache, but three times as much once the working set exceeds 128--192\,KB, and tens of times more beyond the second-level cache (64\,MB on our GPU). 
+We relate the cost of drawing a light sample to the cache levels of the GPU with two benchmarks (Figure~\ref{fig:cache}). 
 
 \begin{figure}[htbp!]
   \centering
@@ -694,6 +696,8 @@ We relate the cost of drawing a light sample to the cache levels of the GPU with
   \caption{\newmat Left: latency of dependent random reads against the size of the data being read, on the GPU (pointer chase, aggregate over the whole GPU). Right: measured cost of one light sample against the size of the sampling structure: BudgetLeafAlias from 64 to 32000 leaves (lines), CodecLeafAlias, and the 2D CDF, per-pixel alias and 2D CDF/8 (markers), in three scenes. }
   \label{fig:cache}
 \end{figure}
+
+In the left figure, a pointer chase reads memory in a chain of dependent random accesses as the working set grows from 4\,KB to 512\,MB. It shows a sharp limit: dependent reads cost about 3\,ps (in aggregate over the whole GPU) while the data fits in the first-level cache, but three times as much once the working set exceeds 128--192\,KB, and tens of times more beyond the second-level cache (64\,MB on our GPU). 
 
 In the second figure, we measure the time it takes to draw a sample and read the emissive texture, with varying $B$ values and the other techniques.
 The emissive texture read is generally fast because most of the samples point to the same bright sections of the image, hence hitting the cache more frequently. These results show the same behavior as the left figure. A sample of the 2D CDF costs between 0.23\,ns and 0.46\,ns, as throughput of the whole GPU, and we give the cost of the other techniques relative to it. BudgetLeafAlias at $B=4000$ is 4 to 8 times cheaper, and its cost hardly changes with the scene; CodecLeafAlias, whose table is larger, costs 1.3 to 1.6 times as much as BudgetLeafAlias. 
