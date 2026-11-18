@@ -1,7 +1,7 @@
 RESPONSE TO THE REVIEWERS
 LeafAlias: real-time importance sampling of dynamic emissive textures for video-based lighting
 
-We thank the Associate Editor and the four reviewers for their careful reading. Their comments led to a new evaluation and to a more accurate statement of what the method offers, and we believe the paper is considerably better and more extensive now. In this rebuttal, Part 1 lists the new experiments (T) and the changes to the text (C). Part 2 shows every comment, followed by our response. Section, figure and table numbers are those of the revised manuscript.
+We thank the Associate Editor and the four reviewers for their careful reading. Their comments led to a new evaluation and to a more accurate statement of what the method offers, and we believe the paper is considerably better and more extensive now. We have added several new tests and discussions, as well as two appendices and three supplementary material documents. In this rebuttal, we first list the new experiments (T) and the changes to the text (C), and then go through every reviewer comment, followed by our response. Section, figure and table numbers are those of the revised manuscript.
 
 ====================================================================================================
 PART 1. CHANGES TO THE MANUSCRIPT
