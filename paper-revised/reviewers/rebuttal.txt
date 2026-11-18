@@ -1,0 +1,271 @@
+RESPONSE TO THE REVIEWERS
+LeafAlias: real-time importance sampling of dynamic emissive textures for video-based lighting
+
+We thank the Associate Editor and the four reviewers for their careful reading. Their comments led to a new evaluation and to a more accurate statement of what the method offers, and we believe the paper is considerably better and more extensive now. We have added several new tests and discussions, as well as two appendices and three supplementary material documents. In this rebuttal, we first list the new experiments (T) and the changes to the text (C), and then go through every reviewer comment, followed by our response. Section, figure and table numbers are those of the revised manuscript.
+
+====================================================================================================
+PART 1. CHANGES TO THE MANUSCRIPT
+====================================================================================================
+
+New experiments
+
+[T1] Full-video quality (Section 5.1, Table 2). All seven techniques over the whole video of every scene.
+
+[T2] Equal samples (Section 5.2, Figures 5 and 6). All techniques with the same number of samples, to measure what the leaf approximation loses.
+
+[T3] Equal quality (Section 5.3, Table 3, Figure 7). Time each technique needs to reach the quality of the 2D CDF, including emitters up to 8K.
+
+[T4] Leaf budget, sampling cost and GPU cache (Sections 5.4 and 5.5, Figures 8 and 9). Cost of one sample against the size of the structure, and quality against the number of leaves.
+
+[T5] Static against per-frame partitions, and temporal stability (Section 5.6, Table 4, Appendix B). Trees built once or updated partially against the per-frame tree, and flicker of the rendered video.
+
+[T6] Codec partitions (Section 5.7, Figures 10 to 13). BudgetLeafAlias against CodecLeafAlias, the effect of quantization and bitrate, and other codecs under standard encoder settings.
+
+[T7] Low-discrepancy input (Appendix A). Rendered integration error of each sampler with quasi-Monte Carlo sequences.
+
+Changes to the text
+
+[C1] Contribution and positioning (Sections 1 and 3). A list of contributions, the per-frame nature of the method stated plainly, and the related work suggested by the reviewers.
+
+[C2] Motivation (new Section 2). The scenarios that need a per-frame sampler in games, virtual production and mixed reality.
+
+[C3] What is timed (Sections 4.4 and 5, Table 1). Sample counts of every technique. We also state what was already the case in the original submission: construction time is not part of the real-time measurements, which count sampling only; it is reported as an implementation detail. The equal-time gains therefore come from the cost of each sample, not from a faster build.
+
+[C4] From coded data to radiance (Section 4.2). The steps from the DC coefficient to leaf radiance, and why a perturbed weight adds variance but no bias.
+
+[C5] Quasi-Monte Carlo claims. The claims that LeafAlias reduces stratification error are removed, together with the former Figure 4. All results now use independent random numbers.
+
+[C6] Denoising, discussion and limitations (Sections 5.8 and 5.9). Why differences between samplers shrink after denoising, when the method helps and where it does not.
+
+====================================================================================================
+PART 2. COMMENTS AND RESPONSES
+====================================================================================================
+
+ASSOCIATE EDITOR
+----------------
+
+We have received four reviews. The reviewers recognize the practical value of reducing the cost of rebuilding sampling structures for dynamic HDR lighting. However, several reviewers question the novelty of the contribution and whether the faster construction translates into meaningful gains in rendering quality. The main concerns are as follows:
+
+1) Clarify the technical contribution and its relation to prior adaptive and spatiotemporal sampling methods. Identify scenarios that benefit from real-time sampling and justify the 30 FPS target. (R1–R4)
+
+        RESPONSE: See C1 and C2. The 33 ms budget is a common real-time target and the conclusions do not depend on it, since T3 covers a wider range of frame times that would allow 60fps, 120fps, etc.
+
+2) Separate the benefits of faster construction from those of better sampling. Add equal-sample rendering comparisons alongside the equal-time results, include stronger baselines such as optimized GPU samplers and a static quadtree, and report full-video results, stage timings, and actual sample counts. Discuss why gains diminish after denoising. (R2–R4)
+
+        RESPONSE: See C3 for the separation, stage timings and sample counts, T2 for equal samples, T5 for the static quadtree, T1 for full-video results and C6 for denoising. For optimized GPU samplers, see our response to comment 5 of Reviewer 2.
+
+3) Explain the discrepancy between per-pixel alias sampling and the 2D CDF in Fig. 4. Support or qualify the claims about quasi-Monte Carlo sampling using discrepancy measures appropriate for the target distribution. (R2)
+
+        RESPONSE: See C5, T2 and T7.
+
+4) Compare CodecLeafAlias and BudgetLeafAlias directly, and explain when each is preferable. Use ablations to separate the effects of leaf partitioning and alias sampling, assess the subdivision criterion, and justify the leaf budget and its relation to GPU cache size. (R1–R4)
+
+        RESPONSE: See T6 for the two variants and T4 for the leaf budget and the cache. For the two ablations, see our responses to comment 4 of Reviewer 1 and comment 4 of Reviewer 2.
+
+5) Explain how CodecLeafAlias estimates radiance from DC coefficients, assess its sensitivity to quantization, and evaluate its applicability under standard encoder settings or with other codecs. (R1, R4)
+
+        RESPONSE: See C4 and T6.
+
+6) Evaluate temporal stability, particularly whether changes in the partition from frame to frame introduce flicker or temporal noise. (R1, R3)
+
+        RESPONSE: See T5.
+
+7) Address all remaining issues raised by the reviewers.
+
+        RESPONSE: All remaining comments are answered below.
+
+Reviewer 1
+---------
+
+The paper addresses importance sampling of HDR emissive textures that change every frame (e.g., LED-wall virtual production, AR/VR, video-based environment maps), a case poorly served by existing static-image samplers (dense 2D CDF inversion, mipmap hierarchical importance maps, per-pixel alias tables). The authors propose LeafAlias, a family of samplers that build a Walker/Vose alias table over a variance-driven partition of the texture rather than over raw pixels. Two variants are presented: (1) CodecLeafAlias, which reuses the coding-tree partition already computed by video codecs (VP9) and estimates per-leaf radiance from the DC transform coefficient; and (2) BudgetLeafAlias, which builds a budgeted quadtree via greedy best-first refinement to fit a fixed leaf count (sized to reside in GPU L1 cache). Both are evaluated in Falcor across five scenes against seven techniques, using RMSE/PSNR/FLIP, video-level PSNR/VMAF, and post-denoising RMSE, at a matched 33 ms real-time budget.
+
+The core idea is novel, well-motivated, and the construction-time result is compelling and likely of real interest to the TOG community and production practitioners. However, the following points should be handled in the text before acceptance decision:
+
+        RESPONSE: We thank the Reviewer for the positive assessment.
+
+1. Effect of video compression (quantization) on the DC-coefficient weight estimate is unexamined
+
+Section 3.2 estimates leaf radiance from the DC transform coefficient rather than pixel averaging, and states this is exact “up to a fixed normalization constant.” This is true for a lossless DCT, but the paper encodes HDR video with libvpx VP9 under presumably lossy quantization. Since the alias table weights are used to construct the actual pdf (Eq. 2), quantization error in the DC coefficient directly biases the importance distribution (not just image quality). This should be discussed, and ideally the sensitivity of RMSE/PSNR to the chosen bitrate/QP should be reported.
+
+        RESPONSE: See C4 and T6. Every sample is divided by the density actually used, so quantization does not bias the estimate; it can only add variance, which we measure to be small over a wide range of bitrates.
+
+2. Codec/encoder dependency and generality
+
+CodecLeafAlias's evaluation uses only VP9 Profile 2 with variance-based superblock partitioning forced on. The paper acknowledges (Sec. 3.2) that RD-optimized or neural-partition encoder modes would need the motion-vector-plus-keyframe workaround, but this is not evaluated. Given that most production pipelines will not disable RD search for encoding efficiency, a quantitative result (even limited) under a standard encoder configuration (or with HEVC/AV1) would substantially strengthen the generality claim.
+
+        RESPONSE: See T6. We evaluate VP9, HEVC and AV1 under standard rate-distortion search, and show that carrying the keyframe partition along the motion vectors of the stream gives a useful partition.
+
+3. No temporal-coherence / flicker analysis
+
+Since the alias table topology (leaf boundaries, counts 4000–20000) can change from frame to frame, and Fig. 5/Table 1/2 report only per-frame or averaged-per-frame error, the paper does not address whether abrupt structural changes between frames introduce flicker or temporal noise that per-frame RMSE would not capture. This is a common concern for real-time video rendering reviewers will likely raise; a frame-to-frame variance/flicker metric (or at minimum a statement that the supplementary videos show no visible instability) would help.
+
+        RESPONSE: See T5. The leaf density changes less between frames than the per-texel one in most scenes, reducing the flicker with respect to the 2D CDF.
+
+4. Missing ablations
+
+- No isolation of “partition quality” from “alias-table sampling” — e.g., a CDF built directly over the same variance-driven leaves (rather than raw pixels) would show how much of the gain comes from the partition itself versus the alias mechanism.
+
+        RESPONSE: With independent random numbers the variance depends on the density alone, not on how it is inverted, which T2 confirms: the per-texel mappings give the same error. T2 therefore isolates the effect of the partition, and T4 that of the alias mechanism, which only changes cost. The mapping matters under low-discrepancy input (T7).
+
+- No sweep of the leaf budget B for BudgetLeafAlias showing RMSE (or quality) as a function of B; only the single 4000-leaf configuration matched to L1 cache is shown. A budget-vs-quality curve would support the claim that B was chosen well rather than arbitrarily.
+
+        RESPONSE: See T4. The chosen budget is at the knee of the curve: larger budgets need much more leaves to get smaller error improvements.
+
+5. The following related paper should be referenced in the text:
+
+@inproceedings{Szecsi:2010:ASE:1925059.1925073,
+
+author = {Sz\'{e}csi, L\'{a}szl\'{o} and Szirmay-Kalos, L\'{a}szl\'{o} and Kurt, Murat and Cs\'{e}bfalvi, Bal\'{a}zs},
+
+title = {Adaptive sampling for environment mapping},
+
+booktitle = {Proceedings of the 26th Spring Conference on Computer Graphics},
+
+series = {SCCG '10},
+
+year = {2010},
+
+isbn = {978-1-4503-0558-7},
+
+location = {Budmerice, Slovakia},
+
+pages = {69--76},
+
+numpages = {8},
+
+url = {http://doi.acm.org/10.1145/1925059.1925073},
+
+doi = {http://doi.acm.org/10.1145/1925059.1925073},
+
+acmid = {1925073},
+
+publisher = {ACM},
+
+address = {New York, NY, USA}}
+
+        RESPONSE: Cited and discussed in Section 3.
+
+Reviewer 2
+---------
+
+I could be biased and please correct me if I am wrong.
+
+I think the submission really shows a cool and practical implementation improvement on video HDR envmap sampling. However, my main complaint about the submission is its contribution and insights might be relevantly insufficient as a ToG paper in my opinion.
+
+The main idea is simple, instead of building an alias table over every pixel, the authors suggest to first doing an adaptive cut/frontier of a spatial quadtree of the image, and building a single alias table over those leaves. This is not a bad idea and is clearly faster, but I think more properties and features of the method should be analyzed and disucssed thoroughly.
+
+While the results support that the proposed method can win a equal-time comparison, the main source of improvement is out of fast data-structure building speed and consequently drawing more samples.
+
+        RESPONSE: We thank the Reviewer for raising this, since the original text invited that reading. See C3, and C1 for the contribution.
+
+1) Figure 4 analysis is a bit suspicious, from what I understand Alias method should be exact so technically per-pixel Alias should be using the same importance sampling distribution as 2D CDF is correctly implemented. Then the claim BudgetLeafAlias is doing better importance sampling is unlikely the case, but it could be (i) it somehow less accurate as a luminance sampler but happened to do better with cosined luminance or even MIS-compensated distribution (https://cgg.mff.cuni.cz/publications/mis-compensation-optimizing-sampling-techniques-in-multiple-importance-sampling/); (ii) it somehow do less accurate importance sampling but preserve QMC properties better as discussed by Figure.3. No equal sample comparison shown for actual rendering is also worrisome.
+
+        RESPONSE: The Reviewer is right that per-pixel Alias and the 2D CDF sample the same distribution. The difference in the former Figure 4 came from the low-discrepancy input, which a per-pixel alias table degrades (T7); see C5. T2 gives the equal-sample renders. MIS-compensated densities are now cited as complementary to our scene-independent one.
+
+2) Regarding the QMC claims, I am confused as well. While I am not an expert in the field, my understanding is: While inverse CDF is doing great in 1D, its not really a rule of thumb for 2D case for preserving discrepancy, thus preserving the spectrum closer to 2D CDF is likely not meaningfully equivalent to better discrepency property. Also, I don't think a raw Fourier spectra of nonuniform samples are themselves good discrepancy measures under the target density. You may check closer with https://cs.uwaterloo.ca/~thachisu/gradnuld.pdf.
+
+        RESPONSE: We agree, and thank the Reviewer for the reference, now cited. See C5 and T7.
+
+3) The CodecLeafAlias and BudgetLeafAlias, as two variants of the proposed method, are mostly appear alternately in the results and no clear pros and cons trade-off are systematically characterized. Again, the point is pretty much very engineering than theoretic, like Codec variant is about to reuse video codec results but Budget variant fits L1 cache better etc.
+
+        RESPONSE: See T6, which ends with a statement of when each variant is preferable.
+
+4) The subdivision creteria is also something to dig deeper, the L2 error minimizer for piecewise constant approximation might be a good heuristic, but I suspect there could be a more precise cretria especially if we importance sample each quad in a variance aware way (https://cgg.mff.cuni.cz/publications/variance-aware-path-guiding/).
+
+        RESPONSE: Our criterion greedily minimizes the squared error of the piecewise-constant density. T6 compares it with the criterion of a codec, and it reaches the same light-sampling variance with considerably fewer leaves. Variance-aware criteria is future work; we cite them as complementary and see them as a promising extension.
+
+5) The comaprison fairness is another concern, 10ms / 30ms construction time for baselines might be a bit underoptimized. Meanwhile people can also do GPU variant of these (https://research.nvidia.com/publication/2019-01_massively-parallel-construction-radix-tree-forests-efficient-sampling-discrete). Given in the comparison the proposed method is well-optimized, which even considers GPU caching etc, maybe a more competitive GPU baseline is more appropriate here.
+
+        RESPONSE: As stated in C3, no baseline is charged for its construction, so a faster GPU build would not change the reported results. We agree and are aware that a lot of effort can be put to make the structures build faster and in hardware, but we mainly focus on the GPU per-pixel sampling code of every technique, which was optimized for every technique in Slang shaders. Binder and Keller are now cited: such methods build a per-texel structure faster, while ours makes the structure itself orders of magnitude smaller, which is what lowers the cost of each sample (T4).
+
+Overall, I think the paper demonstrates a practical system and a useful implementation strategy for dynamic/video-driven lighting. My concern is that the algorithmic core is relatively simple, while several potentially deeper claims about QMC preservation, sampling quality, and subdivision optimality are not yet sufficiently established.
+
+I believe the paper would be significantly strengthened by (1) equal-spp full-render experiments in addition to equal-time comparisons, (2) a more principled discrepancy/QMC analysis, (3) an analysis or ablation of the subdivision objective, and (4) stronger characterization of the two proposed variants and the construction-time baselines. In its current form I would lean toward substantial revision or a re-submission.
+
+        RESPONSE: We thank the Reviewer for this summary, which guided the revision. See T2 for (1), T7 and C5 for (2), T6 for (3) and (4), and C3 for the construction-time baselines.
+
+Reviewer 3
+---------
+
+This paper builds alias tables over quadtree leaves for sampling emissive video textures. One variant uses the video codec’s tree partition, whereas the other performs greedy subdivision with priority queue, using local image variance as criterion. Compared to per-pixel alias tables, the number of entries is far smaller, so the structure can be rebuilt quickly when the frame changes.
+
+I think this paper is currently below the TOG bar for several reasons:
+
+The scope of image-based lighting with video is relatively limited, especially given that the proposed method is scene-independent, i.e., it only considers the video itself, without taking into account the BSDF, visibility, or the distance between the emissive light-source points and the shading points. These can also contribute a significant amount of variance. I am not sure whether Fig. 4 is demonstrating this: the RMSE reduction from the per-pixel alias baseline to 2D CDF under an equal sample rate is only about 5% in Fig. 4. Thus, I suspect that in some cases, there may not be much room for improvement if we only consider importance sampling of the emission texture itself.
+
+        RESPONSE: We agree, and now state it as a limitation (C6); methods that account for the BSDF or visibility are complementary. What the method offers is the same quality in less time, from a far smaller structure (T3).
+
+Given the first point, the amount of improvement is somewhat marginal. See Fig. 5, where the red curve is almost always very close to one of the baselines. The benefit also largely diminishes after denoising (Table 3: around 11-17% for two scenes, but no more than 4% for the other two), and the visual difference is quite subtle in Fig. 7.
+
+        RESPONSE: See T3 and C6.
+
+As for novelty, the proposed method is basically a combination of a quadtree and an alias table. It is interesting that the authors discuss two possible ways of combining them, but both variants are relatively straightforward and still leave much of the rendering variance unaddressed. I am also missing a naive quadtree baseline to justify why the hierarchy needs to be adjusted every frame. For example, one could construct a static quadtree based on statistics averaged over the video, while rebuilding only the alias table from frame to frame.
+
+        RESPONSE: The method is simple, and we consider that a strength for adoption. For the static baseline, see T5: we show that updating the partition and the weights every frame avoids considerable error compared with the alternatives.
+
+The results section is clear but somewhat incomplete to me. Why does Table 2 only show the proposed method instead of including all competing methods? In my opinion, Table 2, the average quality across the full video, should be one of the main results, since the quality of individual frames (like Table 1) can vary.
+
+        RESPONSE: This was a very important comment for us, thank you. We have done as you suggested, presenting video metrics for all techniques and scenes, instead of individual frames. See T1.
+
+I would also suggest including a detailed timing breakdown for each computation stage, such as updating/building the data structures and performing sampling, since the method is motivated by trading precomputation cost against rendering quality as I understand. Moreover, since the key claim is that a cheaper sampler allows more light samples to be placed within the 33 ms budget, it is crucial to report the actual sample budgets. At minimum, the spp and number of light samples per vertex should be reported. Since multiple importance sampling is involved (L. 340), if the BSDF sample count is independently configurable, that should also be reported.
+
+        RESPONSE: See C3 and T4; T3 also gives the frame time added by each light sample.
+
+Minor points:
+
+It is somewhat unusual that a video-oriented method handles every frame independently. The only temporal coherence may come indirectly from the video codec in the codec-based variant. Still, it is understandable that video textures require the sampling structure to be rebuilt as the content changes frame to frame.
+
+        RESPONSE: See C1 and T5. One minor comment we have, that is complementary to your observation, is that using the current frame alone is what makes the method applicable to live content.
+
+I would appreciate a discussion of the impact of hyperparameters, such as the leaf budget. Yes, it is reasonable to determine the budget according to the L1 cache size, but different devices may have different cache sizes. Showing how sampling quality changes as the budget varies would be helpful for adapting the approach on different machines.
+
+        RESPONSE: See T4. The budget is a memory and quality knob, and a device with a smaller cache can use a smaller budget at the quality cost shown there.
+
+Lastly, it would also be interesting to see more visualizations similar to Fig. 2, but mostly for the BudgetLeafAlias variant. If space permits, the two variants could be compared side by side to show where and how their partitions differ. This could help readers develop a clearer intuition and would also be useful for reproducibility.
+
+        RESPONSE: Figure 10 shows both variants side by side.
+
+Reviewer 4
+---------
+
+The manuscript optimizes alias table construction for real-time, efficient sampling of to framed texture light. The proposed methods are clean, intuitive, and has some improvement over per-pixel alias.
+
+The motivation of this work is unclear to me. The manuscript mentions several applications that involve a dynamic textured emission. However, it remains unexplained why a real-time sampler is necessary and important in those applications. For example, in LED-wall virtual production, the virtual background itself is rendered in real-time with production engines, and it illuminates film props physically. If you target virtual setup in pre-film stage, the need for real-time is much reduced. I suggest the authors to clearly demonstrate the scenarios that necessitate or benefit from real-time sampling, and why the budget is specifically 30 FPS. Illumination that changes every frame does not automatically translate to the requirement of a real-time path tracer.
+
+        RESPONSE: See C2. The Reviewer is right that the wall lights real props physically; a sampler is needed whenever the lit subject is synthetic, which happens before, during and after the shoot. For the 30 FPS budget, see our response to comment 1 of the Associate Editor.
+
+The exposition on the scope of this work is also vague and perhaps misleading. The authors claim that "State-of-the-art texture light sampling techniques are designed for static images", which is not true. Wan et al. [2011] develops spatial-temporal sampling of dynamic environment sequences. Moreover, it presents an illusion that the manuscript develops a sampling algorithm for dynamic texture light, while in reality the proposed methods are fundamentally per frame, i.e., equivalently static images. The authors need to position their work more accurately. I suggest the authors to also complement with Wang et al. [2005] and Yang et al. [2014] for positioning.
+
+        RESPONSE: See C1. The three works are now discussed. They exploit temporal coherence, in part by analyzing the whole sequence in advance, and produce sets of light directions; ours gives a density that can be evaluated for MIS.
+
+The method is technically sound, while its elaboration and substantiation are too condensed for a journal submission, given no supplemental document is provided. Section 3.2 lacks detail on the conversion from frequency coefficients to radiance estimates, which confuses me during the intial read-through. The authors also do not clarify why VP9 is uniquely chosen among the modern codecs. For the budget variant, I doubt the choice to configure the budget as the GPU's L1 data cache. Cache lines can be evicted to reside other data. The authors would need an ablation to validate that the proposed budget is a good choice. It might also be of interest to test this variant on GPUs with a smaller cache, should they be available to the authors.
+
+        RESPONSE: See C4 for the conversion. VP9 was an implementation choice, and T6 shows that the method is tied neither to it nor to its partitioning mode. For the budget, see T4: the cost per sample follows the cache limits that we measure on the GPU, and the supplementary material includes results for a laptop GPU.
+
+Experimental assessments. The manuscript compares with trivial baselines and ignores the mentioned works [Ergun et al. 2012; Lambers 2022; Rodriguez-Pardo et al. 2023]. As discussed above, the presented method also deals with one image at a time, and therefore it is reasonable to compare with those "static image" solutions. Nevertheless, the (sampling) performance improvements of the two proposed variant in Table 1 are not very significant compared to the baselines, although admittedly the construction cost of BudgetLeafAlias is much reduced. Visual comparisions in Figure 1 (Right) also indicate it being marginal. Together they raise serious concerns regarding the justification of the proposed method.
+
+        RESPONSE: We believe the new T1 and T3 might address these concerns, showing speedups of up to 3 times over the baselines for the same quality. Comparison is done over the most used techiniques in production to this day, as covered in the last paragraph of section 3. For Lambers 2022, the 2D CDF/8 baseline is close in spirit. For Rodriguez-Pardo et al. 2023, a per-map training step cannot be run per video frame, so it is not a candidate for our setting. 
+
+Furthermore, the exposition of this section is primarily descriptive of experimental setup and resulting data. It should have served to explain why the techinical method works and when it will fail, to benefit the graphics community, film industry, and developers of interest. For example, BudgetLeafAlias only outperforms in the Rover scene. It is valuable to point out what makes this greedy approach less efficient than the video encoding variant.
+
+        RESPONSE: See C6, and T6 for the content on which each variant loses.
+
+Minor questions:
+
+For Table 1, are the metrics averaged over all frames? Is the sampling structure constructed asynchronously on the CPU, or in a pre-process stage?
+
+There are no CodecLeafAlias results in subsequent assessments (Figures 4, 5). Please explain why. Table 2 needs to indicate which variant is used.
+
+        RESPONSE: The former Table 1 used one representative frame; Table 2 now averages over the full video and names each variant (T1). The structure is built on the CPU for every frame, with no pre-process of the video; see C3 for how its time is treated. The former Figure 4 is removed, and CodecLeafAlias is included in every new experiment.
+
+In general, the manuscript needs to be refined in several aspects, primarily exposition and validation. It also needs to present stronger performance and convincing applications. While the topic is of interest, the manuscript does not yet show the rigor and completeness typically seen in a TOG-level publication. Therefore it is my recommendation for a rejection.
+
+        RESPONSE: We hope that the new experiments, the positioning (C1) and the motivation (C2) meet this standard.
+
+References
+
+Liang Wan, Tien-Tsin Wong, and Chi-Sing Leung. 2005. Spherical Q2-tree for sampling dynamic environment sequences. In Proceedings of the Sixteenth Eurographics conference on Rendering Techniques (EGSR '05). Eurographics Association, Goslar, DEU, 21–30.
+
+Liang Wan, Shue-Kwan Mak, Tien-Tsin Wong, and Chi-Sing Leung. 2011. Spatiotemporal Sampling of Dynamic Environment Sequences. IEEE Transactions on Visualization and Computer Graphics 17, 10 (October 2011), 1499–1509. https://doi.org/10.1109/TVCG.2011.31
+
+Ying Yang, Changguo Yu, Liang Wan, and Wei Feng. 2014. High dynamic environment sequence sampling. In Proceedings of the 13th ACM SIGGRAPH International Conference on Virtual-Reality Continuum and its Applications in Industry (VRCAI '14). Association for Computing Machinery, New York, NY, USA, 123–131. https://doi.org/10.1145/2670473.2670478

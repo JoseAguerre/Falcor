@@ -1,7 +1,7 @@
-\begin{table}[t]
+\begin{table}[htbp!]
 \centering\small\newmat
 \setlength{\tabcolsep}{4pt}
-\caption{\newmat Quality for static, partially updated and per-frame trees, with 4000 leaves and equal samples per scene (samples per pixel $\times$ light samples per shading point in parentheses). The keyframe tree is rebuilt every 30 frames. The last row of each scene is the ratio of RMSE to BudgetLeafAlias, calculated before rounding. \aspnote{target values; measured now, RMSE ratio: average tree with average weights 1.02--1.40, average tree with per-frame weights 1.002--1.035, keyframe tree 1.00--1.04}}
+\caption{\newmat Quality for static, partially updated and per-frame trees, with 4000 leaves and equal samples per scene (samples per pixel $\times$ light samples per vertex in parenthesis). The keyframe tree is rebuilt every 30 frames. The last row of each scene is the ratio of RMSE to BudgetLeafAlias.}
 \label{tab:average-tree}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{l l c c c c}
