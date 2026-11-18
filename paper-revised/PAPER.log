@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.9.7)  17 NOV 2026 22:47
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.9.7)  17 NOV 2026 22:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1341,6 +1341,13 @@ e 358.
 
 Class acmart Warning: A possible image without description on input line 365.
 
+
+Overfull \hbox (5.6026pt too wide) in paragraph at lines 367--374
+[]\T1/LinuxLibertineT-TLF/m/n/9 (-20) Despite be-ing $\OML/nxlmi/m/it/9 O\LMS/n
+txsy/m/n/9 ¹\OT1/LinuxLibertineT-TLF/m/n/9 (-20) 1\LMS/ntxsy/m/n/9 º$ \T1/Linux
+LibertineT-TLF/m/n/9 (-20) to sam-ple, the alias method is memory-intensive
+ []
+
 [3.3 <./images/fig_spectrum_paper_color.png>]
 Overfull \hbox (4.742pt too wide) in paragraph at lines 386--391
 []\T1/LinuxLibertineT-TLF/m/n/9 (-20) Modern pro-duc-tion ren-der-ers mostly re
@@ -1361,10 +1368,7 @@ LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
 (Font)              scaled to size 5.5pt on input line 433.
 [4.4{C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn
 _kijugd.enc}]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Underfull \vbox (badness 2503) has occurred while \output is active []
+Underfull \vbox (badness 1137) has occurred while \output is active []
 
  [5.5]
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
@@ -1394,7 +1398,7 @@ LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
 (Font)              scaled to size 6.0pt on input line 22.
 )
-<images/realtime_curves.png, id=323, 1036.089pt x 235.5345pt>
+<images/realtime_curves.png, id=326, 1036.089pt x 235.5345pt>
 File: images/realtime_curves.png Graphic file (type png)
 <use images/realtime_curves.png>
 Package pdftex.def Info: images/realtime_curves.png  used on input line 610.
@@ -1403,7 +1407,7 @@ Package pdftex.def Info: images/realtime_curves.png  used on input line 610.
 
 Class acmart Warning: A possible image without description on input line 615.
 
-<images/fig_equal_samples.pdf, id=325, 257.23277pt x 158.63062pt>
+<images/fig_equal_samples.pdf, id=328, 257.23277pt x 158.63062pt>
 File: images/fig_equal_samples.pdf Graphic file (type pdf)
 <use images/fig_equal_samples.pdf>
 Package pdftex.def Info: images/fig_equal_samples.pdf  used on input line 625.
@@ -1412,10 +1416,10 @@ Package pdftex.def Info: images/fig_equal_samples.pdf  used on input line 625.
 Class acmart Warning: A possible image without description on input line 628.
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 1137) has occurred while \output is active []
 
  [6.6]
-<images/closeup_examples.pdf, id=335, 240.65909pt x 119.9682pt>
+<images/closeup_examples.pdf, id=338, 240.65909pt x 119.9682pt>
 File: images/closeup_examples.pdf Graphic file (type pdf)
 <use images/closeup_examples.pdf>
 Package pdftex.def Info: images/closeup_examples.pdf  used on input line 634.
@@ -1424,9 +1428,12 @@ Package pdftex.def Info: images/closeup_examples.pdf  used on input line 634.
 
 Class acmart Warning: A possible image without description on input line 637.
 
-[7.7 <./images/realtime_curves.png> <./images/fig_equal_samples.pdf> <./images/
-closeup_examples.pdf>]
-<images/fig_wall.pdf, id=386, 253.67143pt x 160.16618pt>
+
+Underfull \vbox (badness 2042) has occurred while \output is active []
+
+ [7.7 <./images/realtime_curves.png> <./images/fig_equal_samples.pdf> <./images
+/closeup_examples.pdf>]
+<images/fig_wall.pdf, id=389, 253.67143pt x 160.16618pt>
 File: images/fig_wall.pdf Graphic file (type pdf)
 <use images/fig_wall.pdf>
 Package pdftex.def Info: images/fig_wall.pdf  used on input line 675.
@@ -1435,7 +1442,7 @@ Package pdftex.def Info: images/fig_wall.pdf  used on input line 675.
 
 Class acmart Warning: A possible image without description on input line 678.
 
-<images/fig_gpu_cost2.pdf, id=388, 256.70845pt x 156.21964pt>
+<images/fig_gpu_cost2.pdf, id=391, 256.70845pt x 156.21964pt>
 File: images/fig_gpu_cost2.pdf Graphic file (type pdf)
 <use images/fig_gpu_cost2.pdf>
 Package pdftex.def Info: images/fig_gpu_cost2.pdf  used on input line 693.
@@ -1450,7 +1457,7 @@ f bud-get $\OML/nxlmi/m/it/9 B$ \T1/LinuxLibertineT-TLF/m/n/9 (-20) of Bud-getL
 eafAlias
  []
 
-<images/fig_leaf_budget.pdf, id=489, 745.59885pt x 209.86365pt>
+<images/fig_leaf_budget.pdf, id=492, 745.59885pt x 209.86365pt>
 File: images/fig_leaf_budget.pdf Graphic file (type pdf)
 <use images/fig_leaf_budget.pdf>
 Package pdftex.def Info: images/fig_leaf_budget.pdf  used on input line 712.
@@ -1470,21 +1477,20 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
+(table_average_tree.tex)
 Underfull \vbox (badness 1137) has occurred while \output is active []
 
-
-(table_average_tree.tex) [9.9{C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts
-/enc/dvips/inconsolata/i4-t1-4.enc}]
-<images/fig_partitions.jpg, id=502, 515.61865pt x 315.76431pt>
+ [9.9{C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/inconsolata/i
+4-t1-4.enc}]
+<images/fig_partitions.jpg, id=506, 515.61865pt x 315.76431pt>
 File: images/fig_partitions.jpg Graphic file (type jpg)
 <use images/fig_partitions.jpg>
 Package pdftex.def Info: images/fig_partitions.jpg  used on input line 750.
 (pdftex.def)             Requested size: 243.14749pt x 148.90552pt.
 
-
 Class acmart Warning: A possible image without description on input line 753.
 
-<images/fig_variance_vs_leaves.pdf, id=506, 247.53864pt x 117.77838pt>
+<images/fig_variance_vs_leaves.pdf, id=510, 247.53864pt x 117.77838pt>
 File: images/fig_variance_vs_leaves.pdf Graphic file (type pdf)
 <use images/fig_variance_vs_leaves.pdf>
 Package pdftex.def Info: images/fig_variance_vs_leaves.pdf  used on input line 
@@ -1501,7 +1507,7 @@ Class acmart Warning: A possible image without description on input line 762.
 
 [10.10 <./images/fig_leaf_budget.pdf> <./images/fig_partitions.jpg> <./images/f
 ig_variance_vs_leaves.pdf>]
-<images/fig_rate_sensitivity.pdf, id=563, 491.436pt x 187.902pt>
+<images/fig_rate_sensitivity.pdf, id=566, 491.436pt x 187.902pt>
 File: images/fig_rate_sensitivity.pdf Graphic file (type pdf)
 <use images/fig_rate_sensitivity.pdf>
 Package pdftex.def Info: images/fig_rate_sensitivity.pdf  used on input line 77
@@ -1517,7 +1523,7 @@ Overfull \hbox (2.76942pt too wide) in paragraph at lines 779--780
 \T1/LinuxLibertineT-TLF/m/n/9 (-20) Code-cLeafAlias needs two things
  []
 
-<images/fig_codec_trees.pdf, id=565, 505.89pt x 231.26399pt>
+<images/fig_codec_trees.pdf, id=568, 505.89pt x 231.26399pt>
 File: images/fig_codec_trees.pdf Graphic file (type pdf)
 <use images/fig_codec_trees.pdf>
 Package pdftex.def Info: images/fig_codec_trees.pdf  used on input line 783.
@@ -1532,7 +1538,7 @@ are nev-er-the-less much smaller
  []
 
 [11.11 <./images/fig_rate_sensitivity.pdf> <./images/fig_codec_trees.pdf>]
-<images/figures_only_restir_v9.png, id=712, 4240.84375pt x 3262.1875pt>
+<images/figures_only_restir_v9.png, id=711, 4240.84375pt x 3262.1875pt>
 File: images/figures_only_restir_v9.png Graphic file (type png)
 <use images/figures_only_restir_v9.png>
 Package pdftex.def Info: images/figures_only_restir_v9.png  used on input line 
@@ -1542,7 +1548,7 @@ Package pdftex.def Info: images/figures_only_restir_v9.png  used on input line
 
 Class acmart Warning: A possible image without description on input line 854.
 
-<images/denoised_flip_grid.png, id=713, 4117.3825pt x 1067.99pt>
+<images/denoised_flip_grid.png, id=712, 4117.3825pt x 1067.99pt>
 File: images/denoised_flip_grid.png Graphic file (type png)
 <use images/denoised_flip_grid.png>
 Package pdftex.def Info: images/denoised_flip_grid.png  used on input line 858.
@@ -1560,14 +1566,14 @@ LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
 (Font)              scaled to size 7.3pt on input line 74.
 
-Underfull \vbox (badness 1275) has occurred while \output is active []
+Underfull \vbox (badness 1286) has occurred while \output is active []
 
  [12.12]
 [13.13 <./images/figures_only_restir_v9.png (PNG copy)> <./images/denoised_flip
 _grid.png (PNG copy)>])
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 2698) has occurred while \output is active []
 
-<images/fig_qmc_points.pdf, id=759, 495.77222pt x 153.56387pt>
+<images/fig_qmc_points.pdf, id=757, 495.77222pt x 153.56387pt>
 File: images/fig_qmc_points.pdf Graphic file (type pdf)
 <use images/fig_qmc_points.pdf>
 Package pdftex.def Info: images/fig_qmc_points.pdf  used on input line 898.
@@ -1576,7 +1582,7 @@ Package pdftex.def Info: images/fig_qmc_points.pdf  used on input line 898.
 
 Class acmart Warning: A possible image without description on input line 901.
 
-<images/fig_qmc_fence.pdf, id=761, 240.65909pt x 228.91522pt>
+<images/fig_qmc_fence.pdf, id=759, 240.65909pt x 228.91522pt>
 File: images/fig_qmc_fence.pdf Graphic file (type pdf)
 <use images/fig_qmc_fence.pdf>
 Package pdftex.def Info: images/fig_qmc_fence.pdf  used on input line 907.
@@ -1585,7 +1591,7 @@ Package pdftex.def Info: images/fig_qmc_fence.pdf  used on input line 907.
 Class acmart Warning: A possible image without description on input line 910.
 
 [14.14 <./images/fig_qmc_points.pdf>]
-<images/fig_temporal.pdf, id=836, 251.66335pt x 223.9952pt>
+<images/fig_temporal.pdf, id=833, 251.66335pt x 223.9952pt>
 File: images/fig_temporal.pdf Graphic file (type pdf)
 <use images/fig_temporal.pdf>
 Package pdftex.def Info: images/fig_temporal.pdf  used on input line 929.
@@ -1612,14 +1618,14 @@ portant to optimize color contrast for the visually impaired. Taking these impo
 rtant steps when creating your papers will ensure that the widest possible audi
 ence can ingest your work..
 
-[15.15 <./images/fig_temporal.pdf> <./images/fig_qmc_fence.pdf>]
+
 (C:\Users\Jose\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\se-pdfdoc.de
 f
 File: se-pdfdoc.def 2019/11/29 v1.12 stringenc: PDFDocEncoding
 )
 (C:\Users\Jose\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\se-utf8.def
 File: se-utf8.def 2019/11/29 v1.12 stringenc: UTF-8
-) [16.15] (PAPER.aux)
+) [15.15 <./images/fig_temporal.pdf> <./images/fig_qmc_fence.pdf>] (PAPER.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
@@ -1628,79 +1634,34 @@ L3 programming layer <2025-12-24>
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
-
-LaTeX Warning: Temporary extra page added at the end. Rerun to get it removed.
-
-
-Package rerunfilecheck Warning: File `PAPER.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `PAPER.out':
-(rerunfilecheck)             Before: 7CE03D081A2F813773D25DE4C6E3D922;3642
-(rerunfilecheck)             After:  A5D5CAE7D6EDA428CD629D06D1678FD1;3553.
+Package rerunfilecheck Info: File `PAPER.out' has not changed.
+(rerunfilecheck)             Checksum: BE91180EC4FDFBA8C68A6DDC58A71204;3548.
  ) 
 Here is how much of TeX's memory you used:
- 23027 strings out of 467871
- 384255 string characters out of 5418861
- 868818 words of memory out of 5000000
- 50496 multiletter control sequences out of 15000+600000
- 847104 words of font info for 585 fonts, out of 8000000 for 9000
+ 23007 strings out of 467871
+ 383840 string characters out of 5418861
+ 878548 words of memory out of 5000000
+ 50493 multiletter control sequences out of 15000+600000
+ 846190 words of font info for 580 fonts, out of 8000000 for 9000
  1302 hyphenation exceptions out of 8191
- 90i,17n,131p,1397b,885s stack positions out of 10000i,1000n,20000p,200000b,200000s
-
-pdfTeX warning (dest): name{figure.caption.39} has been referenced but does not
- exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{figure.caption.35} has been referenced but does not
- exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{figure.caption.29} has been referenced but does not
- exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{table.caption.27} has been referenced but does not 
-exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{figure.caption.26} has been referenced but does not
- exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{figure.caption.24} has been referenced but does not
- exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{figure.caption.22} has been referenced but does not
- exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{page.16} has been referenced but does not exist, re
-placed by a fixed one
-
-
-pdfTeX warning (dest): name{section*.31} has been referenced but does not exist
-, replaced by a fixed one
-
-<C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/public/inconsolata/Inc
-onsolata-zi4r.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/publ
-ic/newtx/LibertineMathMI.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts
-/type1/public/newtx/LibertineMathMI5.pfb><C:/Users/Jose/AppData/Local/Programs/
-MiKTeX/fonts/type1/public/newtx/LibertineMathMI7.pfb><C:/Users/Jose/AppData/Loc
-al/Programs/MiKTeX/fonts/type1/public/libertine/LinBiolinumT.pfb><C:/Users/Jose
-/AppData/Local/Programs/MiKTeX/fonts/type1/public/libertine/LinLibertineT.pfb><
-C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/public/libertine/LinLib
-ertineTB.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/public/li
-bertine/LinLibertineTI.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/t
-ype1/public/newtx/NewTXMI.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/font
-s/type1/public/newtx/txexs.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fon
-ts/type1/public/newtx/txmiaX.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/f
-onts/type1/public/newtx/txsys.pfb>
-Output written on PAPER.pdf (16 pages, 32979759 bytes).
+ 90i,17n,131p,1394b,897s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/public/inconsolata/I
+nconsolata-zi4r.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/pu
+blic/newtx/LibertineMathMI.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fon
+ts/type1/public/newtx/LibertineMathMI5.pfb><C:/Users/Jose/AppData/Local/Program
+s/MiKTeX/fonts/type1/public/newtx/LibertineMathMI7.pfb><C:/Users/Jose/AppData/L
+ocal/Programs/MiKTeX/fonts/type1/public/libertine/LinBiolinumT.pfb><C:/Users/Jo
+se/AppData/Local/Programs/MiKTeX/fonts/type1/public/libertine/LinLibertineT.pfb
+><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/public/libertine/LinL
+ibertineTB.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/public/
+libertine/LinLibertineTI.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts
+/type1/public/newtx/NewTXMI.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fo
+nts/type1/public/newtx/txexs.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/f
+onts/type1/public/newtx/txmiaX.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX
+/fonts/type1/public/newtx/txsys.pfb>
+Output written on PAPER.pdf (15 pages, 32977891 bytes).
 PDF statistics:
- 1033 PDF objects out of 1200 (max. 8388607)
- 152 named destinations out of 1000 (max. 500000)
- 125731 words of extra memory for PDF output out of 128383 (max. 10000000)
+ 1021 PDF objects out of 1200 (max. 8388607)
+ 143 named destinations out of 1000 (max. 500000)
+ 123683 words of extra memory for PDF output out of 128383 (max. 10000000)
 
