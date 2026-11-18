@@ -181,6 +181,20 @@
 %% Name of a document of the supplementary material.
 \newcommand{\supp}[1]{supplementary document \texttt{#1}}
 
+\makeatletter
+\ifdefined\cleancopy\else
+  % keys of the references added in the revision
+  \@for\k:=wan2005q2tree,wan2011spatiotemporal,yang2014high,szecsi2010adaptive,%
+           karlik2019mis,rath2020variance,binder2019radix,li2026gradient,owen1995randomly\do{%
+    \expandafter\gdef\csname newref@\k\endcsname{}}
+  \let\oldbibitem\bibitem
+  \renewcommand\bibitem[2][]{%
+    \oldbibitem[#1]{#2}%
+    \@ifundefined{newref@#2}{\normalcolor}{\color{newcolor}}}
+\fi
+\makeatother
+
+
 %%
 %% The abstract is a short summary of the work to be presented in the
 %% article.
@@ -190,7 +204,7 @@ Our method partitions a light's texture into a budgeted, variance-driven quadtre
 the texture's overall energy distribution. We present two variants: one that reuses the per-frame hierarchical partitions already present in the metadata of modern video codecs, and another that builds a budgeted quadtree to fit the entire sampling structure in the L1 cache of the GPU. Compared to the dense 2D CDF-inversion baseline, at a matched real-time
 frame-time budget our technique reduces RMSE by 9–53\% depending on
 scene, by letting the saved sampling cost be reinvested in additional light
-samples. \new{With the same number of samples, our technique does not introduce considerable error compared to 2D CDF, and delivers up to 3 times faster.}
+samples. \new{With the same number of samples, our technique does not introduce considerable error compared to 2D CDF, and is up to 3 times faster.}
 It also reduces memory consumption and transfers by several orders of magnitude when compared to state-of-the-art samplers.
 
 \end{abstract}
@@ -337,7 +351,7 @@ precondition for moving these applications from prefiltered shading to path trac
 with correct shadows and interreflections.
 }
 \section{Previous works}\label{sec:prev}
-Importance sampling of emissive textures is a well-studied problem in the graphics literature in the context of image-based lighting. Most of the works focus on preprocessing the images to allow for exact or near-exact sampling without introducing bias \cite{lawrence2005adaptive}. Several methods choose to simplify the textured light into a set of point or area lights ~\cite{agarwal2003structured}, allowing for real-time sampling and faster convergence but at the cost of more error in the solution. \cite{cline2009tabular} compare several tabular inversion methods, noting the computational order of building each sampler structure and sampling each point. They analyze the 2D CDF inversion via binary search and the per-pixel Alias method, where they flag the disruption of the stratification of the input point set. \rev{With a low-discrepancy input, the raster-flattened table of the per-pixel Alias method can produce a measurable periodic banding pattern (Figure~\ref{fig:spectrum}) that becomes clear in the power spectrum of the sample set. Appendix~\ref{app:qmc} analyzes these effects and their consequence in a rendering for our proposed methods and compares it with per-pixel Alais.}
+Importance sampling of emissive textures is a well-studied problem in the graphics literature in the context of image-based lighting. Most of the works focus on preprocessing the images to allow for exact or near-exact sampling without introducing bias \cite{lawrence2005adaptive}. Several methods choose to simplify the textured light into a set of point or area lights ~\cite{agarwal2003structured}, allowing for real-time sampling and faster convergence but at the cost of more error in the solution. \cite{cline2009tabular} compare several tabular inversion methods, noting the computational order of building each sampler structure and sampling each point. They analyze the 2D CDF inversion via binary search and the per-pixel Alias method, where they flag the disruption of the stratification of the input point set. \rev{With a low-discrepancy input, the raster-flattened table of the per-pixel Alias method can produce a measurable periodic banding pattern (Figure~\ref{fig:spectrum}) that becomes clear in the power spectrum of the sample set. Appendix~\ref{app:qmc} analyzes these effects and their consequence in a rendering for our proposed methods and compares it with per-pixel Alias.}
 
 \begin{figure}[htbp!]
   \centering
@@ -363,7 +377,7 @@ Regarding the optimization of the sampling structures,
  Lambers~\cite{lambers2022parameterization} proposes a fixed-grid sampler and notes that replacing the grid with a variance-driven quadtree might improve their results. \cite{rodriguez2023nenv} train a neural normalizing flow that allows both sampling and evaluating the pdf, showing considerable performance gains at the cost of pre-training the structure for the static map. Wu~\cite{wu2025efficient} also preprocesses the map by dividing the emissive and non-emissive parts into separate structures. \new{Sz\'ecsi et al.~\cite{szecsi2010adaptive} adapt the placement of the samples of an environment map on the GPU, taking the reflectance at the shading point into account as well as the illumination. Sampling densities that depend on the shading point, like \cite{szecsi2010adaptive}, MIS-compensated distributions~\cite{karlik2019mis} or variance-aware guiding~\cite{rath2020variance}, are complementary to our work, which builds a scene-independent density from the texture alone.}
 
 \rev{The previously described techniques focus mainly on preprocessing static images to improve sampling efficiency. Sampling of dynamic environment maps has also been studied.} \new{Wan et al.~\cite{wan2005q2tree} subdivide the sphere into a Q2-tree of quadrilaterals according to illumination importance and generate a temporally coherent set of directional samples for every frame of an environment sequence. Wan et al.~\cite{wan2011spatiotemporal} treat the whole sequence as a spatiotemporal volume and stratify the samples in space and time, and Yang et al.~\cite{yang2014high} extend this line to high-dynamic-range sequences. These methods exploit temporal coherence, and the spatiotemporal ones analyze the sequence as a whole before rendering, which suits recorded content. Our method works on the current frame only, so it applies to live video, and it produces a density that can be sampled and evaluated for MIS inside a path tracer, rather than a fixed set of light directions.} \rev{Other works address video-driven lighting:} \cite{havran2005interactive} and Iorns and Rhee~\cite{iorns2015realtime} both light scenes from captured video environment maps, but neither targets real-time per-frame
-resampling of the video itself as the importance distribution. \cite{lu2013realtime} rebuild a tabulated per-cube-face CDF in real-time, noting it as an expensive part of the process. \cite{kronander2014real} rely on temporal sample reuse to improve convergence of video-based lighting.
+resampling of the video itself as the importance distribution. \cite{lu2013realtime} rebuild a tabulated per-cube-face CDF in real time, noting it as an expensive part of the process. \cite{kronander2014real} rely on temporal sample reuse to improve convergence of video-based lighting.
 
 Attempts to make the per-frame rebuild itself cheaper on a GPU point in the same direction: Morrical and Zellmann~\cite{morrical2021inverse} accelerate 2D CDF
 inversion with ray tracing hardware at a high construction cost and non-trivial implementation
@@ -629,7 +643,7 @@ At equal samples, therefore, our techniques do not sample better than a texel-re
 \label{sec:equalquality}
 
 \newbegin
-In this experiment, we measure how long does each technique need to reach the quality that the 2D CDF delivers in real-time. 
+In this experiment, we measure how long each technique needs to reach the quality that the 2D CDF delivers in real time. 
 For each scene we render the videos only with direct illumination, where the light sampler controls most of the noise. The 2D CDF uses the number of light samples that fits a 33.3\,ms frame. Every other technique is rendered with several numbers of light samples, and we find the frame time at which its video RMSE equals that of the 2D CDF. The speed-up is the frame time of the 2D CDF divided by that time.
 
 Our two techniques reach the quality of the 2D CDF faster on all five scenes (Table~\ref{tab:equalquality}). These figures use the median frame time of each technique over several timing passes. The other techniques are not consistent: the mipmap warp is slower than the 2D CDF on Rover and does not reach its quality on Phone at the measured sample counts, and the per-pixel Alias table, which is fast on Full HD emitters, is slower than the 2D CDF on the two scenes with 4K emitters, where its memory consumption grows considerably. The time saved can be returned to the frame rate, to more bounces, or to a denoiser.
@@ -665,7 +679,7 @@ The last observation suggests that the resolution of the emitter influences the 
 
 The cost of a light sample grows with resolution for the 2D CDF, and much less for our techniques. Each additional light sample per shading point adds 0.95, 1.17 and 2.93\,ms to the frame of the 2D CDF at the three resolutions, and 0.47, 0.50 and 0.73\,ms to that of BudgetLeafAlias. The 2D CDF searches a table as large as the image, with one dependent memory read per search step, and at 8K that table is sixteen times larger than at Full HD; ours read a table of about 75\,KB at any resolution, and the image only once the texel has been chosen. In a 33.3\,ms frame the 2D CDF therefore fits 34, 25 and 10 light samples, while BudgetLeafAlias fits 60, 58 and 40.
 
-As a result, the speed-up at equal quality grows at 8K: both techniques reach the quality of the 2D CDF up to 3$\times$ faster. Read at equal time, the RMSE of BudgetLeafAlias is 12\%, 15\% and 21\% lower than the 2D CDF's. The per-pixel Alias table follows the 2D CDF, since its table also grows with the image and its memory access patterns are more incoherent. The two baselines that keep small or hierarchical structures, the 2D CDF at one eighth of the resolution and the mipmap warp, scale better and reach 2.67 and 2.44 times at 8K; they remain behind our techniques at every resolution. 
+As a result, the speed-up at equal quality grows at 8K: both techniques reach the quality of the 2D CDF up to 3$\times$ faster. Read at equal time, the RMSE of BudgetLeafAlias is 12\%, 15\% and 21\% lower than the 2D CDF's. The per-pixel Alias table follows the 2D CDF, since its table also grows with the image and its memory access patterns are more incoherent. The two baselines that keep small or hierarchical structures, the 2D CDF at one eighth of the resolution and the mipmap warp, scale better and reach speed-ups of 2.67 and 2.44 times at 8K; they remain behind our techniques at every resolution. 
 \newend
 
 \subsection{\texorpdfstring{\newt{Sampling cost on the GPU}}{Sampling cost on the GPU}}
@@ -684,7 +698,7 @@ We relate the cost of drawing a light sample to the cache levels of the GPU with
 In the second figure, we measure the time it takes to draw a sample and read the emissive texture, with varying $B$ values and the other techniques.
 The emissive texture read is generally fast because most of the samples point to the same bright sections of the image, hence hitting cache more frequently. These results show the same behavior as the left figure. A sample of the 2D CDF costs between 0.23\,ns and 0.46\,ns, as throughput of the whole GPU, and we give the cost of the other techniques relative to it. BudgetLeafAlias at $B=4000$ is 4 to 8 times cheaper, and its cost hardly changes with the scene; CodecLeafAlias, whose table is larger, costs 1.3 to 1.6 times as much as BudgetLeafAlias. 
 
-The per-pixel Alias table costs a quarter of the 2D CDF on the Full HD emitter of Phone, but 1.2 times as much on the 4K emitter of Convergence. This is explained by the fact that its structure, despite being $O(1)$ to sample, performs two dependent reads per sample at addresses spread uniformly over the whole structure, so almost every read misses the first-level cache; at 4K the structure exceeds the second-level cache as well, and the cost per sample more than doubles.  The 2D CDF performs 24 dependent reads per sample in the worse case, but most of them are cache hits: the marginal CDF is a few kilobytes, and the conditional searches concentrate on the few bright rows.
+The per-pixel Alias table costs a quarter of the 2D CDF on the Full HD emitter of Phone, but 1.2 times as much on the 4K emitter of Convergence. This is explained by the fact that its structure, despite being $O(1)$ to sample, performs two dependent reads per sample at addresses spread uniformly over the whole structure, so almost every read misses the first-level cache; at 4K the structure exceeds the second-level cache as well, and the cost per sample more than doubles.  The 2D CDF performs 24 dependent reads per sample in the worst case, but most of them are cache hits: the marginal CDF is a few kilobytes, and the conditional searches concentrate on the few bright rows.
 \newend
 
 \subsection{\texorpdfstring{\newt{Leaf budget}}{Leaf budget}}
@@ -700,9 +714,9 @@ In the next experiment, we sweep the leaf budget $B$ of BudgetLeafAlias from 16 
   \label{fig:leafbudget}
 \end{figure*}
 
-Two behaviors appear, depending on how the light is distributed over the emitter. In Cinema, light is spread over most of the screen, and a coarse partition already results in one figure error percentages. Rover and Phone behave in a similar way (not shown). In Fireplace Room and Convergence, most of the energy sits in small regions that the partition must resolve, and the error falls steeply with $B$ before levelling off. In Convergence, 250 leaves give up to 1.20 times the error of $B=4000$,  and 1000 leaves up to 1.07 times, while doubling or quadrupling the budget beyond 4000 improves the error by only 1--3\% at every sample count. 
+Two behaviors appear, depending on how the light is distributed over the emitter. In Cinema, light is spread over most of the screen, and a coarse partition already gives single-digit error percentages. Rover and Phone behave in a similar way (not shown). In Fireplace Room and Convergence, most of the energy sits in small regions that the partition must resolve, and the error falls steeply with $B$ before levelling off. In Convergence, 250 leaves give up to 1.20 times the error of $B=4000$,  and 1000 leaves up to 1.07 times, while doubling or quadrupling the budget beyond 4000 improves the error by only 1--3\% at every sample count. 
 
-On the cost side, as we saw in the previous section, the structure grows linearly with $B$, and the performance penalty is minimized as long as the sampler resides in L1 cache. $B=4000$ therefore sits at the knee of both curves: it captures nearly all the quality available from the partition, and at 75\,KB it uses most of the cache without exceeding it. $B$ acts as a memory and quality knob, and devices with smaller caches or less memory can use a smaller budget at the quality cost shown in Figure~\ref{fig:leafbudget}. All these measurements are on one GPU; the \supp{ablation\_leaf\_number} contains the complete tables and the  \supp{GPU\_tests} contain results for a mobile GPU device, showing similar patterns when using less cores and memory.
+On the cost side, as we saw in the previous section, the structure grows linearly with $B$, and the performance penalty is minimized as long as the sampler resides in L1 cache. $B=4000$ therefore sits at the knee of both curves: it captures nearly all the quality available from the partition, and at 75\,KB it uses most of the cache without exceeding it. $B$ acts as a memory and quality knob, and devices with smaller caches or less memory can use a smaller budget at the quality cost shown in Figure~\ref{fig:leafbudget}. All these measurements are on one GPU; the \supp{ablation\_leaf\_number} contains the complete tables and the  \supp{GPU\_tests} contains results for a mobile GPU device, showing similar patterns when using fewer cores and memory.
 \newend
 
 
@@ -734,12 +748,11 @@ To compare the partitions independently of the renderer, we compute the light-sa
 \begin{figure}[htbp!]
   \centering
   \includegraphics[width=\columnwidth]{fig_partitions.jpg}
-  \caption{\newmat Leaf partitions of one frame of Rover and Phone. .}
+  \caption{\newmat Leaf partitions of one frame of Rover and Phone.}
   \label{fig:partitions}
 \end{figure}
 
-Figure~\ref{fig:variance} shows variance against leaf count for BudgetLeafAlias at varying number of leaves, and CodecLeafAlias. 
-The plots show that codec leaves are placed less usefully for light sampling in every scene the codec partition lies above the budget curve, and BudgetLeafAlias reaches the same variance with 23--54\% of its leaves (94\% in Phone). A codec partition helps when it has considerably more leaves than the budget: in Fireplace Room it has about 47000 leaves, 12 times the budget, and reaches 0.26 of its variance; in Convergence about 27000 and 0.48. Rendered at equal samples, CodecLeafAlias is accordingly 5.3\% better than BudgetLeafAlias in Fireplace Room and 1.7\% better in Convergence (Figure~\ref{fig:equalsamples}), and it has the best full-video result on those two scenes (Table~\ref{tab:main}). 
+Figure~\ref{fig:variance} shows variance against leaf count for BudgetLeafAlias at several number of leaves, and CodecLeafAlias. The plots show that codec leaves are placed less usefully for light sampling: in every scene the codec partition lies above the budget curve, and BudgetLeafAlias reaches the same variance with 23--54\% of its leaves (94\% in Phone). A codec partition helps when it has considerably more leaves than the budget: in Fireplace Room it has about 47000 leaves, 12 times the budget, and reaches 0.26 of its variance; in Convergence about 27000 and 0.48. Rendered at equal samples, CodecLeafAlias is accordingly 5.3\% better than BudgetLeafAlias in Fireplace Room and 1.7\% better in Convergence (Figure~\ref{fig:equalsamples}), and it has the best full-video result on those two scenes (Table~\ref{tab:main}). 
 
 \begin{figure}[htbp!]
   \centering
@@ -853,14 +866,14 @@ noise relative to both baselines.
 \label{sec:limits}
 
 \newbegin
-LeafAlias helps most when the sampling structure has to be small and cheap: several video lights at once, high-resolution emitters, limited memory or upload bandwidth, a tight frame, and scenes where the light sampler accounts for a large part of the error. Its limits follow from the same measurements. (i)~At equal samples it is never better than a per-texel distribution; a larger leaf budget reduces the loss. (ii)~Its gain comes from fitting more light samples in the frame, so it disappears when light sampling is a small part of the frame's cost or of its error. (iii)~It considers the texture alone: the BSDF, visibility and the distance to the emitter contribute variance that no scene-independent emission sampler removes, which bounds the gain of any such sampler. (iv)~The alias mapping does not exploit low-discrepancy sample sequences (Appendix~\ref{app:qmc}); a monotone mapping such as a 2D CDF does. (v)~Our implementation stores the mean luminance of a leaf as a 16-bit float, which saturates at 65504; emitters with brighter texels may need a wider format. (vi)~Extracting the partitions from the encoded metadata might pose some difficulty in video workflows involving hardware-accelerated decoding pipelines..
+LeafAlias helps most when the sampling structure has to be small and cheap: several video lights at once, high-resolution emitters, limited memory or upload bandwidth, a tight frame, and scenes where the light sampler accounts for a large part of the error. Its limits follow from the same measurements. (i)~At equal samples it is never better than a per-texel distribution; a larger leaf budget reduces the loss. (ii)~Its gain comes from fitting more light samples in the frame, so it disappears when light sampling is a small part of the frame's cost or of its error. (iii)~It considers the texture alone: the BSDF, visibility and the distance to the emitter contribute variance that no scene-independent emission sampler removes, which bounds the gain of any such sampler. (iv)~The alias mapping does not exploit low-discrepancy sample sequences (Appendix~\ref{app:qmc}); a monotone mapping such as a 2D CDF does. (v)~Our implementation stores the mean luminance of a leaf as a 16-bit float, which saturates at 65504; emitters with brighter texels may need a wider format. (vi)~Extracting the partitions from the encoded metadata might pose some difficulty in video workflows involving hardware-accelerated decoding pipelines.
 \newend
 
 \section{Conclusions and future work} \label{sec:conclusions}
 
 We introduced LeafAlias, a family of samplers for dynamic emissive textures that build a per-frame alias table over a variance-driven quadtree rather than over raw pixels. \rev{The outcome is a sampler that is inexpensive enough to rebuild in every frame, small enough to stay resident in the GPU's L1 cache, and accurate enough to stay within a few percent of the per-texel methods we compared against at equal samples, while reaching their quality up to 3 times faster.}
 
-\rev{The consistency of CodecLeafAlias results through the different video light sources, codecs and bitrates that were tested suggests that the coded signal carries enough information to be reused for importance sampling. The advantage holds up when quality is judged over a full animated sequence rather than a single frame, and narrows, as for any light sampler, once a denoiser is added to the pipeline.} We also show that, when not available, building a small variance-driven quadtree is fast and can improve performance. The decision to use more or fewer leaves depends on the scene complexity and video material.
+\rev{The consistency of CodecLeafAlias results across the different video light sources, codecs and bitrates that were tested suggests that the coded signal carries enough information to be reused for importance sampling. The advantage holds up when quality is judged over a full animated sequence rather than a single frame, and narrows, as for any light sampler, once a denoiser is added to the pipeline.} We also show that, when codec metadata is not available, building a small variance-driven quadtree is fast and can improve performance. The decision to use more or fewer leaves depends on the scene complexity and video material.
 
 More broadly, this work points to an under-exploited overlap between the toolchains of video compression and real-time rendering. We think this connection has more to offer than the single, frame-local piece of it used here. \rev{The most direct extension is temporal. Section~\ref{sec:codecstudy} shows that the motion vectors of the stream can carry a keyframe partition to the following frames, but the sampling structure itself is still rebuilt in every frame. The same vectors indicate which leaves changed, so the table could be updated incrementally instead.}
 A second direction targets the leaf weights rather than the partition. CodecLeafAlias currently estimates each leaf's radiance from a single DC coefficient, which is exact under a piecewise-constant model but discards the higher-frequency information. That information could be used to guide the sampling within the leaf rectangle, potentially improving the efficiency of each drawn sample. \new{A third is the mapping itself: a hierarchical warp~\cite{clarberg2005wavelet} down the same quadtree keeps the leaf density and its small footprint, and could recover the benefit of low-discrepancy sequences that the alias mapping gives up (Appendix~\ref{app:qmc}).}
@@ -896,7 +909,7 @@ Next, we render a diffuse floor lit by the textured area light through a fence (
   \label{fig:qmcfence}
 \end{figure}
 
-We tested this effect over more than 200 HDR emitters, and the QMC error of BudgetLeafAlias stays within 10\% of its own pseudorandom error in more than 99\% of the cases, whereas the per-pixel alias table exceeds that bound in 7--17\% of the cases and reaches 3.5 times. These magnitudes are a best case for QMC, a single two-dimensional direct-lighting integral; in a full path tracer both the gain of the 2D CDF and the loss of the per-pixel alias table are smaller.
+We tested this effect over more than 200 HDR emitters, and the QMC error of BudgetLeafAlias stays within 10\% of its own pseudorandom error in more than 99\% of the cases, whereas the per-pixel alias table exceeds that bound in 7--17\% of the cases and reaches 3.5 times the error. These magnitudes are a best case for QMC, a single two-dimensional direct-lighting integral; in a full path tracer both the gain of the 2D CDF and the loss of the per-pixel alias table are smaller.
 \newend
 
 \section{\texorpdfstring{\newt{Temporal stability}}{Temporal stability}}

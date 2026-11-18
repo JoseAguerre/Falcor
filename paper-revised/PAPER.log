@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.9.7)  17 NOV 2026 13:40
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.9.7)  17 NOV 2026 22:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1014,9 +1014,9 @@ Package caption Info: End \AtBeginDocument code.
 
 Excluding 'CCSXML' comment.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 17.28pt on input line 241.
+(Font)              scaled to size 17.28pt on input line 255.
 LaTeX Font Info:    Trying to load font information for T1+LinuxBiolinumT-TLF o
-n input line 241.
+n input line 255.
 
 (C:\Users\Jose\AppData\Local\Programs\MiKTeX\tex/latex/libertine\t1linuxbiolinu
 mt-tlf.fd
@@ -1024,44 +1024,44 @@ File: T1LinuxBiolinumT-TLF.fd 2017/03/20 (autoinst) Font definitions for T1/Lin
 uxBiolinumT-TLF.
 )
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 17.28pt on input line 241.
+(Font)              scaled to size 17.28pt on input line 255.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxBiolinumT-TLF' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 12.0pt on input line 241.
+(Font)              scaled to size 12.0pt on input line 255.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 12.0pt on input line 241.
+(Font)              scaled to size 12.0pt on input line 255.
 <images/teaser.png, id=98, 3864.4375pt x 1333.98375pt>
 File: images/teaser.png Graphic file (type png)
 <use images/teaser.png>
-Package pdftex.def Info: images/teaser.png  used on input line 241.
+Package pdftex.def Info: images/teaser.png  used on input line 255.
 (pdftex.def)             Requested size: 510.295pt x 176.15154pt.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 241.
+(Font)              scaled to size 9.0pt on input line 255.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 241.
+(Font)              scaled to size 8.0pt on input line 255.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 241.
+(Font)              scaled to size 8.0pt on input line 255.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxLibertineT-TLF' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 6.0pt on input line 241.
+(Font)              scaled to size 6.0pt on input line 255.
 LaTeX Font Info:    Font shape `OML/nxlmi/m/it' will be
-(Font)              scaled to size 8.0pt on input line 241.
+(Font)              scaled to size 8.0pt on input line 255.
 LaTeX Font Info:    Font shape `OML/nxlmi/m/it' will be
-(Font)              scaled to size 6.0pt on input line 241.
+(Font)              scaled to size 6.0pt on input line 255.
 LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 8.0pt on input line 241.
+(Font)              scaled to size 8.0pt on input line 255.
 LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 6.0pt on input line 241.
+(Font)              scaled to size 6.0pt on input line 255.
 LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 8.0pt on input line 241.
+(Font)              scaled to size 8.0pt on input line 255.
 LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 6.0pt on input line 241.
+(Font)              scaled to size 6.0pt on input line 255.
 
 (C:\Users\Jose\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
@@ -1070,27 +1070,27 @@ File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 8.0pt on input line 241.
+(Font)              scaled to size 8.0pt on input line 255.
 LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 6.0pt on input line 241.
+(Font)              scaled to size 6.0pt on input line 255.
 LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 8.0pt on input line 241.
+(Font)              scaled to size 8.0pt on input line 255.
 LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 6.0pt on input line 241.
+(Font)              scaled to size 6.0pt on input line 255.
 LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 8.0pt on input line 241.
+(Font)              scaled to size 8.0pt on input line 255.
 LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 6.0pt on input line 241.
+(Font)              scaled to size 6.0pt on input line 255.
 LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 8.0pt on input line 241.
+(Font)              scaled to size 8.0pt on input line 255.
 LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 6.0pt on input line 241.
+(Font)              scaled to size 6.0pt on input line 255.
 
 
-Class acmart Warning: A possible image without description on input line 241.
+Class acmart Warning: A possible image without description on input line 255.
 
 LaTeX Font Info:    Trying to load font information for TS1+LinuxLibertineT-TLF
- on input line 241.
+ on input line 255.
 
 (C:\Users\Jose\AppData\Local\Programs\MiKTeX\tex/latex/libertine\ts1linuxlibert
 inet-tlf.fd
@@ -1098,55 +1098,55 @@ File: TS1LinuxLibertineT-TLF.fd 2017/03/20 (autoinst) Font definitions for TS1/
 LinuxLibertineT-TLF.
 )
 LaTeX Font Info:    Font shape `TS1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.0pt on input line 241.
+(Font)              scaled to size 7.0pt on input line 255.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxLibertineT-TLF' (encoding: TS1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 241.
+(Font)              scaled to size 8.0pt on input line 255.
 LaTeX Font Info:    Font shape `TS1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 241.
+(Font)              scaled to size 8.0pt on input line 255.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 8.0pt on input line 241.
+(Font)              scaled to size 8.0pt on input line 255.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 8.0pt on input line 241.
+(Font)              scaled to size 8.0pt on input line 255.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 243.
+(Font)              scaled to size 10.0pt on input line 257.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 248.
+(Font)              scaled to size 9.0pt on input line 262.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 6.6pt on input line 248.
+(Font)              scaled to size 6.6pt on input line 262.
 LaTeX Font Info:    Font shape `OML/nxlmi/m/it' will be
-(Font)              scaled to size 9.0pt on input line 248.
+(Font)              scaled to size 9.0pt on input line 262.
 LaTeX Font Info:    Font shape `OML/nxlmi/m/it' will be
-(Font)              scaled to size 6.6pt on input line 248.
+(Font)              scaled to size 6.6pt on input line 262.
 LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 9.0pt on input line 248.
+(Font)              scaled to size 9.0pt on input line 262.
 LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 6.6pt on input line 248.
+(Font)              scaled to size 6.6pt on input line 262.
 LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 9.0pt on input line 248.
+(Font)              scaled to size 9.0pt on input line 262.
 LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 6.6pt on input line 248.
+(Font)              scaled to size 6.6pt on input line 262.
 LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 9.0pt on input line 248.
+(Font)              scaled to size 9.0pt on input line 262.
 LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 6.6pt on input line 248.
+(Font)              scaled to size 6.6pt on input line 262.
 LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 9.0pt on input line 248.
+(Font)              scaled to size 9.0pt on input line 262.
 LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 6.6pt on input line 248.
+(Font)              scaled to size 6.6pt on input line 262.
 LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 9.0pt on input line 248.
+(Font)              scaled to size 9.0pt on input line 262.
 LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 6.6pt on input line 248.
+(Font)              scaled to size 6.6pt on input line 262.
 LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 9.0pt on input line 248.
+(Font)              scaled to size 9.0pt on input line 262.
 LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 6.6pt on input line 248.
+(Font)              scaled to size 6.6pt on input line 262.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 6.0pt on input line 249.
+(Font)              scaled to size 6.0pt on input line 263.
  [1.1{C:/Users/Jose/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/
 Jose/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}{C
 :/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn_25tcs
@@ -1159,104 +1159,104 @@ bertine/lbtn_7grukw.enc} <./images/teaser.png (PNG copy)>]
 <images/quadtree.png, id=129, 825.94286pt x 335.1091pt>
 File: images/quadtree.png Graphic file (type png)
 <use images/quadtree.png>
-Package pdftex.def Info: images/quadtree.png  used on input line 266.
+Package pdftex.def Info: images/quadtree.png  used on input line 280.
 (pdftex.def)             Requested size: 243.14749pt x 98.65178pt.
 
 
-Class acmart Warning: A possible image without description on input line 270.
+Class acmart Warning: A possible image without description on input line 284.
 
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 9.0pt on input line 338.
+(Font)              scaled to size 9.0pt on input line 352.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 9.0pt on input line 338.
+(Font)              scaled to size 9.0pt on input line 352.
 
 Package natbib Warning: Citation `wyman2021rearchitecting' on page 2 undefined 
-on input line 338.
+on input line 352.
 
 
 Package natbib Warning: Citation `zeng2025restirpg' on page 2 undefined on inpu
-t line 338.
+t line 352.
 
 
 Package natbib Warning: Citation `kozlowski2023cyberpunk' on page 2 undefined o
-n input line 338.
+n input line 352.
 
 
 Package natbib Warning: Citation `wright2022lumen' on page 2 undefined on input
- line 338.
+ line 352.
 
 
 Package natbib Warning: Citation `narkowicz2025megalights' on page 2 undefined 
-on input line 338.
+on input line 352.
 
 
 Package natbib Warning: Citation `nvidia2026ptwhitepaper' on page 2 undefined o
-n input line 338.
+n input line 352.
 
 
 Package natbib Warning: Citation `chen2026lightopt' on page 2 undefined on inpu
-t line 338.
+t line 352.
 
 
 Package natbib Warning: Citation `debevec2022dilation' on page 2 undefined on i
-nput line 338.
+nput line 352.
 
 
 Package natbib Warning: Citation `legendre2022jointly' on page 2 undefined on i
-nput line 338.
+nput line 352.
 
 
 Package natbib Warning: Citation `bengtsson2022ibl' on page 2 undefined on inpu
-t line 338.
+t line 352.
 
 
 Package natbib Warning: Citation `kadner2023stages' on page 2 undefined on inpu
-t line 338.
+t line 352.
 
 
 Package natbib Warning: Citation `zwerman2023ves' on page 2 undefined on input 
-line 338.
+line 352.
 
 
 Package natbib Warning: Citation `failes2024hotd' on page 2 undefined on input 
-line 338.
+line 352.
 
 
 Package natbib Warning: Citation `nash2025integration' on page 2 undefined on i
-nput line 338.
+nput line 352.
 
 
 Package natbib Warning: Citation `bunish2017rogueone' on page 2 undefined on in
-put line 338.
+put line 352.
 
 
 Package natbib Warning: Citation `seymour2013gravity' on page 2 undefined on in
-put line 338.
+put line 352.
 
 
 Package natbib Warning: Citation `hamon2014gravity' on page 2 undefined on inpu
-t line 338.
+t line 352.
 
 
 Package natbib Warning: Citation `kadner2021fieldguide' on page 2 undefined on 
-input line 338.
+input line 352.
 
 
 Package natbib Warning: Citation `failes2022hotd' on page 2 undefined on input 
-line 338.
+line 352.
 
 
 Package natbib Warning: Citation `azzarelli2026relightable' on page 2 undefined
- on input line 338.
+ on input line 352.
 
 
 Package natbib Warning: Citation `zhang2026pixelcube' on page 2 undefined on in
-put line 338.
+put line 352.
 
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 7.0pt on input line 338.
+(Font)              scaled to size 7.0pt on input line 352.
 LaTeX Font Info:    Trying to load font information for TS1+LinuxBiolinumT-TLF 
-on input line 338.
+on input line 352.
 
 (C:\Users\Jose\AppData\Local\Programs\MiKTeX\tex/latex/libertine\ts1linuxbiolin
 umt-tlf.fd
@@ -1264,7 +1264,7 @@ File: TS1LinuxBiolinumT-TLF.fd 2017/03/20 (autoinst) Font definitions for TS1/L
 inuxBiolinumT-TLF.
 )
 LaTeX Font Info:    Font shape `TS1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 7.0pt on input line 338.
+(Font)              scaled to size 7.0pt on input line 352.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxBiolinumT-TLF' (encoding: TS1).
 (microtype)             For optimal results, create family-specific settings.
@@ -1274,91 +1274,91 @@ n_afusau.enc}{C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/liber
 tine/lbtn_oexx6f.enc} <./images/quadtree.png>]
 
 Package natbib Warning: Citation `legendre2019deeplight' on page 3 undefined on
- input line 338.
+ input line 352.
 
 
 Package natbib Warning: Citation `somanath2021hdr' on page 3 undefined on input
- line 338.
+ line 352.
 
 
 Package natbib Warning: Citation `zhao2021xihe' on page 3 undefined on input li
-ne 338.
+ne 352.
 
 
 Package natbib Warning: Citation `li2023spatiotemporally' on page 3 undefined o
-n input line 338.
+n input line 352.
 
 
 Package natbib Warning: Citation `shen2025stglight' on page 3 undefined on inpu
-t line 338.
+t line 352.
 
 
 Package natbib Warning: Citation `bolduc2026limo' on page 3 undefined on input 
-line 338.
+line 352.
 
 
 Package natbib Warning: Citation `rhee2017mr360' on page 3 undefined on input l
-ine 338.
+ine 352.
 
 
 Package natbib Warning: Citation `rhee2018mr360live' on page 3 undefined on inp
-ut line 338.
+ut line 352.
 
 
 Package natbib Warning: Citation `walton2018dynamic' on page 3 undefined on inp
-ut line 338.
+ut line 352.
 
 
 Package natbib Warning: Citation `kronander2015photorealistic' on page 3 undefi
-ned on input line 338.
+ned on input line 352.
 
 
 Package natbib Warning: Citation `alhakamy2020realtime' on page 3 undefined on 
-input line 338.
+input line 352.
 
 
 Package natbib Warning: Citation `cheng2023environment' on page 3 undefined on 
-input line 338.
+input line 352.
 
 
 Package natbib Warning: Citation `wu2024panoramic' on page 3 undefined on input
- line 338.
+ line 352.
 
 
 Package natbib Warning: Citation `taibo2024immersive' on page 3 undefined on in
-put line 338.
+put line 352.
 
 
 Package natbib Warning: Citation `saito2024relightable' on page 3 undefined on 
-input line 338.
+input line 352.
 
 <images/fig_spectrum_paper_color.png, id=159, 481.9095pt x 246.7035pt>
 File: images/fig_spectrum_paper_color.png Graphic file (type png)
 <use images/fig_spectrum_paper_color.png>
 Package pdftex.def Info: images/fig_spectrum_paper_color.png  used on input lin
-e 344.
+e 358.
 (pdftex.def)             Requested size: 243.14749pt x 124.47322pt.
 
-Class acmart Warning: A possible image without description on input line 351.
+Class acmart Warning: A possible image without description on input line 365.
 
 [3.3 <./images/fig_spectrum_paper_color.png>]
-Overfull \hbox (16.39084pt too wide) in paragraph at lines 372--377
+Overfull \hbox (4.742pt too wide) in paragraph at lines 386--391
 []\T1/LinuxLibertineT-TLF/m/n/9 (-20) Modern pro-duc-tion ren-der-ers mostly re
-ly on dense CDF or mipmapped
+ly on dense CDF or mipmap-
  []
 
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 6.6pt on input line 394.
+(Font)              scaled to size 6.6pt on input line 408.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 5.5pt on input line 394.
+(Font)              scaled to size 5.5pt on input line 408.
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 412.
+put line 426.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 9.0pt on input line 419.
+(Font)              scaled to size 9.0pt on input line 433.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 6.6pt on input line 419.
+(Font)              scaled to size 6.6pt on input line 433.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 5.5pt on input line 419.
+(Font)              scaled to size 5.5pt on input line 433.
 [4.4{C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn
 _kijugd.enc}]
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1368,9 +1368,9 @@ Underfull \vbox (badness 2503) has occurred while \output is active []
 
  [5.5]
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 8.0pt on input line 552.
+(Font)              scaled to size 8.0pt on input line 566.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 6.0pt on input line 552.
+(Font)              scaled to size 6.0pt on input line 566.
 
 (table_video_all.tex
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
@@ -1397,19 +1397,19 @@ LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
 <images/realtime_curves.png, id=323, 1036.089pt x 235.5345pt>
 File: images/realtime_curves.png Graphic file (type png)
 <use images/realtime_curves.png>
-Package pdftex.def Info: images/realtime_curves.png  used on input line 596.
+Package pdftex.def Info: images/realtime_curves.png  used on input line 610.
 (pdftex.def)             Requested size: 510.295pt x 116.0059pt.
 
 
-Class acmart Warning: A possible image without description on input line 601.
+Class acmart Warning: A possible image without description on input line 615.
 
 <images/fig_equal_samples.pdf, id=325, 257.23277pt x 158.63062pt>
 File: images/fig_equal_samples.pdf Graphic file (type pdf)
 <use images/fig_equal_samples.pdf>
-Package pdftex.def Info: images/fig_equal_samples.pdf  used on input line 611.
+Package pdftex.def Info: images/fig_equal_samples.pdf  used on input line 625.
 (pdftex.def)             Requested size: 243.14749pt x 149.95029pt.
 
-Class acmart Warning: A possible image without description on input line 614.
+Class acmart Warning: A possible image without description on input line 628.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1418,33 +1418,33 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 <images/closeup_examples.pdf, id=335, 240.65909pt x 119.9682pt>
 File: images/closeup_examples.pdf Graphic file (type pdf)
 <use images/closeup_examples.pdf>
-Package pdftex.def Info: images/closeup_examples.pdf  used on input line 620.
+Package pdftex.def Info: images/closeup_examples.pdf  used on input line 634.
 (pdftex.def)             Requested size: 243.14749pt x 121.20901pt.
 
 
-Class acmart Warning: A possible image without description on input line 623.
+Class acmart Warning: A possible image without description on input line 637.
 
 [7.7 <./images/realtime_curves.png> <./images/fig_equal_samples.pdf> <./images/
 closeup_examples.pdf>]
 <images/fig_wall.pdf, id=386, 253.67143pt x 160.16618pt>
 File: images/fig_wall.pdf Graphic file (type pdf)
 <use images/fig_wall.pdf>
-Package pdftex.def Info: images/fig_wall.pdf  used on input line 661.
+Package pdftex.def Info: images/fig_wall.pdf  used on input line 675.
 (pdftex.def)             Requested size: 243.14749pt x 153.52805pt.
 
 
-Class acmart Warning: A possible image without description on input line 664.
+Class acmart Warning: A possible image without description on input line 678.
 
 <images/fig_gpu_cost2.pdf, id=388, 256.70845pt x 156.21964pt>
 File: images/fig_gpu_cost2.pdf Graphic file (type pdf)
 <use images/fig_gpu_cost2.pdf>
-Package pdftex.def Info: images/fig_gpu_cost2.pdf  used on input line 679.
+Package pdftex.def Info: images/fig_gpu_cost2.pdf  used on input line 693.
 (pdftex.def)             Requested size: 243.14749pt x 147.96921pt.
 
-Class acmart Warning: A possible image without description on input line 682.
+Class acmart Warning: A possible image without description on input line 696.
 
 [8.8 <./images/fig_wall.pdf> <./images/fig_gpu_cost2.pdf>]
-Overfull \hbox (4.62323pt too wide) in paragraph at lines 694--695
+Overfull \hbox (4.62323pt too wide) in paragraph at lines 708--709
 \T1/LinuxLibertineT-TLF/m/n/9 (-20) In the next ex-per-i-ment, we sweep the lea
 f bud-get $\OML/nxlmi/m/it/9 B$ \T1/LinuxLibertineT-TLF/m/n/9 (-20) of Bud-getL
 eafAlias
@@ -1453,83 +1453,80 @@ eafAlias
 <images/fig_leaf_budget.pdf, id=489, 745.59885pt x 209.86365pt>
 File: images/fig_leaf_budget.pdf Graphic file (type pdf)
 <use images/fig_leaf_budget.pdf>
-Package pdftex.def Info: images/fig_leaf_budget.pdf  used on input line 698.
+Package pdftex.def Info: images/fig_leaf_budget.pdf  used on input line 712.
 (pdftex.def)             Requested size: 469.47046pt x 132.14114pt.
 
-Class acmart Warning: A possible image without description on input line 701.
+Class acmart Warning: A possible image without description on input line 715.
 
-LaTeX Font Info:    Trying to load font information for T1+zi4 on input line 70
-5.
+LaTeX Font Info:    Trying to load font information for T1+zi4 on input line 71
+9.
 (C:\Users\Jose\AppData\Local\Programs\MiKTeX\tex/latex/inconsolata\t1zi4.fd
 File: t1zi4.fd 2018/01/14 T1/zi4 (Inconsolata)
 )
 LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
-(Font)              scaled to size 9.0pt on input line 705.
+(Font)              scaled to size 9.0pt on input line 719.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `zi4' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-(table_average_tree.tex
-LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/n' will be
-(Font)              scaled to size 8.0pt on input line 4.
-
 Underfull \vbox (badness 1137) has occurred while \output is active []
 
-)
-LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/n' will be
-(Font)              scaled to size 9.0pt on input line 716.
-<images/fig_partitions.jpg, id=494, 515.61865pt x 315.76431pt>
+
+(table_average_tree.tex) [9.9{C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts
+/enc/dvips/inconsolata/i4-t1-4.enc}]
+<images/fig_partitions.jpg, id=502, 515.61865pt x 315.76431pt>
 File: images/fig_partitions.jpg Graphic file (type jpg)
 <use images/fig_partitions.jpg>
-Package pdftex.def Info: images/fig_partitions.jpg  used on input line 733.
+Package pdftex.def Info: images/fig_partitions.jpg  used on input line 750.
 (pdftex.def)             Requested size: 243.14749pt x 148.90552pt.
 
 
-Class acmart Warning: A possible image without description on input line 736.
+Class acmart Warning: A possible image without description on input line 753.
 
-[9.9{C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/inconsolata/i4
--t1-4.enc}]
-<images/fig_variance_vs_leaves.pdf, id=510, 247.53864pt x 117.77838pt>
+<images/fig_variance_vs_leaves.pdf, id=506, 247.53864pt x 117.77838pt>
 File: images/fig_variance_vs_leaves.pdf Graphic file (type pdf)
 <use images/fig_variance_vs_leaves.pdf>
 Package pdftex.def Info: images/fig_variance_vs_leaves.pdf  used on input line 
-742.
+759.
 (pdftex.def)             Requested size: 243.14749pt x 115.69159pt.
 
-Underfull \hbox (badness 1137) in paragraph at lines 743--743
+Underfull \hbox (badness 1137) in paragraph at lines 760--760
 []\T1/LinuxBiolinumT-TLF/m/n/8 (+20) Fig. 11.|[]Light-sampling vari-ance agains
 t leaf count, rel-a-tive to Bud-
  []
 
 
-Class acmart Warning: A possible image without description on input line 745.
+Class acmart Warning: A possible image without description on input line 762.
 
 [10.10 <./images/fig_leaf_budget.pdf> <./images/fig_partitions.jpg> <./images/f
 ig_variance_vs_leaves.pdf>]
 <images/fig_rate_sensitivity.pdf, id=563, 491.436pt x 187.902pt>
 File: images/fig_rate_sensitivity.pdf Graphic file (type pdf)
 <use images/fig_rate_sensitivity.pdf>
-Package pdftex.def Info: images/fig_rate_sensitivity.pdf  used on input line 75
-6.
+Package pdftex.def Info: images/fig_rate_sensitivity.pdf  used on input line 77
+3.
 (pdftex.def)             Requested size: 243.14749pt x 92.9702pt.
 
 
-Class acmart Warning: A possible image without description on input line 759.
+Class acmart Warning: A possible image without description on input line 776.
+
+
+Overfull \hbox (2.76942pt too wide) in paragraph at lines 779--780
+ []\T1/LinuxLibertineT-TLF/m/it/9 (-20) Other codecs and en-coder set-tings.[] 
+\T1/LinuxLibertineT-TLF/m/n/9 (-20) Code-cLeafAlias needs two things
+ []
 
 <images/fig_codec_trees.pdf, id=565, 505.89pt x 231.26399pt>
 File: images/fig_codec_trees.pdf Graphic file (type pdf)
 <use images/fig_codec_trees.pdf>
-Package pdftex.def Info: images/fig_codec_trees.pdf  used on input line 766.
+Package pdftex.def Info: images/fig_codec_trees.pdf  used on input line 783.
 (pdftex.def)             Requested size: 243.14749pt x 111.15366pt.
 
-Class acmart Warning: A possible image without description on input line 769.
+Class acmart Warning: A possible image without description on input line 786.
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Overfull \hbox (1.04639pt too wide) in paragraph at lines 821--822
+Overfull \hbox (1.04639pt too wide) in paragraph at lines 838--839
 [][]\T1/LinuxLibertineT-TLF/m/n/9 (-20) The dif-fer-ences be-tween tech-niques 
 are nev-er-the-less much smaller
  []
@@ -1539,65 +1536,63 @@ are nev-er-the-less much smaller
 File: images/figures_only_restir_v9.png Graphic file (type png)
 <use images/figures_only_restir_v9.png>
 Package pdftex.def Info: images/figures_only_restir_v9.png  used on input line 
-832.
+849.
 (pdftex.def)             Requested size: 510.295pt x 392.49094pt.
 
 
-Class acmart Warning: A possible image without description on input line 837.
+Class acmart Warning: A possible image without description on input line 854.
 
 <images/denoised_flip_grid.png, id=713, 4117.3825pt x 1067.99pt>
 File: images/denoised_flip_grid.png Graphic file (type png)
 <use images/denoised_flip_grid.png>
-Package pdftex.def Info: images/denoised_flip_grid.png  used on input line 841.
+Package pdftex.def Info: images/denoised_flip_grid.png  used on input line 858.
 
 (pdftex.def)             Requested size: 510.295pt x 132.35768pt.
 
-Class acmart Warning: A possible image without description on input line 846.
+Class acmart Warning: A possible image without description on input line 863.
 
-(PAPER.bbl
+
+Underfull \vbox (badness 1137) has occurred while \output is active []
+
+ (PAPER.bbl
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
 (Font)              scaled to size 7.0pt on input line 45.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
 (Font)              scaled to size 7.3pt on input line 74.
- [12.12] [13.13 <./images/figures_only_restir_v9.png (PNG copy)> <./images/deno
-ised_flip_grid.png (PNG copy)>]
+
+Underfull \vbox (badness 1275) has occurred while \output is active []
+
+ [12.12]
+[13.13 <./images/figures_only_restir_v9.png (PNG copy)> <./images/denoised_flip
+_grid.png (PNG copy)>])
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-)
-<images/fig_qmc_points.pdf, id=755, 495.77222pt x 153.56387pt>
+<images/fig_qmc_points.pdf, id=759, 495.77222pt x 153.56387pt>
 File: images/fig_qmc_points.pdf Graphic file (type pdf)
 <use images/fig_qmc_points.pdf>
-Package pdftex.def Info: images/fig_qmc_points.pdf  used on input line 882.
+Package pdftex.def Info: images/fig_qmc_points.pdf  used on input line 898.
 (pdftex.def)             Requested size: 243.14749pt x 75.3149pt.
 
 
-Class acmart Warning: A possible image without description on input line 885.
+Class acmart Warning: A possible image without description on input line 901.
 
-[14.14]
-<images/fig_qmc_fence.pdf, id=774, 240.65909pt x 228.91522pt>
+<images/fig_qmc_fence.pdf, id=761, 240.65909pt x 228.91522pt>
 File: images/fig_qmc_fence.pdf Graphic file (type pdf)
 <use images/fig_qmc_fence.pdf>
-Package pdftex.def Info: images/fig_qmc_fence.pdf  used on input line 892.
+Package pdftex.def Info: images/fig_qmc_fence.pdf  used on input line 907.
 (pdftex.def)             Requested size: 223.69524pt x 212.78065pt.
 
+Class acmart Warning: A possible image without description on input line 910.
 
-Class acmart Warning: A possible image without description on input line 895.
-
-[15.15 <./images/fig_qmc_points.pdf> <./images/fig_qmc_fence.pdf>]
-<images/fig_temporal.pdf, id=916, 251.66335pt x 223.9952pt>
+[14.14 <./images/fig_qmc_points.pdf>]
+<images/fig_temporal.pdf, id=836, 251.66335pt x 223.9952pt>
 File: images/fig_temporal.pdf Graphic file (type pdf)
 <use images/fig_temporal.pdf>
-Package pdftex.def Info: images/fig_temporal.pdf  used on input line 942.
+Package pdftex.def Info: images/fig_temporal.pdf  used on input line 929.
 (pdftex.def)             Requested size: 243.14749pt x 216.4206pt.
 
 
-Class acmart Warning: A possible image without description on input line 945.
-
-
-Overfull \hbox (16.7197pt too wide) in paragraph at lines 947--948
- []\T1/LinuxLibertineT-TLF/m/it/9 (-20) Rendered flicker.[] \T1/LinuxLibertineT
--TLF/m/n/9 (-20) The low-frequency tem-po-ral er-ror of Bud-getLeafAlias
- []
+Class acmart Warning: A possible image without description on input line 932.
 
 
 Package natbib Warning: There were undefined citations.
@@ -1617,14 +1612,14 @@ portant to optimize color contrast for the visually impaired. Taking these impo
 rtant steps when creating your papers will ensure that the widest possible audi
 ence can ingest your work..
 
-
+[15.15 <./images/fig_temporal.pdf> <./images/fig_qmc_fence.pdf>]
 (C:\Users\Jose\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\se-pdfdoc.de
 f
 File: se-pdfdoc.def 2019/11/29 v1.12 stringenc: PDFDocEncoding
 )
 (C:\Users\Jose\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\se-utf8.def
 File: se-utf8.def 2019/11/29 v1.12 stringenc: UTF-8
-) [16.16 <./images/fig_temporal.pdf>] (PAPER.aux)
+) [16.15] (PAPER.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
@@ -1633,35 +1628,79 @@ L3 programming layer <2025-12-24>
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
-Package rerunfilecheck Info: File `PAPER.out' has not changed.
-(rerunfilecheck)             Checksum: 7CE03D081A2F813773D25DE4C6E3D922;3642.
+
+LaTeX Warning: Temporary extra page added at the end. Rerun to get it removed.
+
+
+Package rerunfilecheck Warning: File `PAPER.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `PAPER.out':
+(rerunfilecheck)             Before: 7CE03D081A2F813773D25DE4C6E3D922;3642
+(rerunfilecheck)             After:  A5D5CAE7D6EDA428CD629D06D1678FD1;3553.
  ) 
 Here is how much of TeX's memory you used:
- 23064 strings out of 467871
- 385250 string characters out of 5418861
- 881683 words of memory out of 5000000
- 50487 multiletter control sequences out of 15000+600000
- 860551 words of font info for 614 fonts, out of 8000000 for 9000
+ 23027 strings out of 467871
+ 384255 string characters out of 5418861
+ 868818 words of memory out of 5000000
+ 50496 multiletter control sequences out of 15000+600000
+ 847104 words of font info for 585 fonts, out of 8000000 for 9000
  1302 hyphenation exceptions out of 8191
- 90i,16n,131p,1678b,833s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/public/inconsolata/I
-nconsolata-zi4r.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/pu
-blic/newtx/LibertineMathMI.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fon
-ts/type1/public/newtx/LibertineMathMI5.pfb><C:/Users/Jose/AppData/Local/Program
-s/MiKTeX/fonts/type1/public/newtx/LibertineMathMI7.pfb><C:/Users/Jose/AppData/L
-ocal/Programs/MiKTeX/fonts/type1/public/libertine/LinBiolinumT.pfb><C:/Users/Jo
-se/AppData/Local/Programs/MiKTeX/fonts/type1/public/libertine/LinBiolinumTB.pfb
-><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/public/libertine/LinL
-ibertineT.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/public/l
-ibertine/LinLibertineTB.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/
-type1/public/libertine/LinLibertineTI.pfb><C:/Users/Jose/AppData/Local/Programs
-/MiKTeX/fonts/type1/public/newtx/NewTXMI.pfb><C:/Users/Jose/AppData/Local/Progr
-ams/MiKTeX/fonts/type1/public/newtx/txexs.pfb><C:/Users/Jose/AppData/Local/Prog
-rams/MiKTeX/fonts/type1/public/newtx/txmiaX.pfb><C:/Users/Jose/AppData/Local/Pr
-ograms/MiKTeX/fonts/type1/public/newtx/txsys.pfb>
-Output written on PAPER.pdf (16 pages, 33041908 bytes).
+ 90i,17n,131p,1397b,885s stack positions out of 10000i,1000n,20000p,200000b,200000s
+
+pdfTeX warning (dest): name{figure.caption.39} has been referenced but does not
+ exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{figure.caption.35} has been referenced but does not
+ exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{figure.caption.29} has been referenced but does not
+ exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{table.caption.27} has been referenced but does not 
+exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{figure.caption.26} has been referenced but does not
+ exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{figure.caption.24} has been referenced but does not
+ exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{figure.caption.22} has been referenced but does not
+ exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{page.16} has been referenced but does not exist, re
+placed by a fixed one
+
+
+pdfTeX warning (dest): name{section*.31} has been referenced but does not exist
+, replaced by a fixed one
+
+<C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/public/inconsolata/Inc
+onsolata-zi4r.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/publ
+ic/newtx/LibertineMathMI.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts
+/type1/public/newtx/LibertineMathMI5.pfb><C:/Users/Jose/AppData/Local/Programs/
+MiKTeX/fonts/type1/public/newtx/LibertineMathMI7.pfb><C:/Users/Jose/AppData/Loc
+al/Programs/MiKTeX/fonts/type1/public/libertine/LinBiolinumT.pfb><C:/Users/Jose
+/AppData/Local/Programs/MiKTeX/fonts/type1/public/libertine/LinLibertineT.pfb><
+C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/public/libertine/LinLib
+ertineTB.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/type1/public/li
+bertine/LinLibertineTI.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fonts/t
+ype1/public/newtx/NewTXMI.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/font
+s/type1/public/newtx/txexs.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/fon
+ts/type1/public/newtx/txmiaX.pfb><C:/Users/Jose/AppData/Local/Programs/MiKTeX/f
+onts/type1/public/newtx/txsys.pfb>
+Output written on PAPER.pdf (16 pages, 32979759 bytes).
 PDF statistics:
- 1045 PDF objects out of 1200 (max. 8388607)
+ 1033 PDF objects out of 1200 (max. 8388607)
  152 named destinations out of 1000 (max. 500000)
- 131875 words of extra memory for PDF output out of 154059 (max. 10000000)
+ 125731 words of extra memory for PDF output out of 128383 (max. 10000000)
 
